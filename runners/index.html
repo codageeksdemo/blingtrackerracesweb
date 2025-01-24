@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+      rel="stylesheet"
+    />
+ <link rel="stylesheet" href="css/style.css"/>
+ <link rel="stylesheet" href="css/grid.css"/>
+   
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin:2px;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=button] {
+  background-color: #1B6CC0;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 45%;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #d8e9fe;
+  padding: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.blinglabel
+    {
+	  font-weight: bolder;
+	  width: 130px;
+	  height: 40px;
+	  padding: 10px;
+	  margin: 10px;
+	  text-align: left;
+	  vertical-align: bottom;
+    }
+     
+    .blingtext
+    {
+	  padding: 10px;
+	  border: 0px white solid;
+	  border-radius: 5px;
+	  height: 40px;
+	  font-size: large;
+	  font-weight: bolder;
+	  background: lightblue;
+	  width:350px;
+    }
+    .blingbox{
+          #width: 400px;
+		  #height: 600px;
+		  position: relative;
+		  #top: 100px;
+		  background: lightblue;
+		  #border-radius: 10px;
+		  margin: 20px;
+		  padding: 20px;
+	}
+    
+    .blingcontainer{
+        
+		  width: 98%;
+		  #height: 90%;
+		  z-index: 3;
+		  top: 100px;
+		  left: 1%;
+		  background: aliceblue;
+		  #border-radius: 10px;
+		  justify-content: center;
+		  padding: 20px;
+	}
+	.imageclass{
+		  height: 250px;
+		  margin: 30px;
+		  margin-bottom:15px;
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 340px;
+		  background-color: white;
+		
+	}
+	.blinginput{
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 99%;
+		  float:right;
+		  color:blue;
+		  text-align:center;
+	}
+	.blinginputdiv
+	{
+		padding: 5px;
+  		#display: flex;
+  		width:99%;
+	}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other 
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}*/
+</style>
+
+<script src="https://unpkg.com/vue@2"></script>
+	<script type="text/x-template" id="grid-template">
+      <table>
+        <thead>
+          <tr>
+            <th v-for="key in columns"
+              @click="sortBy(key)"
+              :class="{ active: sortKey == key }">
+              {{ key | capitalize }}
+              <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="entry in filteredHeroes">
+            <td v-for="key in columns">
+              <p v-if="key=='id'">
+                  <a :id="entry[key]" onclick="loadRunner(this);"> Edit </a>
+                  
+              </p> 
+	        <p v-else-if="key=='bMID' && entry['tagNumber']!=''">
+		  <img src="http://www.blingtracker.com/races/images/tracking.png" height="40" width="40"/> {{entry[key]}}
+
+              </p>
+              <p v-else> 
+                {{entry[key]}}
+              </p>  
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </script>
+    
+<script src="js/main.js" > </script>
+<script src="js/grid.js" > </script>
+
+</head>
+<body style="background:white">
+
+
+<div>
+		<img src="images/logo.png" alt="Logo" style="width:150px">
+<h2 class="header_1 wrap_3 color_3" > Timing Application Demo  </h2>
+	</div>
+	<p style="width: 90%;margin: 0 auto;font-weight:bold"> Welcome to Timing Application Demo Server
+   </p>
+<form >
+<div class="container">
+ <h2 class="header_3"> Race ID </h2>
+      <input pattern="[a-zA-Z0-9]+"  type="text" id="token" name="token" placeholder="Token">
+
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter alphabets & numerics only. ')" type="text" id="raceID" name="raceID" placeholder="Provide the RaceID to Load Runners">
+		<br />
+		<br />
+		<div style="display: inline-flex;">
+		  <input type="button" onclick="getRunners(document.getElementById('raceID').value);" value="Get Runners" ">   
+		  <p id="loader" style="display:none">Loading....</p>
+	 	</div>
+
+</div>
+
+<br/>
+<div id="runner" class ="container" >
+	<div v-if="display==true" class="blingcontainer">	
+		<div class="blinginput" id="inputs">
+			 <label style="font-weight: bold;font-size: x-large;width:100%;"> Runner ID: {{ runner.id }} -  Race ID: {{ runner.raceID }} - Race Code: {{ runner.raceCode }} </label>
+        </div>					    	 		 		 	 
+	 	 <div class="blinginputdiv">
+		    <label class = "blinglabel"> Name: </label>
+	 		<input v-model="runner.name" class="blingtext" placeholder="Name"/>
+		</div>
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Gender: </label>
+		   <input v-model="runner.gender"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Age: </label>
+		   <input v-model="runner.age"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> City: </label>
+		   <input v-model="runner.city"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Address: </label>
+		   <input v-model="runner.address"  class="blingtext" placeholder=""/>
+		</div>  
+	    <div class="blinginputdiv">
+		   <label class = "blinglabel"> Mobile(1): </label>
+		   <input v-model="runner.mobile1"  class="blingtext" placeholder=""/>
+		</div>  
+	
+	    <div class="blinginputdiv">
+		   <label class = "blinglabel"> Mobile(2): </label>
+		   <input v-model="runner.mobile2"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Email: </label>
+		   <input v-model="runner.email"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Bib Number: </label>
+		   <input v-model="runner.bibID"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> Race Code: </label>
+		   <input v-model="runner.raceCode"  class="blingtext" placeholder=""/>
+		</div>  
+		<div class="blinginputdiv">
+		   <label class = "blinglabel"> BMID: </label>
+		   <input v-model="runner.bMID"  class="blingtext" placeholder=""/>
+		</div>  
+	</div>		
+    <br />
+    <div display="float left">
+      <input style="margin: 0px;" type="button" onclick="newRunner()"  v-if="showAdd==true" value="Add New Runner">  </input>
+      <input style="margin: 0px;" type="button" onclick="saveRunner()"  v-if="display==true"  value="Save Runner Record"> </input>
+      <input style="margin: 0px;" type="button" onclick="deleteRunner()"  v-if="display==true" value ="Delete Runner Record"> </input>
+    </div>
+</div>
+
+<br />
+<div class="container">
+
+	 <div id="runnerGrid" v-if="gridData">
+      <h2 class="header_3"> Filter </h2>
+      <form id="search">
+        Free Search <input name="query" v-model="searchQuery" />
+        <br/>
+        Search Field <input name="query" v-model="searchField" /> Min Value: <input name="query" v-model="searchMinValue" /> Max Value: <input name="query" v-model="searchMaxValue" />
+      </form>
+      <br/>
+      <br/>
+      <demo-grid
+        :heroes="gridData"
+        :columns="gridColumns"
+        :filter-key="searchQuery"
+        :search-field="searchField"
+        :search-min-value="searchMinValue"
+        :search-max-value="searchMaxValue"
+      >
+      </demo-grid>
+    </div>
+</div>
+<br/>
+<br/>    
+<div>
+<br />
+
+</div>
+<br />
+
+<br/><br/>
+</form>
+
+  <script>
+     
+      
+      // register the grid component
+      Vue.component("demo-grid", {
+        template: "#grid-template",
+        props: {
+          heroes: Array,
+          columns: Array,
+          filterKey: String,
+          searchField: String,
+          searchMinValue: Number,
+          searchMaxValue: Number
+        },
+        data: function() {
+          var sortOrders = {};
+          this.columns.forEach(function(key) {
+            sortOrders[key] = 1;
+          });
+          return {
+            sortKey: "",
+            sortOrders: sortOrders
+          };
+        },
+        computed: {
+          filteredHeroes: function() {
+            var sortKey = this.sortKey;
+            var filterKey = this.filterKey && this.filterKey.toLowerCase();
+            var order = this.sortOrders[sortKey] || 1;
+            var heroes = this.heroes;
+            var searchField = this.searchField;
+            var searchMinValue = Number(this.searchMinValue);
+            var searchMaxValue = Number(this.searchMaxValue);
+            if(searchField && searchMinValue && searchMaxValue)
+            {
+            	heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  
+                    if(key.toLowerCase() != searchField.toLowerCase())
+                    {
+                    	return false;
+                    }
+                   
+                    var vl = Number(row[key]);
+                    if(vl>=searchMinValue && vl<=searchMaxValue)
+                    {
+                    	return true;
+                    } 
+                    else
+                    {
+                    	return false;
+                    }	
+					
+                   
+                 });
+               });
+            }
+            if (filterKey) {
+              heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  return (
+                    String(row[key])
+                      .toLowerCase()
+                      .indexOf(filterKey) > -1
+                  );
+                });
+              });
+            }
+            if (sortKey) {
+              heroes = heroes.slice().sort(function(a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                return (a === b ? 0 : a > b ? 1 : -1) * order;
+              });
+            }
+            
+            return heroes;
+          }
+        },
+        filters: {
+          capitalize: function(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+          }
+        },
+        methods: {
+          sortBy: function(key) {
+            this.sortKey = key;
+            this.sortOrders[key] = this.sortOrders[key] * -1;
+          }
+        }
+      });
+
+      // bootstrap the runnergrid
+      var runnerGrid = new Vue({
+        el: "#runnerGrid",
+        data: {
+          searchQuery: "",
+          searchField: "",
+          searchMinValue: "",
+          searchMaxValue: "",
+          gridColumns: ["name", "power"],
+          gridData: "",
+          editingID: -1,
+        }
+      });
+      
+    // bootstrap the runner
+      var runner = new Vue({
+      	el: "#runner",
+      	data:{
+      		display: false,
+		showAdd: false,
+      		runner: {
+      			"id":"",
+      			"name":"",
+      			"city":"",
+      			"address":"",
+      			"mobile1":"",
+      			"mobile2":"",
+      			"email":"",
+      			"raceID":"",
+      			"bibID":"",
+      			"tagNumber":"",
+      			"age":"",
+      			"gender":"",
+      			"raceCode":"",
+      			"bMID":""
+      			}
+      		,
+      		loadID:-1
+      	},
+      	methods:{
+      		newRunner: function()
+      		{
+      			alert("New Runner called");
+      		}
+          
+      	}
+      });  
+    </script> 
+</body>
+</html>

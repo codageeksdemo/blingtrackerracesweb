@@ -1,0 +1,580 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+      rel="stylesheet"
+    />
+ <link rel="stylesheet" href="css/style.css"/>
+ <link rel="stylesheet" href="css/grid.css"/>
+   
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin:2px;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=button] {
+  background-color: #1B6CC0;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 45%;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #d8e9fe;
+  padding: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.blinglabel
+    {
+	  font-weight: bolder;
+	  width: 130px;
+	  height: 40px;
+	  padding: 10px;
+	  margin: 10px;
+	  text-align: left;
+	  vertical-align: bottom;
+    }
+     
+    .blingtext
+    {
+	  padding: 10px;
+	  border: 0px white solid;
+	  border-radius: 5px;
+	  height: 40px;
+	  font-size: large;
+	  font-weight: bolder;
+	  background: lightblue;
+	  width:350px;
+    }
+    .blingbox{
+          #width: 400px;
+		  #height: 600px;
+		  position: relative;
+		  #top: 100px;
+		  background: lightblue;
+		  #border-radius: 10px;
+		  margin: 20px;
+		  padding: 20px;
+	}
+    
+    .blingcontainer{
+        
+		  width: 98%;
+		  #height: 90%;
+		  z-index: 3;
+		  top: 100px;
+		  left: 1%;
+		  background: aliceblue;
+		  #border-radius: 10px;
+		  justify-content: center;
+		  padding: 20px;
+	}
+	.imageclass{
+		  height: 250px;
+		  margin: 30px;
+		  margin-bottom:15px;
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 340px;
+		  background-color: white;
+		
+	}
+	.blinginput{
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 99%;
+		  float:right;
+		  color:blue;
+		  text-align:center;
+	}
+	.blinginputdiv
+	{
+		padding: 5px;
+  		#display: flex;
+  		width:99%;
+	}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other 
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}*/
+</style>
+
+<script src="https://unpkg.com/vue@2"></script>
+	<script type="text/x-template" id="grid-template">
+	
+      <table>
+        <thead>
+          <tr>
+            <th v-for="key in columns"
+              @click="sortBy(key)"
+              :class="{ active: sortKey == key }">
+              {{ key | capitalize }}
+              <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="entry in filteredHeroes">
+            <td v-for="key in columns">
+              <div v-if="key=='id' || key=='bibID'">
+                  <a :id="entry[key]" onclick="loadRunner(this);"> {{ entry[key] }} </a>
+              </div> 
+              <div v-else-if="key=='splits'">
+                   <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
+                         <div v-for="row in entry[key]">
+                                {{ row }}
+                         </div>
+                  </div>
+              </div>
+              
+              <div v-else> 
+                {{entry[key]}}
+              </div>  
+            </td>
+          </tr>
+        </tbody>
+      </table> 
+</script>
+    
+<script src="js/main.js" > </script>
+
+</head>
+<body style="background:white">
+
+
+<div>
+		<img src="images/logo.png" alt="Logo" style="width:150px">
+<h2 class="header_1 wrap_3 color_3" > Timing Application  </h2>
+	</div>
+	<p style="width: 90%;margin: 0 auto;font-weight:bold"> Welcome to Timing Application Demo Server
+   </p>
+<form >
+<div class="container">
+ <h2 class="header_3"> Race ID </h2>
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter alphabets & numerics only. ')" type="text" id="raceID" name="raceID" placeholder="Provide the RaceID to Load Runners">
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter Token. ')" type="text" id="token" name="token" placeholder="Provide the token">
+
+	     <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Start time. ')" type="text" id="gunTime" name="gunTime" placeholder="gunTime">
+
+    <br />
+		<br />
+		<div style="display: inline-flex;">
+		  <input type="button" onclick="getResults(document.getElementById('raceID').value,document.getElementById('token').value);" value="Get Results" >   
+
+		     <input type="button" onclick="downloadResult();" value="Download Results" >
+
+
+		  <p id="loader" style="display:none">Loading....</p>
+	 	</div>
+
+    
+    <br />
+		<br />
+    
+
+</div>
+
+<br/>
+<div class="container">
+<div id="editsplit" style="display: none;position: fixed;background: #ee7911;padding: 20px;top: 100px;left: 300px;">
+	    <input style="display:none" pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Start time. ')" type="text" id="SbibID" name="bibID" placeholder="Provide the BibID">
+  <div id="splitBibForDisplay"></div>
+ 
+     <div id="reportSplit">
+
+ <div v-for="spli in splits">
+         <div style="display:flex">
+    <input disabled="true" style="width:150px"  type="text" v-model="spli.dt"></input>
+    <input style="width:40px" type="text" v-model="spli.h"></input>:
+    <input style="width:40px" type="text" v-model="spli.m"></input>:
+    <input style="width:40px" type="text" v-model="spli.s"></input>
+        </div>
+ </div>
+   <input style="margin: 20px;" type="button" onclick="setSplit(document.getElementById('raceID').value,document.getElementById('token').value);" value="Save Splits" >
+   <input style="margin: 20px;" onclick="discardSplit()" type="button" value="Discard Splits" />
+   
+  </div>
+  </div>
+
+
+	 <div id="runnerGrid" v-if="gridData">
+       <p> Total Rows: {{ gridData.length }} </p> <br/>
+	  <h2 class="header_3"> Filter </h2>
+	   
+      <form id="search">
+	           Free Search <input name="query" v-model="searchQuery" />  
+        <br/>
+        Search Field <input name="query" v-model="searchField" /> Min Value: <input name="query" v-model="searchMinValue" /> Max Value: <input name="query" v-model="searchMaxValue" />
+      </form>
+      <br/>
+      <br/>
+      <demo-grid
+        :heroes="gridData"
+        :columns="gridColumns"
+        :filter-key="searchQuery"
+        :search-field="searchField"
+        :search-min-value="searchMinValue"
+        :search-max-value="searchMaxValue"
+      >
+      </demo-grid>
+
+	      <br/>
+
+  </div>
+
+
+    </div>
+</div>
+<br/>
+<br/>    
+<div>
+<br />
+
+</div>
+<br />
+
+<br/><br/>
+</form>
+
+<br/> <br/>
+
+<div id="reports">
+  <div class="container" style="background: #67f527;" v-for="rec in filteredRecords"> 
+    <br />
+    <div v-for="group in rec.group">  Gender: {{ group.gender }} Km: {{ rec.km }}  Age {{ group.min }} to {{ group.max }} . Records : {{ group.records.length}}
+      <div>
+        <table>
+          <thead>
+              <tr>
+                  <th v-for="(column, index) in columns" :key="index"> {{column}}</th>
+              </tr>
+          </thead>
+          <tbody>
+              <tr v-for="(item, index) in group.records" :key="index">
+                  <td v-for="(column, indexColumn) in columns" :key="indexColumn">
+                    <div v-if="column=='splits'">
+				
+                      <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
+ 
+                              {{item[column]}}
+                            
+
+                      </div>
+                    </div>  
+                    <div v-else>
+                              {{item[column]}}
+                    </div>  
+                  </td>
+              </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+    <br/> <br/>
+    
+  </div>
+</div>
+  <script>
+     
+     var reports = new Vue({
+        el: "#reports",
+        data: {
+          filteredRecords:[],
+          columns:[]
+
+        }
+      });
+
+      
+      // register the grid component
+      Vue.component("demo-grid", {
+        template: "#grid-template",
+        props: {
+          heroes: Array,
+          columns: Array,
+          filterKey: String,
+          searchField: String,
+          searchMinValue: Number,
+          searchMaxValue: Number
+        },
+        data: function() {
+          var sortOrders = {};
+          this.columns.forEach(function(key) {
+            sortOrders[key] = 1;
+          });
+          return {
+            sortKey: "",
+            sortOrders: sortOrders
+          };
+        },
+        computed: {
+          filteredHeroes: function() {
+            var sortKey = this.sortKey;
+            var filterKey = this.filterKey && this.filterKey.toLowerCase();
+            var order = this.sortOrders[sortKey] || 1;
+            var heroes = this.heroes;
+            var searchField = this.searchField;
+	    console.log(" type "+typeof this.searchMinValue );
+            var searchMinValue = this.searchMinValue;
+            var searchMaxValue = this.searchMaxValue;
+	    console.log( searchField +" "+ searchMinValue +" "+ searchMaxValue );
+            if(searchField && searchMinValue && searchMaxValue)
+            {
+            	heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  
+                    if(key.toLowerCase() != searchField.toLowerCase())
+                    {
+                    	return false;
+                    }
+                   
+                    var vl = Number(row[key]);
+                    if(vl>=searchMinValue && vl<=searchMaxValue)
+                    {
+                    	return true;
+                    } 
+                    else
+                    {
+                    	return false;
+                    }	
+					
+                   
+                 });
+               });
+            }
+            if (filterKey) {
+              heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  return (
+                    String(row[key])
+                      .toLowerCase()
+                      .indexOf(filterKey) > -1
+                  );
+                });
+              });
+            }
+            if (sortKey) {
+              heroes = heroes.slice().sort(function(a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                return (a === b ? 0 : a > b ? 1 : -1) * order;
+              });
+            }
+            
+            return heroes;
+          }
+        },
+        filters: {
+          capitalize: function(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+          }
+        },
+        methods: {
+          sortBy: function(key) {
+            this.sortKey = key;
+            this.sortOrders[key] = this.sortOrders[key] * -1;
+          }
+        }
+      });
+
+      // bootstrap the runnergrid
+      var runnerGrid = new Vue({
+        el: "#runnerGrid",
+        data: {
+          searchQuery: "",
+          searchField: "",
+          searchMinValue: 0,
+          searchMaxValue: 0,
+          gridColumns: ["name", "power"],
+          gridData: [],
+          editingID: -1,
+        }
+      });
+      
+
+      function discardSplit()
+     {
+      document.getElementById("editsplit").style.display="none";        
+     }
+	
+
+     
+          var reportSplit = new Vue({
+        el: "#reportSplit",
+        data: {
+          splits:""
+        }
+
+
+      });
+
+  async function getSplit(raceID,token)
+ {
+  let bibID=document.getElementById("SbibID").value;
+  if(raceID==null)
+    {
+    	return;
+    }
+    this.token = token;
+	 this.reportSplit.splits="";
+    ///results/splits/2/10674
+    fetch("/timings/v2/results/splits/"+raceID+"/"+bibID,{
+      headers: {
+             "Authorization":"Bearer "+token
+            }
+    }
+)
+.then((response)=>response.json())
+.then((responseJson)=>{
+		this.reportSplit.splits=responseJson;
+
+    this.reportSplit.splits.forEach(element => {
+        element.dt = element.registeredTime.split(" ")[0];
+        element.h=element.registeredTime.split(" ")[1].split(":")[0];
+        element.m=element.registeredTime.split(" ")[1].split(":")[1];
+        element.s=element.registeredTime.split(" ")[1].split(":")[2];
+
+    });
+
+ });
+
+ }
+
+
+ function loadRunner(bibID)
+ {
+  
+	  document.getElementById("SbibID").value=bibID.id;
+  document.getElementById("splitBibForDisplay").innerHTML=bibID.id;
+  getSplit(document.getElementById('raceID').value,document.getElementById('token').value);
+  document.getElementById("editsplit").style.display="block";
+
+ }
+
+ async function setSplit(raceID,token)
+ {
+
+  let bibID=document.getElementById("SbibID").value;
+
+	let result = false;
+	 let newSplits=[];
+
+  this.reportSplit.splits.forEach(element => {
+	    if(parseInt(element.h)>23 || parseInt(element.h)<0)
+        {
+                alert("Hours cannot be "+ element.h);
+                return;
+        }
+
+	   if(parseInt(element.m)>59 || parseInt(element.m)<0)
+        {
+                alert("Minutes cannot be "+ element.m);
+                return;
+        }
+
+
+		  if(parseInt(element.s)>59 || parseInt(element.s)<0)
+        {
+                alert("seconds cannot be "+ element.s);
+                return;
+        }
+
+	 let newElement={};
+		newElement["km"]=element.km;
+	  	if(element.h.length==1)
+		  	element.h="0"+element.h;
+
+	 	if(element.m.length==1)
+		       element.m="0"+element.m;
+
+	  	if(element.s.length==1)
+		  	element.s="0"+element.s;
+
+	  	newElement["registeredTime"]=element.dt+" "+element.h+":"+element.m+":"+element.s;
+
+	        newElement["time"]=element.time;
+	  newSplits.push(newElement);
+    });
+
+	fetch("/timings/v2/results/splits/"+raceID+"/"+bibID, {
+		"method": "POST",
+		body: JSON.stringify(newSplits),
+		headers: {
+			  "Content-Type":"application/json",
+			"Authorization":"Bearer "+token
+		}
+	})
+	.then((response) => response.text())
+    .then((text) => {
+	    	  document.getElementById("editsplit").style.display="none";
+	    getResults(document.getElementById('raceID').value,document.getElementById('token').value);
+      alert(text);
+	})
+	.catch(err => {
+		console.log("Error: "+ err);
+		alert("Error occured "+ err +" \n  If this continues, you can discard and close to proceed" );
+		 throw err;
+	});
+
+
+ }
+
+
+    </script> 
+</body>
+</html>
+

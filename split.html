@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+      rel="stylesheet"
+    />
+ <link rel="stylesheet" href="css/style.css"/>
+ <link rel="stylesheet" href="css/grid.css"/>
+   
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin:2px;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=button] {
+  background-color: #1B6CC0;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 45%;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #d8e9fe;
+  padding: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+.blinglabel
+    {
+	  font-weight: bolder;
+	  width: 130px;
+	  height: 40px;
+	  padding: 10px;
+	  margin: 10px;
+	  text-align: left;
+	  vertical-align: bottom;
+    }
+     
+    .blingtext
+    {
+	  padding: 10px;
+	  border: 0px white solid;
+	  border-radius: 5px;
+	  height: 40px;
+	  font-size: large;
+	  font-weight: bolder;
+	  background: lightblue;
+	  width:350px;
+    }
+    .blingbox{
+          #width: 400px;
+		  #height: 600px;
+		  position: relative;
+		  #top: 100px;
+		  background: lightblue;
+		  #border-radius: 10px;
+		  margin: 20px;
+		  padding: 20px;
+	}
+    
+    .blingcontainer{
+        
+		  width: 98%;
+		  #height: 90%;
+		  z-index: 3;
+		  top: 100px;
+		  left: 1%;
+		  background: aliceblue;
+		  #border-radius: 10px;
+		  justify-content: center;
+		  padding: 20px;
+	}
+	.imageclass{
+		  height: 250px;
+		  margin: 30px;
+		  margin-bottom:15px;
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 340px;
+		  background-color: white;
+		
+	}
+	.blinginput{
+		  border: 1px white solid;
+		  border-radius: 10px;
+		  display: block;
+		  overflow: hidden;
+		  width: 99%;
+		  float:right;
+		  color:blue;
+		  text-align:center;
+	}
+	.blinginputdiv
+	{
+		padding: 5px;
+  		#display: flex;
+  		width:99%;
+	}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other 
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}*/
+</style>
+
+<script src="https://unpkg.com/vue@2"></script>
+	
+      
+    
+<script src="js/main.js" > </script>
+
+</head>
+<body style="background:white">
+
+
+<div>
+		<img src="images/logo.png" alt="Logo" style="width:150px">
+<h2 class="header_1 wrap_3 color_3" > Timing Application Demo  </h2>
+	</div>
+	<p style="width: 90%;margin: 0 auto;font-weight:bold"> Welcome to Timing Application Server
+   </p>
+<form >
+<div class="container">
+ <h2 class="header_3"> Race ID </h2>
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter alphabets & numerics only. ')" type="text" id="raceID" name="raceID" placeholder="Provide the RaceID to Load Runners">
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter Token. ')" type="text" id="token" name="token" placeholder="Provide the token">
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Start time. ')" type="text" id="bibID" name="bibID" placeholder="Provide the BibID">
+
+    <br />
+		<br />
+		<div style="display: inline-flex;">
+		  <input type="button" onclick="getSplit(document.getElementById('raceID').value,document.getElementById('token').value);" value="Get Splits" >   
+		  <input type="button" onclick="setSplit(document.getElementById('raceID').value,document.getElementById('token').value);" value="Set Splits" >   
+		 
+	 	</div>
+
+
+     
+    <br />
+		<br />
+		
+
+</div>
+
+<br/>
+
+<div id="reports">
+
+ <div v-for="spli in splits">  
+	 <div style="display:flex">
+    <input disabled="true" style="width:150px"  type="text" v-model="spli.dt"></input>
+    <input style="width:40px" type="text" v-model="spli.h"></input>:
+    <input style="width:40px" type="text" v-model="spli.m"></input>:
+    <input style="width:40px" type="text" v-model="spli.s"></input>
+	</div>
+
+  </div>
+
+
+  
+    <br/> <br/>
+    
+  </div>
+</div>
+  <script>
+     
+     var reports = new Vue({
+        el: "#reports",
+        data: {
+          splits:""
+        }
+
+
+      });
+
+  async function getSplit(raceID,token)
+ {
+  let bibID=document.getElementById('bibID').value
+  if(raceID==null)
+    {
+    	return;
+    }
+    this.token = token;
+	 this.reports.splits="";
+    ///results/splits/2/10674
+    fetch("/timings/v2/results/splits/"+raceID+"/"+bibID,{
+      headers: {
+             "Authorization":"Bearer "+token
+            }
+    }
+)
+.then((response)=>response.json())
+.then((responseJson)=>{ 
+		this.reports.splits=responseJson;
+    
+    this.reports.splits.forEach(element => {
+        element.dt = element.registeredTime.split(" ")[0];
+        element.h=element.registeredTime.split(" ")[1].split(":")[0];
+        element.m=element.registeredTime.split(" ")[1].split(":")[1];
+        element.s=element.registeredTime.split(" ")[1].split(":")[2];
+
+    });
+
+ });
+	
+ }
+           
+
+
+ async function setSplit(raceID,token)
+ {
+
+  let bibID=document.getElementById('bibID').value
+  
+	let result = false;
+	 let newSplits=[];
+
+  this.reports.splits.forEach(element => {
+	    if(parseInt(element.h)>23 || parseInt(element.h)<0)
+        {
+                alert("Hours cannot be "+ element.h);
+                return;
+        }
+
+	   if(parseInt(element.m)>59 || parseInt(element.m)<0)
+        {
+                alert("Minutes cannot be "+ element.m);
+                return;
+        }
+
+
+		  if(parseInt(element.s)>59 || parseInt(element.s)<0)
+        {
+                alert("seconds cannot be "+ element.s);
+                return;
+        }
+
+	 let newElement={};
+		newElement["km"]=element.km;
+	  	if(element.h.length==1)
+		  	element.h="0"+element.h;
+
+	 	if(element.m.length==1)
+		       element.m="0"+element.m;
+
+	  	if(element.s.length==1)
+		  	element.s="0"+element.s;
+
+	  	newElement["registeredTime"]=element.dt+" "+element.h+":"+element.m+":"+element.s;
+
+	        newElement["time"]=element.time;
+	  newSplits.push(newElement);
+    });
+
+	fetch("/timings/v2/results/splits/"+raceID+"/"+bibID, {
+		"method": "POST",
+		body: JSON.stringify(newSplits),
+		headers: {
+			  "Content-Type":"application/json",
+			"Authorization":"Bearer "+token
+		}
+	})
+	.then((response) => response.text())
+    .then((text) => {
+		alert(text);
+	})
+	.catch(err => {
+		console.log("Error: "+ err);
+		alert("Error occured "+ err +" \n  If this continues, you can discard and close to proceed" );
+		 throw err;
+	});	
+ }
+
+
+ 
+    
+    </script> 
+</body>
+</html>
+
+

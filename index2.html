@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html >
+<head>
+  <!-- Site made with Mobirise Online Website Builder v5.9.13, https://a.mobirise.com -->
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Mobirise v5.9.13, a.mobirise.com">
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1">
+   <meta name="description" content="Experience the thrill of bidding for top cricketers in our exciting sports auction. Get ready for intense competition and big wins!">
+ 
+   	 	<title>Races & Marathons</title>
+  <link rel="shortcut icon" href="assets/images/photo-1593766730583-db5945f17581.jpeg" type="image/x-icon">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/web/assets/mobirise-icons2/mobirise2.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/bootstrap/css/bootstrap.min.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/bootstrap/css/bootstrap-grid.min.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/bootstrap/css/bootstrap-reboot.min.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/dropdown/css/style.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/socicon/css/styles.css?rnd=1715698085942">
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/theme/css/style.css?rnd=1715698085943">
+  <link rel="preload" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;700&display=swap&display=swap"></noscript>
+  <link rel="stylesheet" href="https://r.mobirisesite.com/442913/assets/css/mbr-additional.css?rnd=1715698085943" type="text/css">
+  <link rel="stylesheet" href="./assets/players/styles/styles.css" type="text/css">
+  
+  
+  
+</head>
+<body onscroll="navbar()">
+<div  id="races">
+  <div v-if="status !=null ">  </div>
+  <section data-bs-version="5.1" class="menu menu2 cid-ucLbF1L45l" once="menu" id="menu-5-ucLbF1L45l">
+	
+
+	<nav class="navbar navbar-dropdown navbar-fixed-top navbar-expand-lg">
+		<div class="container">
+			<div class="navbar-brand">
+				<span class="navbar-logo">
+					<a href="http://www.players123.com">
+						<img src="assets/images/raceicon.png" alt="" style="height: 4.3rem;">
+					</a>
+				</span>
+				<span class="navbar-caption-wrap"><a class="navbar-caption text-black display-4" href="#">Players123 - Home</a></span>
+			</div>
+			<button class="navbar-toggler" type="button" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbarSupportedContent" data-bs-target="#navbarSupportedContent" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+				<div class="hamburger">
+					<span></span>
+					<span></span>
+					<span></span>
+					<span></span>
+				</div>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav nav-dropdown" data-app-modern-menu="true">
+					<li class="nav-item">
+						<a class="nav-link link text-black display-4" href="#">Register Yourself</a>
+					</li>
+					<li class="nav-item">
+						<a class="nav-link link text-black display-4" href="#" aria-expanded="false">View Results</a>
+					</li>
+					
+				</ul>
+				
+				<div class="navbar-buttons mbr-section-btn"><div contenteditable="true" style="position: absolute; left: -100000px; opacity: 0;"></div><a class="btn btn-primary display-4" href="#">Winners</a></div>
+			</div>
+		</div>
+	</nav>
+</section>
+
+<section data-bs-version="5.1" class="header18 cid-ucLbF1MVPn mbr-fullscreen"  style="background-image: url('./assets/players/images/background.png');" id="hero-16-ucLbF1MVPn">
+  <div class="mbr-overlay" style="opacity: 0.5; background-color: rgb(0, 0, 0);"></div>
+  <div class="container-fluid">
+    <div class="row">
+      <div class="content-wrap col-12 col-md-12">
+        <h1 class="mbr-section-title mbr-fonts-style mbr-white mb-4 display-1">
+          <strong>Racing in your Mind</strong>
+        </h1>
+        
+        <p class="mbr-fonts-style mbr-text mbr-white mb-4 display-7">Get ready to run, cheer, and win big in the most electrifying races of the year!</p>
+        <div class="mbr-section-btn">
+          <a class="btn btn-white-outline display-7" href="#">Register Yourself</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section data-bs-version="5.1" class="list1 cid-ucLbF1OcKr" id="bidding-page">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-12 col-md-12 col-lg-10 m-auto">
+                <div class="content">
+                    <div class="row justify-content-center mb-5">
+                        <div class="col-12 content-head">
+                            <div class="mbr-section-head">
+                                <h4 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+                                    <strong>Upcoming Races</strong>
+                                </h4>
+                                
+                            </div>
+                        </div>
+                    </div>
+                    <div id="bootstrap-accordion_10" class="panel-group accordionStyles accordion" role="tablist" aria-multiselectable="true">
+                        <div class="card" v-for="item of races">
+                            <div class="card-header" role="tab" id="headingOne">
+                                <a role="button" class="panel-title collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-core="" :href="'#collapse'+item.id+'_10'" aria-expanded="false" :aria-controls="'collapse'+item.id">
+                                    <img v-if="item.logo" class="team-logo" src="" alt="">
+                                    <h6 class="panel-title-edit mbr-semibold mbr-fonts-style mb-0 display-5">{{ item.name }}</h6>
+                                    <span class="sign mbr-iconfont mobi-mbri-arrow-down"></span>
+                                </a>
+                            </div>
+                            <div :id="'collapse'+item.id+'_10'" class="panel-collapse noScroll collapse" role="tabpanel" aria-labelledby="headingOne" data-parent="#accordion" data-bs-parent="#bootstrap-accordion_10">
+                                <div class="panel-body">
+                                    <p class="mbr-fonts-style panel-text display-7" v-if="item.description" ></p>
+                                    <p class="mbr-fonts-style panel-text display-7" v-if="item.eventDate" >Date: {{ item.eventDate }}</p>
+                                    <p class="mbr-fonts-style panel-text display-7" v-if="item.address" >Address: {{ item.address }}</p>
+                                    <p class="mbr-fonts-style panel-text display-7" v-if="item.city" >City: {{ item.city }}</p>
+                                   
+                                </div>
+                              
+	                            <hr color="white" size="1"/>
+	                            <div class="container">
+							        <div class="row justify-content-center">
+							            <div class="col-12 content-head">
+							                <div class="mbr-section-head mb-5">
+							                    <h3 class="mbr-section-title mbr-fonts-style align-center mb-0 display-2">
+							                        <strong>Join the Craze</strong>
+							                    </h3>
+							                    
+							                </div>
+							            </div>
+							        </div>
+							        <div class="row justify-content-center">
+							            <div class="col-lg-8 mx-auto mbr-form" data-form-type="formoid">
+							                <form >
+							                    <div class="row">
+							                        <div hidden="hidden" data-form-alert="" class="alert alert-success col-12">Thanks for filling out the form!</div>
+							                        <div hidden="hidden" data-form-alert-danger="" class="alert alert-danger col-12">
+							                            Oops...! some problem!
+							                        </div>
+							                    </div>
+							                    <div class="dragArea row">
+							                        <div class="col-12 col-sm-12 form-group mb-3" data-for="name">
+							                            <input type="text" v-model="defaultRunner.name" name="name" placeholder="Name"  class="form-control" value="" id="name-contact-form-2-ucLbF1QPFc">
+							                        </div>
+                                                    <div class="col-12 col-sm-12 form-group mb-3" data-for="name">
+							                            <input type="text" v-model="defaultRunner.nameOnBib" name="name" placeholder="Name On The Bib"  class="form-control" value="" id="name-contact-form-2-ucLbF1QPFc">
+							                        </div>
+                                                    <div class="col-12 form-group mb-3 form-control">  
+                                                        <input type="text" value="" v-model="defaultRunner.email" placeholder="Email Address" class="col-12 form-group mb-2 form-control" style=""> 
+                                                        <button type="button" class="btn" id="1" onclick="sendOTP()" style="float: right;background: lightblue;padding:3px;">Send OTP </button>
+                                                    </div>
+                                                    <div class="col-12 col-sm-12 form-group mb-3" data-for="email">
+							                            <input type="email"  v-model="defaultRunner.emailOTP" name="email" placeholder="Enter The OTP received in the Email"  class="form-control" value="" id="email-contact-form-2-ucLbF1QPFc">
+							                        </div>
+							                        
+							                        <div class="col-12 col-sm-12 form-group mb-3" data-for="mobile">
+							                            <input type="text" v-model="defaultRunner.mobile1" name="mobile" placeholder="Mobile Number"  class="form-control" value="" id="name-contact-form-2-ucLbF1QPFc">
+							                        </div>
+											        <div class="col-12 col-sm-12 form-group mb-3 form-control" >
+							                             <p class="mbr-fonts-style panel-text display-7"> Please select your Gender:</p> 
+							                        	 <select class="form-control" placehoder ="" v-model="defaultRunner.gender">
+														  <option v-for="gender in genders" :value="gender">
+														    {{ gender }}
+														  </option>
+														</select>
+							                        </div>
+                                                    <div class="col-12 form-group mb-3 form-control" >
+                                                        <p class="mbr-fonts-style panel-text display-7" >Please select your Date Of Birth. </p> 			
+                                                        <div  class="col-12 col-sm-12 form-group mb-3">
+                                                            <input class="form-control"  id="dob"  type="date" defaultValue="01/01/1920" id="date" onchange="validateAge(event);" v-model="defaultRunner.dateOfBirth">
+                                                               <p style="float: right;margin: 5px;color: blue;" v-if="defaultRunner.age!=''" >Age: {{ defaultRunner.age }} Years</p>
+                                                        </div>
+                                                   </div> 
+                                                    <div class="col-12 form-group mb-3 form-control" >
+							                             <p class="mbr-fonts-style panel-text display-7" >Please select your desired Kms for the Race:</p>
+												          <select class="col-12 form-group mb-2 form-control" style="float: right;font-size: 1.3rem;" @change="calculateDiscount()"   v-model="defaultRunner.raceCode">
+														       <option v-for="group in item.meta.meta.groups" :value="group">
+													           {{ 'Kms : '+ group.km }}
+													    	   </option>
+													      </select>
+														  <p  v-if="defaultRunner.raceCode.fees" style="float: right;color: blue;">   Price : {{ defaultRunner.raceCode.fees }}  INR </p>
+											       </div>
+                                                   <div class="col-12 form-group mb-3 form-control">  
+                                                        <input type="text" value="" v-model="defaultRunner.promo" placeholder="Promocode" class="col-12 form-group mb-2 form-control" style=""> 
+                                                        <button type="button" class="btn" id="1" onclick="applyPromo(this)" style="float: right;background: lightblue;padding:3px;">Apply Promo </button>
+                                                  </div>
+												  <div class="col-12 col-sm-12 form-group mb-3" data-for="age">
+                                                    <p v-if="feesAfterPromo!=''" class="mbr-fonts-style panel-text display-7 form-control">   You Pay : {{ feesAfterPromo }}  INR.      Your Discount : {{ discountReceived }} INR</p>
+                                                        <input id="tnc" type="checkbox" v-model="defaultRunner.declaration" >  <a target="to_blank" href="tnc.html"> I declare that I am fit to run. I don't have any ailgnment which can stop me from running. </a> </input> 
+                                                        <br/> <br/>
+                                                        <input id="tnc" type="checkbox" v-model="defaultRunner.acceptTNC" >  <a target="to_blank" href="tnc.html"> I accept Terms & Conditions displayed in this link </a> </input> 
+												   </div>
+
+                                                    <div class="col-lg-12 col-md-12 col-sm-12 align-center mbr-section-btn">
+							                            <button type="button" :id="item.id" onclick="registerRunner(this)"  class="btn btn-primary display-7">I will Pay Later </button>
+                                                        <button type="button" :id="item.id" onclick="registerRunner(this)"  class="btn btn-primary display-7">Proceed For Payment </button>
+							                        </div>
+							                    </div>
+							                </form>
+							            </div>
+							        </div>
+							    </div>
+							</div>   
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section data-bs-version="5.1" class="features023 cid-ucLbF1Mtuv" id="metrics-1-ucLbF1Mtuv">
+    <div class="container">
+        
+        <div class="row content-row justify-content-center">
+            <div class="item features-without-image col-12 col-md-6 col-lg-4 item-mb">
+                <div class="item-wrapper">
+                    <div class="title mb-2 mb-md-3">
+                        <span class="num mbr-fonts-style display-1">
+                            <strong>100+</strong></span>
+                    </div>
+                    <h4 class="card-title mbr-fonts-style display-5">
+                        <strong>Races</strong>
+                    </h4>
+                    
+                </div>
+            </div>
+            <div class="item features-without-image col-12 col-md-6 col-lg-4 item-mb">
+                <div class="item-wrapper">
+                    <div class="title mb-2 mb-md-3">
+                        <span class="num mbr-fonts-style display-1">
+                            <strong>50+</strong></span>
+                    </div>
+                    <h4 class="card-title mbr-fonts-style display-5">
+                        <strong>Locations</strong>
+                    </h4>
+                    
+                </div>
+            </div>
+            <div class="item features-without-image col-12 col-md-6 col-lg-4 item-mb">
+                <div class="item-wrapper">
+                    <div class="title mb-2 mb-md-3">
+                        <span class="num mbr-fonts-style display-1">
+                            <strong>1000+</strong></span>
+                    </div>
+                    <h4 class="card-title mbr-fonts-style display-5">
+                        <strong>Runners</strong>
+                    </h4>
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section data-bs-version="5.1" class="article4 cid-ucLbF1MRNn" id="about-us-4-ucLbF1MRNn">
+	<div class="container">
+		<div id="aboutus" class="row justify-content-center">
+			<div class="col-12 col-md-12 col-lg-6 image-wrapper">
+				<img class="w-100" src="assets/players/images/marathon1.jpeg" alt="">
+			</div>
+			<div class="col-12 col-md-12 col-lg">
+				<div class="text-wrapper align-left">
+					<h1 class="mbr-section-title mbr-fonts-style mb-4 display-2">
+						<strong>About Players123.com</strong>
+					</h1>
+
+                    <p class="mbr-text mbr-fonts-style mb-3 display-7"> Welcome to Players123.com – where passion meets performance in the vibrant world of racing! </p>
+
+                    <p class="mbr-text mbr-fonts-style mb-3 display-7">Running has become a vital part of India’s wellness culture, with races of all sizes happening across the country. Since our inception in 2019, we've been dedicated to                     creating a trusted, innovative platform that connects and empowers the running community.
+                        </p>
+                    <p class="mbr-text mbr-fonts-style mb-3 display-7">Born from the shared vision of a group of marathon enthusiasts, Players123.com has evolved through countless discussions with race organizers and runners, always embracing the latest technologies to serve our community better. Our journey began with our first race in Kochi, and since then, we've been at the heart of countless events, fostering connections and celebrating every runner's journey.
+                            </p>
+
+                    <p class="mbr-text mbr-fonts-style mb-3 display-7">During the pandemic, we utilized this time for research and development, resulting in a refined platform that brings participants and organizers together seamlessly. At Players123.com, we bridge the gap between runners, organizers, and the larger running community, ensuring every race is a memorable experience.
+                    </p>
+                    <p class="mbr-text mbr-fonts-style mb-4 display-7"> Join us, lace up your shoes, and be a part of the growing movement that celebrates health, wellness, and the joy of running!
+                    </p>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+
+<section data-bs-version="5.1" class="contacts4 map1 cid-ucLbF1QCcL" id="contacts-3-ucLbF1QCcL">
+    <div >
+		<div class="b_wrapper">
+			<div class="container-fluid">
+				<div class="row justify-content-start">
+					<div class="col-md-5 col-lg-4 item-wrapper">
+                        <h5 class="cardTitle mbr-fonts-style mb-2 display-5">
+                            <strong>Get in Touch</strong>
+                        </h5>
+                        <ul class="list mbr-fonts-style display-7">
+                            <li class="mbr-text item-wrap">
+                            Phone:                                
+                            <a href="tel:9898251010" class="text-black">9898251010</a></li>
+
+                            <li class="mbr-text item-wrap">WhatsApp: 
+                            <a href="tel:9898251010" class="text-black">9898251010</a></li> 
+
+                            <li class="mbr-text item-wrap">                            
+                            Email:
+                            <a href="mailto:info@players123.com" class="text-black">info@players123.com</a>                        
+                            </li>
+
+                            <li class="mbr-text item-wrap">                        
+                            Location:Mirald Innovations LLP, 
+                            Marketyard, Pune.
+                            </li>
+
+                            <li class="mbr-text item-wrap">
+                            Opening Hours:
+                            Mon-Fri: 9am-6pm
+                            </li>
+                        </ul>
+					</div>
+				</div>
+			</div>
+		</div>
+  </div>
+</section>
+
+<section data-bs-version="5.1" class="footer2 cid-ucLbF1Qtpa" once="footers" id="footer-5-ucLbF1Qtpa">
+    <div class="container">
+        <div class="row">
+            <div class="col-12 col-lg-6 center mt-2 mb-3">
+                <P class="mbr-fonts-style copyright mb-0 display-7"> All Services are governed by <a href="tnc.html"> Terms & Conditions</a>,<a href="tncprivacy.html"> Privacy Policy</a>, <a href="tncrefund.html"> Refund Policy</a></P>             
+                <p class="mbr-fonts-style copyright mb-0 display-7">© 2024 Mirald Innovations LLP. All Rights Reserved</p>
+            </div>
+            <div class="col-12 col-lg-6 center">
+                <div class="row-links mt-2 mb-3">
+                    <ul class="row-links-soc">
+                     	<li class="row-links-soc-item mbr-fonts-style display-7">
+                            <a href="http://www.players123.com" class="text-white">Home</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+ 
+  
+  
+</div>  
+  <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+  <script src="assets/web/assets/jquery/jquery.min.js"></script>
+  <script src="assets/bootstrap/js/bootstrap.bundle.min.js"></script>
+  <script src="assets/bootstrap/js/main.js"></script>
+  <script src="assets/smoothscroll/smooth-scroll.js"></script>
+  <script src="assets/ytplayer/index.js"></script>
+  <script src="assets/dropdown/js/navbar-dropdown.js"></script>
+  <script src="assets/vimeoplayer/player.js"></script>
+  <script src="assets/embla/embla.min.js"></script>
+  <script src="assets/embla/script.js"></script>
+  <script src="assets/mbr-switch-arrow/mbr-switch-arrow.js"></script>
+  <script src="assets/theme/js/script.js"></script>
+  <script src="assets/formoid/formoid.min.js"></script>
+  	
+ 
+</body>
+</html>

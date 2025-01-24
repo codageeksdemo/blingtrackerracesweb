@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <link
+      href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css"
+      rel="stylesheet"
+    />
+ <link rel="stylesheet" href="css/style.css"/>
+ <link rel="stylesheet" href="css/grid.css"/>
+   
+<style>
+* {
+  box-sizing: border-box;
+}
+
+input[type=text], select, textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  resize: vertical;
+  margin:2px;
+}
+
+label {
+  padding: 12px 12px 12px 0;
+  display: inline-block;
+}
+
+input[type=button] {
+  background-color: #1B6CC0;
+  color: white;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 0 45%;
+}
+
+input[type=button]:hover {
+  background-color: #45a049;
+}
+
+.container {
+  border-radius: 5px;
+  background-color: #d8e9fe;
+  padding: 20px;
+  width: 90%;
+  margin: 0 auto;
+}
+
+.col-25 {
+  float: left;
+  width: 25%;
+  margin-top: 6px;
+}
+
+.col-75 {
+  float: left;
+  width: 75%;
+  margin-top: 6px;
+}
+
+/* Clear floats after the columns */
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* Responsive layout - when the screen is less than 600px wide, make the two columns stack on top of each other instead of next to each other 
+@media screen and (max-width: 600px) {
+  .col-25, .col-75, input[type=submit] {
+    width: 100%;
+    margin-top: 0;
+  }
+}*/
+</style>
+
+<script src="https://unpkg.com/vue@2"></script>
+	<script type="text/x-template" id="grid-template">
+      <table>
+        <thead>
+          <tr>
+            <th v-for="key in columns"
+              @click="sortBy(key)"
+              :class="{ active: sortKey == key }">
+              {{ key | capitalize }}
+              <span class="arrow" :class="sortOrders[key] > 0 ? 'asc' : 'dsc'">
+              </span>
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="entry in filteredHeroes">
+            <td v-for="key in columns">
+              {{entry[key]}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </script>
+    
+<script src="js/main.js" > </script>
+<script src="js/grid.js" > </script>
+
+</head>
+<body style="background:white">
+
+
+<div>
+		<img src="images/logo.png" alt="Logo" style="width:150px">
+<h2 class="header_1 wrap_3 color_3" > Timing Application Demo  </h2>
+	</div>
+	<p style="width: 90%;margin: 0 auto;font-weight:bold"> Welcome to Timing Application Demo Server
+   </p>
+<form >
+<div class="container">
+ <h2 class="header_3"> Race ID </h2>
+        <input pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Please enter alphabets & numerics only. ')" type="text" id="raceID" name="raceID" placeholder="Provide the RaceID you want to monitor">
+		<br />
+		<br />
+		<div style="display: inline-flex;">
+		  <input type="button" onclick="getRaces(document.getElementById('raceID').value);" value="Get Timings" ">   
+		  <p id="loader" style="display:none">Loading....</p>
+	 	</div>
+
+</div>
+<br />
+<div class="container">
+
+	 <div id="timegrid" v-if="gridData">
+      <h2 class="header_3"> Filter </h2>
+      <form id="search">
+        Free Search <input name="query" v-model="searchQuery" />
+        <br/>
+        Search Field <input name="query" v-model="searchField" /> Min Value: <input name="query" v-model="searchMinValue" /> Max Value: <input name="query" v-model="searchMaxValue" />
+      </form>
+      <br/>
+      <br/>
+      <demo-grid
+        :heroes="gridData"
+        :columns="gridColumns"
+        :filter-key="searchQuery"
+        :search-field="searchField"
+        :search-min-value="searchMinValue"
+        :search-max-value="searchMaxValue"
+      >
+      </demo-grid>
+    </div>
+</div>
+<br/>
+<br/>    
+<div>
+<br />
+
+</div>
+<br />
+
+<br/><br/>
+</form>
+
+  <script>
+      // register the grid component
+      Vue.component("demo-grid", {
+        template: "#grid-template",
+        props: {
+          heroes: Array,
+          columns: Array,
+          filterKey: String,
+          searchField: String,
+          searchMinValue: Number,
+          searchMaxValue: Number
+        },
+        data: function() {
+          var sortOrders = {};
+          this.columns.forEach(function(key) {
+            sortOrders[key] = 1;
+          });
+          return {
+            sortKey: "",
+            sortOrders: sortOrders
+          };
+        },
+        computed: {
+          filteredHeroes: function() {
+            var sortKey = this.sortKey;
+            var filterKey = this.filterKey && this.filterKey.toLowerCase();
+            var order = this.sortOrders[sortKey] || 1;
+            var heroes = this.heroes;
+            var searchField = this.searchField;
+            var searchMinValue = Number(this.searchMinValue);
+            var searchMaxValue = Number(this.searchMaxValue);
+            if(searchField && searchMinValue && searchMaxValue)
+            {
+            	heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  
+                    if(key.toLowerCase() != searchField.toLowerCase())
+                    {
+                    	return false;
+                    }
+                   
+                    var vl = Number(row[key]);
+                    if(vl>=searchMinValue && vl<=searchMaxValue)
+                    {
+                    	return true;
+                    } 
+                    else
+                    {
+                    	return false;
+                    }	
+					
+                   
+                 });
+               });
+            }
+            if (filterKey) {
+              heroes = heroes.filter(function(row) {
+                return Object.keys(row).some(function(key) {
+                  return (
+                    String(row[key])
+                      .toLowerCase()
+                      .indexOf(filterKey) > -1
+                  );
+                });
+              });
+            }
+            if (sortKey) {
+              heroes = heroes.slice().sort(function(a, b) {
+                a = a[sortKey];
+                b = b[sortKey];
+                return (a === b ? 0 : a > b ? 1 : -1) * order;
+              });
+            }
+            
+            return heroes;
+          }
+        },
+        filters: {
+          capitalize: function(str) {
+            return str.charAt(0).toUpperCase() + str.slice(1);
+          }
+        },
+        methods: {
+          sortBy: function(key) {
+            this.sortKey = key;
+            this.sortOrders[key] = this.sortOrders[key] * -1;
+          }
+        }
+      });
+
+      // bootstrap the timegrid
+      var timegrid = new Vue({
+        el: "#timegrid",
+        data: {
+          searchQuery: "",
+          searchField: "",
+          searchMinValue: "",
+          searchMaxValue: "",
+          gridColumns: ["name", "power"],
+          gridData: ""
+        }
+      });
+    </script> 
+</body>
+</html>
