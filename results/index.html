@@ -191,6 +191,348 @@ input[type=button]:hover {
     
 <script src="js/main.js" > </script>
 
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.bundle.min.js" > </script>
+    <script src="js/Charts.js"></script>
+    <script>
+          var relationship=[];
+	   var paramList=[];
+	   var documentList=[];
+	   var masterEntity ="Matches";
+	   var str="";
+	   var datas = new allData();
+	   
+
+ 	
+ 	function  ParamData (counts) 
+	{
+ 	   this.paramName="";
+ 	   this.documentName=[];
+	   this.matched=[];
+	   this.matches=[];
+	   for(var i = 0; i < counts; i++) {
+		   this.documentName[i]="   ";
+		   this.matched.push(0);
+		   this.matches.push("");
+		}
+	   
+	   
+	}
+ 	
+ 	
+ 	function paramData ()
+	{
+	  this.paramdata = [];
+	  
+	  
+	  this.computeParamData = function ()
+	  {
+		  var all = datas.getAllData();
+		  for(var a in all)
+		   {
+			 	var current = all[a];
+				if(!is_Found(documentList,current.documentName))
+		    	{	
+					 documentList.push(current.documentName);
+		    	}
+		   }
+		  if(all!=undefined || all.length>0)
+		  {
+			  paramList = all[0].paramName;
+			   
+		  }	  
+			  
+		  for(var b in paramList)
+		  {
+			  var nData = new ParamData(documentList.length);
+			  nData.paramName= paramList[b];
+			  nData.documentName= documentList;
+			  this.paramdata.push(nData); 	 
+		  }	  
+		     
+		  
+		  for(var a in all)
+		   {
+			  	
+			  	var current = all[a];
+			  	var found = false;
+			  	for(var c in current.paramName)
+			  	{	
+				  	for( var b in this.paramdata)
+				  	{   
+				  		var currentP=this.paramdata[b];
+				  		if(currentP.paramName==current.paramName[c])
+				  		{	
+					  		var documentIndex = get_Index_Within(documentList,current.documentName);
+					  		currentP.matched[documentIndex]= current.matched[c];
+					  		currentP.matches[documentIndex]= current.matches[c];
+				  		}
+				  	}
+			  	}
+		   }
+		return this.paramdata; 	
+	 }
+	}
+	
+	   
+ 	function  Data (counts) 
+	{
+	   this.documentName="";
+	   this.paramName=[];
+	   this.matched=[];
+	   this.matches=[];
+	   for(var i = 0; i < counts; i++) {
+		   this.paramName.push("");
+		   this.matched.push(0);
+		   this.matches.push("");
+		}
+	   
+	   
+	}
+	    
+	function allData ()
+	{
+	  var all = [];
+	  
+	  var paramData = [];
+	   
+	  this.getAllData = function()
+	  {
+		  return all;
+	  }
+	  
+	  this.getData = function (name,param)
+	  {
+		 
+		  	
+		  for(var a in all)
+		   {
+			  if(all[a].documentName.toLowerCase()==name.toLowerCase())
+				{
+				   var current = all[a];
+				   var b = get_Index_Within(relationship,param);
+				 	if(b!=-1)
+					{	
+						return current.matches[b];
+					}
+				 }
+			  
+		   }	   
+		  return null;
+	  }
+	  
+	  this.addData = function (dataElement,indexAt)
+	 	   {
+		  	   var found=false;
+		  	   if(dataElement.documentName==undefined || indexAt == undefined)
+		  	   {
+		  		   //alert("empty element or indexat")
+		  		   return;
+		  	   }	   
+		  	   for(var a in all)
+	 		   {
+	 			   if(all[a].documentName==dataElement.documentName)
+	 				  {
+	 				   	all[a].paramName[indexAt]= dataElement.paramName[indexAt];
+	 				    all[a].matched[indexAt]= dataElement.matched[indexAt];
+	 				    all[a].matches[indexAt]= dataElement.matches[indexAt];
+	 				   found=true;
+	 				  }
+	 		   }	
+		  	   if(found==false)
+			  	{
+			  		alert("unable to set the match data for "+ dataElement.documentName +","+  dataElement.paramName[indexAt]);	   
+			  	}	   
+		  	      
+	 	   }
+	  
+	  this.addNewDocument = function (documentName)
+	   {
+	  	   var found=false;
+	  	   if(documentName == undefined)
+	  	   {
+	  		   alert("empty documentName received");
+	  		   return;
+	  	   }	   
+	  	   
+	  	   for(var a in all)
+		   {
+			   if(all[a].documentName==documentName)
+				{
+				   	found=true;
+				   	break;
+				}
+		   }	   
+	  	   if (found==false)
+		  	{
+	  		    var newElement = new Data(relationship.length);
+	  		    newElement.documentName=documentName;
+		  		all.push(newElement);	   
+		  	}	   
+	  	      
+	   }
+	  
+	  this.addMissingData = function ()
+		  {
+			for(var a in relationship)
+			{
+				for(var b in all)
+				{
+					if(all[b].paramName[a]!=relationship[a])
+					{
+						 all[b].paramName[a]=relationship[a];
+					}
+					 all[b].matched[a]= 0;
+	 				 all[b].matches[a]= "";
+				}	
+				
+			}	
+		  	
+		  }
+	 }
+	
+	 function parseResponse(vo)
+	 {
+		    
+		    if(vo==undefined || vo==null || vo=="")
+		    {
+		    	return;
+		    }	
+	    	
+		    try
+		    {
+			    if(vo[0].Document==undefined)
+			    {
+			    	return;
+			    }
+		    }
+		    catch(exception)
+		    {
+		    	return;
+		    	// ignore
+		    }
+	    	
+	    	relationship=[];
+	    	for( var document  in vo)
+			{
+	    		if(!is_Found(relationship,vo[document].param))
+	    		{	
+					relationship.push(vo[document].param);
+	    		}
+			}
+	    	
+	    	for( var document in vo)
+			{ 
+    			
+	    		datas.addNewDocument(vo[document].Document);
+			}	
+	    	
+	    	datas.addMissingData();
+	    	
+	    	for( var document  in vo)
+				{
+	    			var a = get_Index_Within(relationship,vo[document].param);
+	    			if(a==-1)
+					{	
+						continue;	
+					}
+					var newData = new  Data(relationship.length);
+					newData.documentName = vo[document].Document;
+					newData.paramName[a] = vo[document].param;
+					newData.matched[a] = vo[document].matched;
+					newData.matches[a] = vo[document].matches;
+					datas.addData(newData,a);
+					
+				}	
+	    	var newData = new paramData()
+	    	var newDataParamData = newData.computeParamData();
+	    	
+	    	loadCharts(datas.getAllData());
+	    	//loadCharts(newDataParamData);
+	 }
+	 
+	 
+	 
+	 
+	   function loadCharts(dataArray)
+	   {
+		   var time = 1;
+		   setLabels(relationship);
+		   //setLabels(documentList);
+		   setTitleText("Predictive Analysis over Orthogonal Relationships of "+ masterEntity);
+		   loadBarChart();
+		   for(var a in dataArray)
+		   {	   
+			   addToDataSet((dataArray[a].documentName),dataArray[a].matched);
+		   		//addToDataSet((dataArray[a].paramName),dataArray[a].matched);
+		   }
+		   setSize("400px","100%");
+	  }
+	 
+	   function resetCounters()
+	   {
+		  
+		    document.getElementById("canvas").innerHTML="";
+		    relationship=[];
+		    paramList=[];
+			documentList=[];
+		    masterEntity ="Matches";
+		    resetChart();
+		    
+		}
+	   
+		function ontooltip(tooltipItem, chart){
+			var relationAtChart = tooltipItem.xLabel;
+			if(barChartData.datasets[tooltipItem.datasetIndex]==undefined)
+				{
+				  return;
+				}
+			var entityAtChart = barChartData.datasets[tooltipItem.datasetIndex].label;
+			var element = datas.getData(entityAtChart,relationAtChart);
+			//var element = datas.getData(relationAtChart,entityAtChart.toLowerCase());
+			if( element!=null)
+				{   
+					lastEntityAtChart= entityAtChart;
+					document.getElementById("prediction_id").style.display = "block";
+					document.getElementById("facts").innerHTML = preparePresentation(element);
+					document.getElementById("factsHeader").innerHTML = "Matches for <strong>"+relationAtChart +" </strong> within  <strong> "+entityAtChart ;
+				}
+				
+			
+		}
+		var lastEntityAtChart="";
+		function preparePresentation(items)
+		   {
+			   var defaultText ="<ul style='margin: 0px;'>"; 
+			   var returnText = defaultText;
+			   var found=false;
+			   for(var item in items)
+			   {
+				   if(items[item]!="")
+				   {
+					   returnText += "<li style='font-family: arial;color: #3b3939;font-weight: bold;list-style: url;'>"+ titleCase(items[item]) +"</li>\n";
+					   found=true;
+				   }
+			   		
+			   }
+			   if(returnText==defaultText)
+			   {
+				   returnText += "No new Inference backed by the knowledge";
+			   }	   
+			   returnText+="</ul>";
+			   if(found)
+				{
+				   document.getElementById("descriptive_div").style.display = "block";
+				} 
+			   else
+				{
+				   document.getElementById("descriptive_div").style.display = "none";
+				}
+			   return returnText;
+		   }
+	 
+        </script>
+
 </head>
 <body style="background:white">
 
@@ -228,6 +570,23 @@ input[type=button]:hover {
 </div>
 
 <br/>
+
+<div class="container">
+<canvas id="canvas"></canvas>
+    <script>
+        loadBarChart();
+        
+        setTitleText("Sales Data 2025");
+        setSize("400px", "800px");
+        setLabels(["Jan", "Feb", "Mar", "Apr", "May"]);
+		addToDataSet("Product C", [10,,15,0,7.5])
+        addToDataSet("Product A", [10, 20, 15, 30, 25]);
+        addToDataSet("Product B", [5, 15, 10, 20, 35]);
+    </script>
+</div>
+
+<br/>
+
 <div class="container">
 <div id="editsplit" style="display: none;position: fixed;background: #ee7911;padding: 20px;top: 100px;left: 300px;">
 	    <input style="display:none" pattern="[a-zA-Z0-9]+" oninvalid="setCustomValidity('Start time. ')" type="text" id="SbibID" name="bibID" placeholder="Provide the BibID">
