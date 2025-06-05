@@ -1,0 +1,12 @@
+{
+    "address": "Gangadham",
+    "city": "Pune",
+    "meta": "{\"meta\": {\"groups\":[{\"km\":5,\"fees\":0,\"gunTime\":\"21/05/2025 06:06:21\", \"gunTimeStamp\":\"1747787781000\", \"stopTime\":\"21/05/2025 06:57:01\",\"stopTimeStamp\":\"1747790850000\" }],\"readers\":[{\"readerID\":\"1\",\"location\":0,\"lapseTime\":60000},{\"readerID\":\"2\",\"location\":0,\"lapseTime\":60000}], \"result\":[{\"km\":5, \"age\":[{\"min\":5,\"max\":100,\"gender\":\"M\"},{\"min\":5,\"max\":100,\"gender\":\"F\"}]}]}}",
+    "mobile2": "",
+    "name": "May Month Challenge",
+    "mobile1": "7276181517",
+    "photo": "/races/assets/registration/images/may-month-logo.png",
+    "id": "5",
+    "email": "maulik@blingtracker.com",
+    "eventDate": "19/05/2025"
+}
