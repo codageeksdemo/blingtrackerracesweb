@@ -144,7 +144,7 @@ function submitUpdatedRace() {
 	// sending updated race data to server
 	const token = document.getElementById("token").value
 
-	fetch("https://www.blingtracker.com/timings/v2/runs/", {
+	fetch("/timings/v2/runs/", {
 		"method": "POST",
 		body: JSON.stringify(race),
 		headers: {
