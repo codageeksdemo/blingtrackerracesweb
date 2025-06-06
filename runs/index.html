@@ -291,7 +291,7 @@
 				metaReaders: [],
 				metaResults: [],
 				tempGroup: { km: '', fees: '', gunTime: '', gunTimeStamp: '', stopTime: '', stopTimeStamp: '' },
-				tempReader: { readerID: '', locaction: '', lapseTime: ''},
+				tempReader: { readerID: '', location: '', lapseTime: ''},
 				tempResult: { km: '', age: [{ min: '', max: '', gender: ''}]}
 			}, methods: {
 				saveGroup() {
@@ -300,7 +300,7 @@
 				},
 				saveReader() {
 					this.metaReaders.push(this.tempReader);
-					this.tempReader = { readerID: '', loaction: '', lapseTime: ''};
+					this.tempReader = { readerID: '', location: '', lapseTime: ''};
 				},
 				saveResult() {
 					this.metaResults.push(this.tempResult);
