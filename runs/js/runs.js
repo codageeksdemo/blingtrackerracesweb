@@ -605,7 +605,7 @@ async function getRunners(raceID) {
 	let path = "/timings/v2/runners/" + raceID;
 
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		path = 'temp/runners.json';
+		{ path = './temp/runners.json'; }
 
 
 	return fetch(path, {
@@ -624,7 +624,7 @@ async function getResultRace(raceID) {
 	let path = "/timings/v1/runs/" + raceID;
 
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		path = 'temp/runs.json';
+		{ path = './temp/runs.json'; }
 
 	return fetch(path)
 		.then(response => response.json())
@@ -638,72 +638,71 @@ document.getElementById("edit_eventDate").value = race.eventDate;
 document.getElementById("edit_address").value = race.address;
 document.getElementById("edit_city").value = race.city;
 document.getElementById("edit_photo").value = race.photo;
+// document.getElementById("edit_id").value = race.id;
+document.getElementById("edit_id").value = race.id;
 document.getElementById("edit_email").value = race.email;
 document.getElementById("edit_mobile1").value = race.mobile1;
 document.getElementById("edit_mobile2").value = race.mobile2;
-document.getElementById("edit_meta").value = JSON.stringify(JSON.parse(race.meta), null, 2);
+// document.getElementById("edit_meta").value = JSON.stringify(JSON.parse(race.meta));
+var meta = JSON.parse(race.meta).meta;
 
-const meta = JSON.parse(race.meta).meta;
-
-// GROUPS
-let groupList = document.getElementById("group-list");
-groupList.innerHTML = "";
-meta.groups.forEach((group, i) => {
-  groupList.innerHTML += `
-    <div>
-      <label>KM:</label><input id="group_km_${i}" value="${group.km}">
-      <label>Fees:</label><input id="group_fees_${i}" value="${group.fees}">
-      <label>Gun Time:</label><input id="group_gunTime_${i}" value="${group.gunTime}">
-      <label>Stop Time:</label><input id="group_stopTime_${i}" value="${group.stopTime}">
-    </div><hr>`;
-});
-
-// READERS
-let readerList = document.getElementById("reader-list");
-readerList.innerHTML = "";
-meta.readers.forEach((reader, i) => {
-  readerList.innerHTML += `
-    <div>
-      <label>ID:</label><input id="reader_id_${i}" value="${reader.readerID}">
-      <label>Loc:</label><input id="reader_loc_${i}" value="${reader.location}">
-      <label>Lapse:</label><input id="reader_lapse_${i}" value="${reader.lapseTime}">
-    </div><hr>`;
-});
-
-// RESULTS
-let resultList = document.getElementById("result-list");
-resultList.innerHTML = "";
-meta.result.forEach((res, ri) => {
-  resultList.innerHTML += `<div><label>KM:</label><input id="result_km_${ri}" value="${res.km}"><br>`;
-  res.age.forEach((age, ai) => {
-    resultList.innerHTML += `
-      <label>Min:</label><input id="res_${ri}_age_min_${ai}" value="${age.min}">
-      <label>Max:</label><input id="res_${ri}_age_max_${ai}" value="${age.max}">
-      <label>Gender:</label><input id="res_${ri}_age_gender_${ai}" value="${age.gender}"><br>`;
-  });
-  resultList.innerHTML += `</div><hr>`;
-});
-
-
-			raceMeta = JSON.parse(race.meta).meta.groups;
-			meta = raceMeta;
-			displayGunTime = meta[0].gunTime;
-			gunTime = meta[0].gunTimeStamp;
-			displayStopTime= meta[0].displayStopTime;
-			stopTime = meta[0].stopTimeStamp;
-			for(group in meta) {
-				runnerGrid.formFilter[meta[group].km] = {
-					gunTime: meta[group].gunTime,
-					minLapTime: 1,
-					laps: 1
-				};
-
-				runnerGrid.filterByKms[meta[group].km] = true;
-			}
-
-			return responseJson;
-		});
+	reports.metaGroups = meta.groups || [];
+	reports.metaReaders = meta.readers || [];
+	reports.metaResults = meta.result || [];
+			
+		return responseJson;
+	});
 }
+
+function submitUpdatedRace() {
+	console.log("submitUpdatedRace() triggered");
+
+	// Updating the race object with input fields
+	race.name = document.getElementById("edit_name").value;
+	race.eventDate = document.getElementById("edit_eventDate").value;
+	race.address = document.getElementById("edit_address").value;
+	race.city = document.getElementById("edit_city").value;
+	race.photo = document.getElementById("edit_photo").value;
+	race.email = document.getElementById("edit_email").value;
+	race.mobile1 = document.getElementById("edit_mobile1").value;
+	race.mobile2 = document.getElementById("edit_mobile2").value;
+
+	// Updating the race.meta field using Vue data
+	race.meta = JSON.stringify({
+		meta: {
+			groups: reports.metaGroups,
+			readers: reports.metaReaders,
+			result: reports.metaResults
+		}
+	});
+
+	// sending updated race data to server
+	const token = document.getElementById("token").value
+
+	fetch("https://www.blingtracker.com/timings/v2/runs/", {
+		method: "POST",
+		body: JSON.stringify(race),
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + token
+		}
+	})
+	.then(response => {
+		if(response.ok)
+		{
+			console.log("server response: "+ response);
+			alert("race updated and saved successfully");
+		}
+		else{
+			alert("server returned error: "+ response);
+		}
+	})
+	.catch(err => {
+		console.log("Error "+ err);
+		throw err;
+	})
+}
+
 
 function populateFilters() {
 	processSplits();
@@ -948,7 +947,7 @@ async function getCall(path) {
 				return;
 			}
 
-			prepareVueGridData(this.response);
+			// prepareVueGridData(this.response);
 			return "success";
 		}
 	};
@@ -958,9 +957,12 @@ async function getCall(path) {
 }
 
 async function getResults(raceID, token) {
-	if (raceID == null) {
-		return;
+	if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
+	{
+    	alert("Race ID and Token are required.");
+    	return;
 	}
+
 
 	this.token = token;
 	await getRunners(raceID);
@@ -969,7 +971,7 @@ async function getResults(raceID, token) {
 	let path = "/timings/v1/results/" + raceID;
 
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		path = 'temp/results.json';
+		{ path = './temp/results.json'; }
 
 	let response = await getCall(path);
 
@@ -1067,113 +1069,6 @@ function returnFileSize(number) {
 		return `${(number / 1048576).toFixed(1)} MB`;
 	}
 }
-
-function submitUpdatedRace() {
-	console.log(" submitupdatedrace() triggered")
-  const updated = {
-    id: race.id,
-    name: document.getElementById("edit_name").value,
-    eventDate: document.getElementById("edit_eventDate").value,
-    address: document.getElementById("edit_address").value,
-    city: document.getElementById("edit_city").value,
-    photo: document.getElementById("edit_photo").value,
-    email: document.getElementById("edit_email").value,
-    mobile1: document.getElementById("edit_mobile1").value,
-    mobile2: document.getElementById("edit_mobile2").value,
-  };
-
-  let groups = [], readers = [], result = [];
-
-  document.querySelectorAll("#group-list > div").forEach((_, i) => {
-    groups.push({
-      km: parseFloat(document.getElementById(`group_km_${i}`).value),
-      fees: parseFloat(document.getElementById(`group_fees_${i}`).value),
-      gunTime: document.getElementById(`group_gunTime_${i}`).value,
-      stopTime: document.getElementById(`group_stopTime_${i}`).value,
-      gunTimeStamp: dateToTimeStamp(document.getElementById(`group_gunTime_${i}`).value),
-      stopTimeStamp: dateToTimeStamp(document.getElementById(`group_stopTime_${i}`).value)
-    });
-  });
-
-  document.querySelectorAll("#reader-list > div").forEach((_, i) => {
-    readers.push({
-      readerID: document.getElementById(`reader_id_${i}`).value,
-      location: parseInt(document.getElementById(`reader_loc_${i}`).value),
-      lapseTime: parseInt(document.getElementById(`reader_lapse_${i}`).value)
-    });
-  });
-
-  document.querySelectorAll("#result-list > div").forEach((_, ri) => {
-    const km = parseFloat(document.getElementById(`result_km_${ri}`).value);
-    let ages = [], ai = 0;
-    while (document.getElementById(`res_${ri}_age_min_${ai}`)) {
-      ages.push({
-        min: parseInt(document.getElementById(`res_${ri}_age_min_${ai}`).value),
-        max: parseInt(document.getElementById(`res_${ri}_age_max_${ai}`).value),
-        gender: document.getElementById(`res_${ri}_age_gender_${ai}`).value
-      });
-      ai++;
-    }
-    result.push({ km, age: ages });
-  });
-
-  updated.meta = JSON.stringify({ meta: { groups, readers, result } });
-
-  const token = document.getElementById("token").value;
-
-//   fetch(`/timings/v1/runs/${updated.id}`, {
-//     method: "POST",
-//     headers: {
-//       "Content-Type": "application/json",
-//       "Authorization": "Bearer " + token
-//     },
-//     body: JSON.stringify(updated)
-//   })
-//     .then(res => res.text())
-//     .then(text => alert("Update successful: " + text))
-//     .catch(err => alert("Error: " + err.message));
-
-// 👇 simulate saving locally (mocking)
-setTimeout(() => {
-  console.log("✅ Simulated saving to server:", updated);
-  alert("Race JSON saved (simulated locally)");
-}, 1000);
-
-
-}
-
-function addGroup() {
-  const i = document.querySelectorAll("#group-list > div").length;
-  document.getElementById("group-list").innerHTML += `
-    <div>
-      <label>KM:</label><input id="group_km_${i}">
-      <label>Fees:</label><input id="group_fees_${i}">
-      <label>Gun Time:</label><input id="group_gunTime_${i}">
-      <label>Stop Time:</label><input id="group_stopTime_${i}">
-    </div><hr>`;
-}
-
-function addReader() {
-  const i = document.querySelectorAll("#reader-list > div").length;
-  document.getElementById("reader-list").innerHTML += `
-    <div>
-      <label>ID:</label><input id="reader_id_${i}">
-      <label>Loc:</label><input id="reader_loc_${i}">
-      <label>Lapse:</label><input id="reader_lapse_${i}">
-    </div><hr>`;
-}
-
-function addResult() {
-  const i = document.querySelectorAll("#result-list > div").length;
-  document.getElementById("result-list").innerHTML += `
-    <div>
-      <label>KM:</label><input id="result_km_${i}">
-      <label>Min:</label><input id="res_${i}_age_min_0">
-      <label>Max:</label><input id="res_${i}_age_max_0">
-      <label>Gender:</label><input id="res_${i}_age_gender_0">
-    </div><hr>`;
-}
-
 
 function getFormattedDateAndTime(startDate) {
 	if (startDate != null && startDate != '') {
