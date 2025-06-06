@@ -12,80 +12,83 @@ var exportRaceID="25";
 var raceMeta=[];
 
 
-async function getRunners(raceID) {
-	//raceID="12";
+// async function getRunners(raceID) {
+// 	//raceID="12";
 
-	let path = "/timings/v2/runners/" + raceID;
+// 	let path = "/timings/v2/runners/" + raceID;
 
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/runners.json'; }
+// 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+// 		{ path = './temp/runners.json'; }
 
 
-	return fetch(path, {
-		headers: {
-			"Authorization": "Bearer " + token
-		}
-	})
-		.then(response => response.json())
-		.then(responseJson => {
-			runners = responseJson;
-			return responseJson
-		});
-}
+// 	return fetch(path, {
+// 		headers: {
+// 			"Authorization": "Bearer " + token
+// 		}
+// 	})
+// 		.then(response => response.json())
+// 		.then(responseJson => {
+// 			runners = responseJson;
+// 			return responseJson
+// 		});
+// }
 
-async function getCall(path) {
-	let state = new XMLHttpRequest();
+// async function getCall(path) {
+// 	let state = new XMLHttpRequest();
 
-	state.onload = function () {
-		if (this.readyState == 4) {
-			if (state.status != 200) {
-				return;
-			}
+// 	state.onload = function () {
+// 		if (this.readyState == 4) {
+// 			if (state.status != 200) {
+// 				return;
+// 			}
 
-			if (this.response === '[]') {
-				//document.getElementById("wrapper").innerHTML = "";
-				return;
-			}
+// 			if (this.response === '[]') {
+// 				//document.getElementById("wrapper").innerHTML = "";
+// 				return;
+// 			}
 
-			// prepareVueGridData(this.response);
-			return "success";
-		}
-	};
+// 			// prepareVueGridData(this.response);
+// 			return "success";
+// 		}
+// 	};
 
-	state.open("GET", path, true);
-	state.send();
-}
+// 	state.open("GET", path, true);
+// 	state.send();
+// }
 
-async function getResults(raceID, token) {
+// async function getResults(raceID, token) {
+   //if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
+	// 	{
+	//     	alert("Race ID and Token are required.");
+	//     	return;
+	// 	}
+// 	this.token = token;
+// 	await getRunners(raceID);
+// 	await getResultRace(raceID);
+
+// 	let path = "/timings/v1/results/" + raceID;
+
+// 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+// 		{ path = './temp/results.json'; }
+
+// 	let response = await getCall(path);
+
+// 	if (response == undefined) {
+// 		//	alert("Unable to retrieve data for the raceID "+ raceID);
+// 		return;
+// 	}
+// }
+
+async function getResultRace(raceID,token) {
 	if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
 	{
     	alert("Race ID and Token are required.");
     	return;
 	}
-
-
-	this.token = token;
-	await getRunners(raceID);
-	await getResultRace(raceID);
-
-	let path = "/timings/v1/results/" + raceID;
-
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/results.json'; }
-
-	let response = await getCall(path);
-
-	if (response == undefined) {
-		//	alert("Unable to retrieve data for the raceID "+ raceID);
-		return;
-	}
-}
-
-async function getResultRace(raceID) {
 	let path = "/timings/v1/runs/" + raceID;
 
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/runs.json'; }
+	// if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+	// 	{ path = './temp/runs.json'; }
 
 	return fetch(path)
 		.then(response => response.json())
