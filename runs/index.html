@@ -244,6 +244,7 @@
 		<label>Gun Time Stamp:</label><input v-model="group.gunTime">
 		<label>Stop Time:</label><input v-model="group.stopTime">
 		<label>Stop Time Stamp:</label><input v-model="group.stopTimeStamp">
+		<button @click="deleteGroup(index)">Delete Group {{index}}</button>
 		</div>
 
 		<h4>Readers</h4>
@@ -256,6 +257,7 @@
 		<label>ID:</label> <input v-model="reader.readerID">
 		<label>Location:</label><input v-model="reader.location">
 		<label>Lapse Time:</label><input v-model="reader.lapseTime">
+		<button @click="deleteReader(index)">Delete Reader {{ index }}</button>
 		</div>
 
 		<h4>Results</h4>
@@ -274,6 +276,7 @@
 			<label>Min:</label><input v-model="age.min">
 			<label>Max:</label><input v-model="age.max">
 			<label>Gender:</label><input v-model="age.gender">
+			<button @click="deleteResult(ri)">Delete Result {{ ri }}</button>
 		</div>
 		</div>
 		</div>
@@ -305,6 +308,15 @@
 				saveResult() {
 					this.metaResults.push(this.tempResult);
 					this.tempResult = { km: '', age: [{ min: '', max: '', gender: ''}]};
+				},
+				deleteGroup(index) {
+					this.metaGroups.splice(index, 1);
+				},
+				deleteReader(index) {
+					this.metaReaders.splice(index, 1);
+				},
+				deleteResult(index) {
+					this.metaResults.splice(index, 1);
 				}
 			}
 			});
