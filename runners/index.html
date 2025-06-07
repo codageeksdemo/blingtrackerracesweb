@@ -262,12 +262,12 @@ input[type=button]:hover {
 		</div>  
 		<div class="blinginputdiv">
 		   <label class = "blinglabel"> BMID: </label>
-		   <input v-model="runner.bMID"  class="blingtext" placeholder=""/>
+		   <input v-model="runner.bMID"  class="blingtext" placeholder="" disabled/>
 		</div>  
 	</div>		
     <br />
     <div display="float left">
-      <input style="margin: 0px;" type="button" onclick="newRunner()"  v-if="showAdd==true" value="Add New Runner">  </input>
+      <input style="margin: 0px;" type="button" onclick="newRunner()" @click="newRunner"  v-if="showAdd==true" value="Add New Runner">  </input>
       <input style="margin: 0px;" type="button" onclick="saveRunner()"  v-if="display==true"  value="Save Runner Record"> </input>
       <input style="margin: 0px;" type="button" onclick="deleteRunner()"  v-if="display==true" value ="Delete Runner Record"> </input>
     </div>
@@ -439,9 +439,10 @@ input[type=button]:hover {
       		loadID:-1
       	},
       	methods:{
-      		newRunner: function()
+      		newRunner()
       		{
       			alert("New Runner called");
+            this.runner = { "id":"",	"name":"",	"city":"",	"address":"",	"mobile1":"",	"mobile2":"",	"email":"",	"raceID": document.getElementById("raceID").value,	"bibID":"",	"tagNumber":"",	"age":"",	"gender":"",	"raceCode":"", "bMID":"" }
       		}
           
       	}

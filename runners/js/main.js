@@ -45,6 +45,7 @@
 
 function newRunner()
 {
+	// alert("New Runner Called")
 	this.runner.display=true;
 	this.runner.loadID=-2;
 }
@@ -102,6 +103,7 @@ function deleteRunner(id)
                 		return "success";
                 }
             };
+			//state.open("GET", path,true);
             state.open("GET", "http://www.blingtracker.com/timings/"+path,true);
 			if(this.jwt!=null)
 			{
@@ -122,7 +124,9 @@ function deleteRunner(id)
 	 	this.runner.runner.raceID=document.getElementById('raceID').value;
 	 	   this.runner.showAdd=true;
 
-        	
+        // if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+		// { let response = await getCall('temp/runners.json'); }
+
   		let response = await getCall("v2/runners/"+raceID);
   		if(response == undefined)
   		{
