@@ -230,21 +230,22 @@
 
 		<h4>Groups</h4>
 		<label>KM:</label><input v-model="tempGroup.km" type="number">
-		<label>Fees:</label><input v-model="tempGroup.fees" type="number">
+		<label>Fees:</label><input v-model="tempGroup.fees" type="number"> <br/>
 		<label>Gun Time:</label><input v-model="tempGroup.gunTime">
-		<label>Gun Time Stamp:</label><input v-model="tempGroup.gunTimeStamp">
+		<label>Gun Time Stamp:</label><input v-model="tempGroup.gunTimeStamp"> <br/>
 		<label>Stop Time:</label><input v-model="tempGroup.stopTime">
 		<label>Stop Time Stamp:</label><input v-model="tempGroup.stopTimeStamp">
 		<button @click="saveGroup">Save Group</button>
-		<hr>
+			<hr>
 		<div v-for="(group, index) in metaGroups" :key="index">
-		<label>KM:</label><input v-model="group.km" type="number">
-		<label>Fees:</label><input v-model="group.fees" type="number">
+		<label>KM:</label><input v-model="group.km" type="number"> 
+		<label>Fees:</label><input v-model="group.fees" type="number"> <br/>
 		<label>Gun Time:</label><input v-model="group.gunTime">
-		<label>Gun Time Stamp:</label><input v-model="group.gunTimeStamp">
+		<label>Gun Time Stamp:</label><input v-model="group.gunTimeStamp"> <br/>
 		<label>Stop Time:</label><input v-model="group.stopTime">
 		<label>Stop Time Stamp:</label><input v-model="group.stopTimeStamp">
 		<button @click="deleteGroup(index)">Delete Group {{index}}</button>
+		<hr>
 		</div>
 
 		<h4>Readers</h4>
@@ -258,11 +259,17 @@
 		<label>Location:</label><input v-model="reader.location">
 		<label>Lapse Time:</label><input v-model="reader.lapseTime">
 		<button @click="deleteReader(index)">Delete Reader {{ index }}</button>
+		<hr>
 		</div>
 
 		<h4>Results</h4>
-		<label>KM:</label><input v-model="tempResult.km">
+		<label>KM:</label><input v-model="tempResult.km"> <br/>
+		<label>Allowed start delay</label><input v-model="tempResult.allowedstartdelay"> <br/>
+		<label>One Loop Duration</label><input v-model="tempResult.oneloopduration"> <br/>
+		<label>Minimum Finish Duration</label><input v-model="tempResult.minimumfinishduration"> <br/>
+		<label>Finish Loop Counts</label><input v-model="tempResult.finishloopcounts"> <br/>
 			<div v-for="(age, index) in tempResult.age">
+				<label><h5>Age:</h5></label>
 				<label>Min:</label><input v-model="age.min" type="number">
 				<label>Max:</label><input v-model="age.max">
 				<label>Gender:</label><input v-model="age.gender">
@@ -270,7 +277,11 @@
 			<button @click="saveResult">Save Result</button>
 			<hr>
 		<div v-for="(res, ri) in metaResults" :key="ri">
-		<label>KM:</label><input v-model="res.km">
+		<label>KM:</label><input v-model="res.km"> <br/>
+		<label>Allowed start delay</label><input v-model="res.allowedstartdelay"> <br/>
+		<label>One Loop Duration</label><input v-model="res.oneloopduration"> <br/>
+		<label>Minimum Finish Duration</label><input v-model="res.minimumfinishduration"> <br/>
+		<label>Finish Loop Counts</label><input v-model="res.finishloopcounts"> <br/>
 		<div v-for="(age, ai) in res.age" :key="ai">
 			<label><h5>Age:</h5></label>
 			<label>Min:</label><input v-model="age.min">
@@ -278,6 +289,7 @@
 			<label>Gender:</label><input v-model="age.gender">
 			<button @click="deleteResult(ri)">Delete Result {{ ri }}</button>
 		</div>
+		<hr>
 		</div>
 		</div>
 	</div>
@@ -295,7 +307,7 @@
 				metaResults: [],
 				tempGroup: { km: '', fees: '', gunTime: '', gunTimeStamp: '', stopTime: '', stopTimeStamp: '' },
 				tempReader: { readerID: '', location: '', lapseTime: ''},
-				tempResult: { km: '', age: [{ min: '', max: '', gender: ''}]}
+				tempResult: { km: '',allowedstartdelay:'',oneloopduration:'',minimumfinishduration:'',finishloopcounts:'', age: [{ min: '', max: '', gender: ''}]}
 			}, methods: {
 				saveGroup() {
 					this.metaGroups.push(this.tempGroup);
@@ -307,7 +319,7 @@
 				},
 				saveResult() {
 					this.metaResults.push(this.tempResult);
-					this.tempResult = { km: '', age: [{ min: '', max: '', gender: ''}]};
+					this.tempResult = { km: '',allowedstartdelay:'',oneloopduration:'',minimumfinishduration:'',finishloopcounts:'', age: [{ min: '', max: '', gender: ''}]};
 				},
 				deleteGroup(index) {
 					this.metaGroups.splice(index, 1);
