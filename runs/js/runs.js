@@ -144,28 +144,28 @@ function submitUpdatedRace() {
 	// sending updated race data to server
 	const token = document.getElementById("token").value
 
-	// fetch("/timings/v2/runs/", {
-	// 	"method": "POST",
-	// 	body: JSON.stringify(race),
-	// 	headers: {
-	// 		"Content-Type": "application/json",
-	// 		"Authorization": "Bearer " + token
-	// 	}
-	// })
-	// .then(response => {
-	// 	if(response.ok)
-	// 	{
-	// 		console.log("server response: "+ response);
-	// 		alert("race updated and saved successfully");
-	// 	}
-	// 	else{
-	// 		alert("server returned error: "+ response);
-	// 	}
-	// })
-	// .catch(err => {
-	// 	console.log("Error "+ err);
-	// 	throw err;
-	// })
+	fetch("/timings/v2/runs/", {
+		"method": "POST",
+		body: JSON.stringify(race),
+		headers: {
+			"Content-Type": "application/json",
+			"Authorization": "Bearer " + token
+		}
+	})
+	.then(response => {
+		if(response.ok)
+		{
+			console.log("server response: "+ response);
+			alert("race updated and saved successfully");
+		}
+		else{
+			alert("server returned error: "+ response);
+		}
+	})
+	.catch(err => {
+		console.log("Error "+ err);
+		throw err;
+	})
 
-	console.log(JSON.parse(race.meta).meta.result);
+	// console.log(JSON.parse(race.meta).meta.result);
 }
