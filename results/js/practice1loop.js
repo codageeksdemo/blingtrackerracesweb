@@ -11,10 +11,9 @@ var displayStopTime="";
 var exportRaceID="27";
 var raceMeta=[];
 
-// var runwithstarttime=0; //runners with starttime
-// var runwithnostarttime=0; //runnners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
-// var run10withnofinish=0;
-// var run5withnofinish=0;
+// var runnerwiththstarttime=0; //runners with starttime
+// var runnerwiththnostarttime=0; //runnners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
+// var runnerwiththfinish=0;
 
 function prepareVueGridData(jsonData) {
 	let received = JSON.parse(jsonData);
@@ -79,20 +78,25 @@ function prepareVueGridData(jsonData) {
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
 	this.runGroups = JSON.parse(this.race.meta).meta.groups;
+	this.runresults = JSON.parse(this.race.meta).meta.result;
 
-	let runwithstarttime = 0; // runners with starttime
-	let runwithnostarttime = 0; //runners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
-	let run10withnofinish = 0; // runners 10km who were assigned finish time
-	let run5withnofinish = 0; // runners 
+	let runnerwiththstarttime = 0; // runners with starttime
+	let runnerwiththnostarttime = 0; //runners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
+	let runnerwiththfinish = 0; // runners who were assigned finish time that is dont have finish time
 	let x = {};
 
-	let chartaxisdata = {runwithstarttime, runwithnostarttime, run10withnofinish, run5withnofinish}
+	let chartaxisdata = {runnerwiththstarttime, runnerwiththnostarttime, runnerwiththfinish}
     this.runGroups.forEach((g)=>{
-         x = processSplitsNew(g, chartaxisdata);
+	let r =	this.runresults.filter((j)=>{
+			return j.km==g.km
+		})
+		if(r.length === 0)
+		{
+			alert("r length is 0");
+			return
+		}
+         x[g.km] = processSplitsNew(g,r, chartaxisdata);
     });
-
-	alert(x.runwithstarttime+x.runwithnostarttime+" runwithstarttime="+x.runwithstarttime+" runwithnostarttime="+x.runwithnostarttime+" total 10K & 5K runner wihout finish time="+(run10withnofinish+run5withnofinish));
-	
 	
     populateFilters();
 	loadCustomChartData(x)
@@ -506,13 +510,13 @@ async function getResultRace(raceID) {
 			meta = raceMeta;
 			displayGunTime = meta[0].gunTime;
 			gunTime = meta[0].gunTimeStamp;
-			displayStopTime= meta[0].displayStopTime;
+			displayStopTime= meta[0].stopTime;
 			stopTime = meta[0].stopTimeStamp;
 			for(group in meta) {
 				runnerGrid.formFilter[meta[group].km] = {
-					gunTime: meta[group].gunTime,
-					minLapTime: 1,
-					laps: 1
+					// gunTime: meta[group].gunTime,
+					// minLapTime: 1,
+					// laps: 1
 				};
 
 				runnerGrid.filterByKms[meta[group].km] = true;
@@ -523,16 +527,20 @@ async function getResultRace(raceID) {
 }
 
 
-function processSplitsNew(runGroup, chartadata) {
+function processSplitsNew(runGroup, runresults, chartadata) {
 	let runners = runnerGrid.gridData;
 	let splits = [];
     // Set below params
-	let minLapTimeMilliSeconds = 600 * 1000;
 
-	let runwithstarttime = chartadata.runwithstarttime;
-	let runwithnostarttime = chartadata.runwithnostarttime;
-	let run10withnofinish = chartadata.run10withnofinish;
-	let run5withnofinish = chartadata.run5withnofinish;
+	let allowedstartdelay = runresults[0].allowedstartdelay;
+	let oneloopduration = runresults[0].oneloopduration;
+	let minimumfinishduration = runresults[0].minimumfinishduration;
+	let finishloopcounts = runresults[0].finishloopcounts;
+	let minlaptime = runresults[0].minlaptime;
+
+	let runnerwiththstarttime = chartadata.runnerwiththstarttime;
+	let runnerwiththnostarttime = chartadata.runnerwiththnostarttime;
+	let runnerwiththfinish = chartadata.runnerwiththfinish;
 	
 	let gunTime = runGroup.gunTime;
 	let gunTimeStamp = getEpochTime(runGroup.gunTime);
@@ -551,7 +559,7 @@ function processSplitsNew(runGroup, chartadata) {
 		splits = runners[a].splits;
 		let deleteFrom = -1;
 		let toDelete = 0;
-
+		let wasRunnerAheadOfStartTime = false;
 		// determine the splits which have lesser time gap between them than the minimum lap time
 		for(let b = 0; b < splits.length - 1; b++) {
 			deleteFrom = -1;
@@ -560,7 +568,7 @@ function processSplitsNew(runGroup, chartadata) {
 			//console.log('diff [' + b + '+1]-[' + b + '] ' + (splits[b + 1].time - splits[b].time) + ' , minLapTime ' + processParams[runners[a].raceCode].minLapTimeMilliSeconds);
 
 			for(c = b; c < splits.length - 1; c++) {
-				if(splits[c + 1].time - splits[c].time < minLapTimeMilliSeconds) {
+				if(splits[c + 1].time - splits[c].time < minlaptime) {
 
 				if(deleteFrom == -1)
 						deleteFrom = c;
@@ -589,22 +597,28 @@ function processSplitsNew(runGroup, chartadata) {
                         });
 
 		for(let b = 0; b < splits.length; b++) {
+			if(runners[a].bibID=="2187")
+			{
+					alert( "called");
+
+			}
 
 			 if(splits[b].time < gunTimeStamp) {
 				let diff = gunTimeStamp - splits[b].time;
 				if(diff>999)
 					{
 					console.log("ignoring "+ splits[b].time + "as it is lesser than "+ gunTimeStamp );
+					wasRunnerAheadOfStartTime = true;
 					continue;
 					}
 			}
-			else if(runners[a].readerStartTimeStamp==undefined && splits[b].time<gunTimeStamp +300000 && splits[b].time>=gunTimeStamp) // upto 300 seconds after guntime
+			else if(runners[a].readerStartTimeStamp==undefined && splits[b].time<gunTimeStamp +allowedstartdelay && splits[b].time>=gunTimeStamp) // upto 300 seconds after guntime
 			{
 				setStartTime(runners[a],splits[b]);
-				runwithstarttime = runwithstarttime+1;
+				runnerwiththstarttime = runnerwiththstarttime+1;
 				continue;
 			} 
-			 else if(runners[a].readerStartTimeStamp==undefined && splits[b].time>gunTimeStamp +300000) // above 600  seconds 
+			 else if(runners[a].readerStartTimeStamp==undefined && splits[b].time>gunTimeStamp +allowedstartdelay) // above 600  seconds 
                         {
                                 // set guntime as start time
 
@@ -613,42 +627,41 @@ function processSplitsNew(runGroup, chartadata) {
                                 spl["registeredTime"] = gunTime;
                                 spl["time"] =  gunTimeStamp;
                                 setStartTime(runners[a],spl);
-								runwithnostarttime = runwithnostarttime+1;
-                                continue;
+								runnerwiththnostarttime = runnerwiththnostarttime+1;
+
+                                // continue;
                         }
 
-
-			if(runners[a].bibID=="2219")
-			{
-					alert( "called");
-
-			}
-			if(runners[a].finishStamp==undefined && runners[a].raceCode=="10" && splits[b].time>gunTimeStamp +1800000) // upto 30 min seconds finishtime
+			if(runners[a].finishStamp==undefined && splits[b].time>gunTimeStamp +minimumfinishduration) // upto 30 min seconds finishtime
                         {
+							//&& b== finishloopcounts
 								// set guntime as start time
-								run10withnofinish = run10withnofinish + 1;
+								runnerwiththfinish = runnerwiththfinish + 1;
 
 								setFinishTime(runners[a],splits[b]);
                                 break;
 								
                         }
-			 if(runners[a].finishStamp==undefined && runners[a].raceCode=="5" && splits[b].time>gunTimeStamp +900000) // upto 30 min seconds finishtime
-                        {
-                                // set guntime as start time
-								run5withnofinish = run5withnofinish + 1;
-
-                                setFinishTime(runners[a],splits[b]);
-                                break;
-                        }
-
 
 		}
+
+				if(wasRunnerAheadOfStartTime==true)
+				{
+								let spl ={};
+                                spl["km"] = 0;
+                                spl["registeredTime"] = gunTime;
+                                spl["time"] =  gunTimeStamp;
+                                setStartTime(runners[a],spl);
+								// runnerwiththnostarttime = runnerwiththnostarttime+1;
+				}
 		console.log(runners[a]);
 		console.groupEnd();
 	}
 	runnerGrid.gridData=runners;
-	let chrtdata = {runwithstarttime, runwithnostarttime, run10withnofinish, run5withnofinish};
-	alert(runwithstarttime+" "+runwithnostarttime+" "+run10withnofinish+" "+run5withnofinish);
+
+	alert(runnerwiththstarttime+" "+runnerwiththnostarttime+" "+runnerwiththfinish);
+
+	let chrtdata = {runnerwiththstarttime, runnerwiththnostarttime, runnerwiththfinish};
 	return chrtdata;
 }
 
@@ -1030,16 +1043,23 @@ function editSplits() {
 
 function loadCustomChartData(chartdata) {
 	resetChart();
-    setLabels(["runners with no starttime","runners with allowed starttime after guntime", "10K runners without finishtime", "5K runners without finishtime"]);
+    setLabels(["runners with no starttime", "runners with allowed starttime after guntime", "runners with no finish time"]);
     setTitleText("Runner Analysis");
 	setSize("400px", "800px");
 	loadBarChart();
-	let runwithnostarttime = chartdata.runwithnostarttime;
-	let runwithstarttime = chartdata.runwithstarttime;
-	let run10withnofinish = chartdata.run10withnofinish;
-	let run5withnofinish = chartdata.run5withnofinish;
-	addToDataSet("runners", [runwithnostarttime, runwithstarttime, run10withnofinish, run5withnofinish]);
-	runwithnostarttime = 0; runwithstarttime=0;
-	// addToDataSet("start after gunTime", [runwithstarttime])
+
+	for (let num in chartdata) {
+        const item = chartdata[num];
+
+        const runnerwiththnostarttime = item.runnerwiththnostarttime || 0;
+        const runnerwiththstarttime = item.runnerwiththstarttime || 0;
+
+		let total = runnerwiththnostarttime + runnerwiththstarttime;
+
+        const runnerwiththnofinish = (total - item.runnerwiththfinish || 0);
+
+        addToDataSet(`${num}K runners`, [runnerwiththnostarttime, runnerwiththstarttime, runnerwiththnofinish]);
+    }
 }
+
 
