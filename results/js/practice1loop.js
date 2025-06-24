@@ -866,8 +866,9 @@ function filterTimingsOnKM(group, km) {
 
 	for (j = 0; j < newArray.length; j++) {
 		if (index < 20) {
-			index++;
+			// index++;
 			all.push(newArray[index]);
+			index++;
 		}
 
 		let bibID = newArray[j].bibID;
