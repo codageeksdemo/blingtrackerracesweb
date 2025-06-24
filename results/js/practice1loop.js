@@ -418,7 +418,8 @@ function pushResult()
         formData.append('text', prepareResultBody());
         let result = false;
 
-        fetch("/timings/v2/results/resultfile", {
+		fetch("https://www.blingtracker.com/timings/v2/results/resultfile", {
+        // fetch("/timings/v2/results/resultfile", {
                 "method": "POST",
                 body: formData,
                 headers: {
@@ -544,6 +545,8 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	
 	let gunTime = runGroup.gunTime;
 	let gunTimeStamp = getEpochTime(runGroup.gunTime);
+
+	let counterwasRunnerAheadOfStartTime = 0;
 	for(let a = 0; a < runners.length; a++) {
 
 	if(runners[a].bibID == '' || runners[a].raceCode!=runGroup.km)
@@ -597,7 +600,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
                         });
 
 		for(let b = 0; b < splits.length; b++) {
-			if(runners[a].bibID=="2187")
+			if(runners[a].bibID=="2182")
 			{
 					alert( "called");
 
@@ -609,6 +612,10 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 					{
 					console.log("ignoring "+ splits[b].time + "as it is lesser than "+ gunTimeStamp );
 					wasRunnerAheadOfStartTime = true;
+					if(wasRunnerAheadOfStartTime === true)
+					{
+						counterwasRunnerAheadOfStartTime = counterwasRunnerAheadOfStartTime + 1;
+					}
 					continue;
 					}
 			}
@@ -659,9 +666,9 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	}
 	runnerGrid.gridData=runners;
 
-	alert(runnerwiththstarttime+" "+runnerwiththnostarttime+" "+runnerwiththfinish);
+	alert(runnerwiththstarttime+" "+runnerwiththnostarttime+" "+runnerwiththfinish+" "+counterwasRunnerAheadOfStartTime);
 
-	let chrtdata = {runnerwiththstarttime, runnerwiththnostarttime, runnerwiththfinish};
+	let chrtdata = {runnerwiththstarttime, runnerwiththnostarttime, runnerwiththfinish, counterwasRunnerAheadOfStartTime};
 	return chrtdata;
 }
 
@@ -756,7 +763,7 @@ function sortOnDurations() {
 
 
 	this.runnerGrid.gridData.sort((x, y) => {
-		return y.durationInMiliSeconds - x.durationInMiliSeconds;
+		return x.durationInMiliSeconds - y.durationInMiliSeconds;
 	});
 
 }
@@ -782,7 +789,7 @@ function filterTimings(km, gender, min, max) {
 	});
 
 	newArray.sort((x, y) => {
-		return x.duration - y.duration;
+		return x.durationInMiliSeconds - y.durationInMiliSeconds;
 	});
 
 	for (j = 0; j < newArray.length; j++) {
@@ -820,8 +827,9 @@ function filterTimingsOnGender(group, km, gender) {
 
 	for (j = 0; j < newArray.length; j++) {
 		if (index < 20) {
-			index++;
+			// index++;
 			topGender.push(newArray[index]);
+			index++;
 		}
 
 		let bibID = newArray[j].bibID;
@@ -898,9 +906,14 @@ async function getCall(path) {
 	state.onload = function () {
 		if (this.readyState == 4) {
 			if (state.status != 200) {
+				alert("getCall request error "+state.response);
 				return;
 			}
-
+			if(state.status == 200)
+			{
+				alert("getCall request success");
+			}
+			
 			if (this.response === '[]') {
 				//document.getElementById("wrapper").innerHTML = "";
 				return;
@@ -927,7 +940,10 @@ async function getResults(raceID, token) {
 
 	let path = "/timings/v1/results/" + raceID;
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/results.json'; } 
+		{ 
+			// path = 'http://www.blingtracker.com/timings/v1/results/35'
+			path = './temp/results.json';
+		} 
 
 	let response = await getCall(path);
 
@@ -1043,7 +1059,7 @@ function editSplits() {
 
 function loadCustomChartData(chartdata) {
 	resetChart();
-    setLabels(["runners with no starttime", "runners with allowed starttime after guntime", "runners with no finish time"]);
+    setLabels(["runners ahead of start time", "runners with no starttime", "runners with allowed starttime after guntime", "runners with no finish time", "runners with finish time"]);
     setTitleText("Runner Analysis");
 	setSize("400px", "800px");
 	loadBarChart();
@@ -1055,10 +1071,12 @@ function loadCustomChartData(chartdata) {
         const runnerwiththstarttime = item.runnerwiththstarttime || 0;
 
 		let total = runnerwiththnostarttime + runnerwiththstarttime;
-
         const runnerwiththnofinish = (total - item.runnerwiththfinish || 0);
 
-        addToDataSet(`${num}K runners`, [runnerwiththnostarttime, runnerwiththstarttime, runnerwiththnofinish]);
+		const counterwasRunnerAheadOfStartTime = item.counterwasRunnerAheadOfStartTime || 0;
+		const runnerwiththfinish = item.runnerwiththfinish || 0;
+
+        addToDataSet(`${num}K runners`, [counterwasRunnerAheadOfStartTime, runnerwiththnostarttime, runnerwiththstarttime, runnerwiththnofinish, runnerwiththfinish]);
     }
 }
 
