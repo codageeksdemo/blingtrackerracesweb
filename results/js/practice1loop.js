@@ -545,7 +545,10 @@ async function getRunners(raceID) {
 		.then(responseJson => {
 			runners = responseJson;
 			return responseJson
-		});
+		})
+		.catch(err =>{
+			alert("getRunners call failed"+err);
+		})
 }
 
 async function getResultRace(raceID) {
@@ -578,7 +581,10 @@ async function getResultRace(raceID) {
 			}
 
 			return responseJson;
-		});
+		})
+		.catch(err =>{
+			alert("getResultRace call failed "+err);
+		})
 }
 
 
