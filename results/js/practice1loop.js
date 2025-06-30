@@ -547,7 +547,9 @@ async function getRunners(raceID) {
 			return responseJson
 		})
 		.catch(err =>{
+			console.log("Error "+err);
 			alert("getRunners call failed"+err);
+			throw err;
 		})
 }
 
@@ -583,7 +585,9 @@ async function getResultRace(raceID) {
 			return responseJson;
 		})
 		.catch(err =>{
+			console.log("Error "+err);
 			alert("getResultRace call failed "+err);
+			throw err;
 		})
 }
 
