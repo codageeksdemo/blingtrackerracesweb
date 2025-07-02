@@ -159,15 +159,22 @@ function timeStampToDate(ts) {
 
 function calculateDuration(runner) {
 	let startTime =runner.readerStartTimeStamp; 
-	let finishTime =runner.finishTimeStamp; 	
-        let durationMiliSeconds = finishTime - startTime;
-        let durationSeconds = Math.floor(durationMiliSeconds / 1000);
-        let durationMinutes = Math.floor(durationSeconds / 60);
-        durationSeconds = durationSeconds % 60;
-        let durationHours = Math.floor(durationMinutes / 60);
-        durationMinutes = durationMinutes % 60;
-        runner["durationInMiliSeconds"] = durationMiliSeconds;
-        runner["duration"] = durationHours + ":" + (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + (durationSeconds < 10 ? '0' : '') + durationSeconds;
+	let finishTime =runner.finishTimeStamp;
+	if(startTime == "" || startTime == undefined || finishTime == "" || finishTime == undefined)
+		{
+			runner["durationInMiliSeconds"] = "";
+			runner["duration"] = "";
+		}
+	else{ 	
+			let durationMiliSeconds = finishTime - startTime;
+			let durationSeconds = Math.floor(durationMiliSeconds / 1000);
+			let durationMinutes = Math.floor(durationSeconds / 60);
+			durationSeconds = durationSeconds % 60;
+			let durationHours = Math.floor(durationMinutes / 60);
+			durationMinutes = durationMinutes % 60;
+			runner["durationInMiliSeconds"] = durationMiliSeconds;
+			runner["duration"] = durationHours + ":" + (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + (durationSeconds < 10 ? '0' : '') + durationSeconds;
+		}
 }
 
 function downloadResult() {
