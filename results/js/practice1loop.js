@@ -772,9 +772,7 @@ function setFinishTime(runner,split,force)
 
 		runner.finishTimeStamp = split.time;
 		runner.finishTime = split.registeredTime;
-		if(runner.bibID==4027){
         calculateDuration(runner);
-		}
 }
 
 
@@ -1155,5 +1153,47 @@ function loadCustomChartData(chartdata) {
         addToDataSet(`${num}K runners`, [counterwasRunnerAheadOfStartTime, runnerwithnostarttime, runnerwithstarttime, runnerwithnofinish, runnerwithfinish]);
     }
 }
+
+function downloadResultCSV() {
+	let filename = "result_" + document.getElementById('raceID').value + ".csv";
+	let collection = [];
+
+	this.runnerGrid.gridData.sort((a, b) => {
+		if (a.splits.length < b.splits.length) {
+			return 1;
+		}
+		return 0;
+	});
+
+	this.runnerGrid.gridData.forEach((a) => {
+		if (a.bibID != "") {
+			collection.push(a);
+		}
+	});
+
+	// let headers = Object.keys(collection[0] || {}).filter(key => key !== 'splits');
+	let headers = ["RaceName","Kms","BibId","Name","Age","Gender","StartTime","FinsihTime","Duration"];
+	let keyinrequiredsequence = ["raceID","raceCode","bibID","name","age","gender","readerStartTime","finishTime","duration"];
+	
+	let csvContent = headers.join(",") + "\n";
+
+	collection.forEach((item) => {
+		let row = keyinrequiredsequence.map(key => {
+			let value = item[key];
+
+			return value; // Number, null, or others
+		});
+		csvContent += row.join(",") + "\n";
+	});
+
+	let element = document.createElement('a');
+	element.setAttribute('href', 'data:text/csv;charset=utf-8,' + encodeURIComponent(csvContent));
+	element.setAttribute('download', filename);
+	element.style.display = 'none';
+	document.body.appendChild(element);
+	element.click();
+	document.body.removeChild(element);
+}
+
 
 
