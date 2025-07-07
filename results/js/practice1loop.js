@@ -73,7 +73,7 @@ function prepareVueGridData(jsonData) {
 		first = false;
 	});*/
 
-	columns=["bibID","readerStartTime","finishTime","splits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall"];
+	columns=["bibID","readerStartTime","finishTime","splits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
 	this.runnerGrid.gridColumns = columns;
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
