@@ -776,7 +776,7 @@
 					delete runnerResult.splits;
 					let runnerResultinarray = [];
 					runnerResultinarray.push(runnerResult);
-					fetch("/timings/v2/results/publishprovisionalresult/", {
+					fetch("/timings/v2/results/publishprovisionalresult", {
 						"method": "POST",
 						body: JSON.stringify(runnerResultinarray),
 						headers: {
