@@ -774,17 +774,24 @@
                			 },
 				sendResult: function(runnerResult){
 					delete runnerResult.splits;
+					let runnerResultinarray = [];
+					runnerResultinarray.push(runnerResult);
 					fetch("/timings/v2/results/publishprovisionalresult/", {
 						"method": "POST",
-						body: JSON.stringify(runnerResult),
+						body: JSON.stringify(runnerResultinarray),
 						headers: {
 							"Content-Type": "application/json",
 							"Authorization": "Bearer " + token
 						}
 					})
-					.then(response => response.text())
-					.then(text => {
-						alert("Result sended successfully");
+					.then(response => { 
+						if(response.ok)
+						{
+							alert("Result sent successfully");
+						}
+						else
+						{ alert("Result not sent "); }
+						response.text()
 					})
 					.catch(err => {
 						console.log("Error: " + err);
