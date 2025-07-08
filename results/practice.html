@@ -176,6 +176,7 @@
 
 			  <div v-else-if="key=='Publish'">
                    <div>
+						<input type="checkbox" v-model="entry.verified">Select Runner
                         <button type="button" :id="entry['bibID']" v-on:click="sendResult(entry)"> Send Result</button>
                   </div>
               </div>
@@ -774,7 +775,11 @@
                			 },
 				sendResult: function(runnerResult){
 					delete runnerResult.splits;
-					let runnerResultinarray = [];
+
+					let selectedRunners = runnerGrid.gridData.filter(f=> f.verified!=undefined);
+					selectedRunners.forEach(x=> { delete x.splits;})
+
+					let runnerResultinarray = selectedRunners;
 					runnerResultinarray.push(runnerResult);
 					fetch("/timings/v2/results/publishprovisionalresult", {
 						"method": "POST",
