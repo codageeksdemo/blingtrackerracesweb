@@ -103,8 +103,13 @@ function deleteRunner(id)
                 		return "success";
                 }
             };
-			//state.open("GET", path,true);
+			if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+			{
+			state.open("GET", path,true);
+			}
+			else {
             state.open("GET", "http://www.blingtracker.com/timings/"+path,true);
+			}
 			if(this.jwt!=null)
 			{
 				state.setRequestHeader("Authorization","Bearer "+this.jwt);	
@@ -124,13 +129,14 @@ function deleteRunner(id)
 	 	this.runner.runner.raceID=document.getElementById('raceID').value;
 	 	   this.runner.showAdd=true;
 
-        // if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		// { let response = await getCall('temp/runners.json'); }
-
+        if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
+			{ let response = await getCall('temp/runners.json'); }
+		else {
   		let response = await getCall("v2/runners/"+raceID);
+		}
   		if(response == undefined)
   		{
-  		//	alert("Unable to retrieve data for the raceID "+ raceID);
+  			alert("Unable to retrieve data for the raceID "+ raceID);
   			return;
   		}
  }
@@ -260,8 +266,37 @@ function returnFileSize(number) {
   } else if (number >= 1048576) {
     return `${(number / 1048576).toFixed(1)} MB`;
   }
-  
-  
+}
+
+function downloadCSV() {
+    // const data = runnerGrid.gridData;
+    // if (!data || data.length === 0) {
+    //     alert("No data available to download.");
+    //     return;
+    // }
+
+    const columns = runnerGrid.gridColumns;
+    const csvRows = [];
+
+    // Add headers
+    csvRows.push(columns.join(','));
+
+    // Add rows
+    // data.forEach(row => {
+    //     const values = columns.map(col => `"${(row[col])}"`);
+    //     csvRows.push(values.join(','));
+    // });
+
+    // const csvContent = csvRows.join('\n');
+    const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
+
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'runners.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
 }
 
 
