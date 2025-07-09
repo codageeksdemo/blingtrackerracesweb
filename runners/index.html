@@ -34,7 +34,20 @@ input[type=button] {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin: 0 45%;
+  margin: 10%;
+  height: 40px;
+}
+
+input[type=file] {
+  background-color: #1B6CC0;
+  color: white;
+  display: flex;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  margin: 10%;
+  height: 40px;
 }
 
 input[type=button]:hover {
@@ -208,7 +221,9 @@ input[type=button]:hover {
 		<br />
 		<div style="display: inline-flex;">
 		  <input type="button" onclick="getRunners(document.getElementById('raceID').value);" value="Get Runners" >
-      <input type="button" onclick="downloadCSV()" value="Download CSV">   
+      <input type="button" onclick="downloadCSV()" value="Download CSV">
+      <input type="file" name="file" id="file" class="file" onchange="onFileChange(event)" accept=".csv">
+			<!-- <label for="file" style="float:left;margin-left:30px" class="blingtrackingbutton" >Upload CSV File</label>    -->
 		  <p id="loader" style="display:none">Loading....</p>
 	 	</div>
 
@@ -444,8 +459,7 @@ input[type=button]:hover {
       		{
       			alert("New Runner called");
             this.runner = { "id":"",	"name":"",	"city":"",	"address":"",	"mobile1":"",	"mobile2":"",	"email":"",	"raceID": document.getElementById("raceID").value,	"bibID":"",	"tagNumber":"",	"age":"",	"gender":"",	"raceCode":"", "bMID":"" }
-      		}
-          
+      		}          
       	}
       });  
     </script> 

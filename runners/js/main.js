@@ -299,4 +299,81 @@ function downloadCSV() {
     document.body.removeChild(a);
 }
 
+function parseCSV(csvString) {
+	//if validation failed, show alert with index
+	// lines should not have inverted commas [single/double] in it
+        const lines = csvString.split('\n');
+        const data = [];
 
+        lines.forEach(line => {
+            const values = line.split(','); // Assuming comma as delimiter
+			//allowed values base on the columns
+            data.push(values);
+        });
+
+        console.log("Parsed CSV Data:", data);
+        // You can now work with the 'data' array
+
+		convertCSVdatatoJSON(data);
+}
+
+function convertCSVdatatoJSON(csvData)
+{
+	let JSONdata =[];
+	let keys = csvData[0];
+
+	for(let a = 1; a < csvData.length; a++)
+	{
+		let row = csvData[a];
+		let data ={};
+
+		for(b = 0; b < keys.length; b++)
+		{
+			data[keys[b]] =row[b];
+		}
+		JSONdata.push(data);
+	}
+}
+
+function onFileChange(e) {
+	var files = e.target.files || e.dataTransfer.files;
+	if (!files.length)
+	{
+	alert("Please upload File");
+	return;
+	}
+	else 
+	{
+		alert("File uploaded");
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			const csvContent = e.target.result; // The CSV content as a string
+			// Now you can process the csvContent string
+			console.log(csvContent); 
+			parseCSV(csvContent); // Call a function to parse the CSV data
+		};
+		reader.readAsText(files[0]); // Read the file as plain text
+	}
+}
+
+{/* <script>
+
+	let keys = csvData[0]; // First row is headers
+
+    for (let a = 1; a < csvData.length; a++) {
+        let row = csvData[a];
+        // Skip empty lines
+        if (row.length === 1 && row[0].trim() === "") continue;
+
+        let obj = {};
+        for (let b = 0; b < keys.length; b++) {
+            obj[keys[b].trim()] = row[b] ? row[b].trim() : ""; // Safe trim
+        }
+        JSONdata.push(obj);
+    }
+
+    console.log("Converted JSON:", JSONdata);
+
+    // Now you can feed it to the grid directly
+    prepareVueGridData(JSON.stringify(JSONdata))
+</script> */}
