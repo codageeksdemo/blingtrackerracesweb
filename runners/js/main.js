@@ -122,8 +122,9 @@ function deleteRunner(id)
  async function getRunners(raceID)
  {
     jwt=document.getElementById('token').value;
-    if(raceID==null)
+    if(raceID==null || raceID == "" || jwt == null || jwt == "")
     {
+		alert("Enter raceID and Token");
     	return;
     }
 	 	this.runner.runner.raceID=document.getElementById('raceID').value;
