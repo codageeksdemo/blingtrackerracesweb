@@ -176,8 +176,8 @@
 
 			  <div v-else-if="key=='Publish'">
                    <div>
-						<input type="checkbox" v-model="entry.verified">Select Runner
-                        <button type="button" :id="entry['bibID']" v-on:click="sendResult(entry)"> Send Result</button>
+						<input type="checkbox" v-model="entry.verified" v-if="!entry.alreadyNotified">{{ entry.alreadyNotified ? "" : "Select Runner" }}
+                        <button type="button" :id="entry['bibID']" v-on:click="sendResult(entry)" :disabled="entry.alreadyNotified">{{ entry.alreadyNotified ? "Result Sent" : "Send Result" }}</button>
                   </div>
               </div>
 

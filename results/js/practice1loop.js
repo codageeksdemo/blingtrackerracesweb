@@ -38,7 +38,7 @@ function prepareVueGridData(jsonData) {
         received[index]["durationInMiliSeconds"] = "";
 
         
-
+		received[index].alreadyNotified = false;
         selected.push(received[index]);
 	for (var i = 0; i < runners.length; i++) {
 			if (runners[i]["bibID"] === received[index]["bibID"]) {
@@ -1027,7 +1027,19 @@ async function getResults(raceID, token) {
 		} 
 
 	let response = await getCall(path);
+	
+	try {
+    	const notifyResponse = await fetch(`http://www.blingtracker.com/timings/v1/results/notified/${raceID}`);
+		const notifiedBibIDs = await notifyResponse.json();
 
+		console.log("Notified Bibs:", notifiedBibIDs);
+		
+		runnerGrid.gridData.forEach(runner => {
+			runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
+		});
+	} catch (error) {
+		console.error("Error fetching notified bibs:", error);
+	}
 }
 
 async function getRaces(raceID) {

@@ -333,6 +333,7 @@ function convertCSVdatatoJSON(csvData)
 		}
 		JSONdata.push(data);
 	}
+	prepareVueGridData(JSON.stringify(JSONdata));
 }
 
 function onFileChange(e) {
