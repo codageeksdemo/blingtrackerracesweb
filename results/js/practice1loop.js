@@ -1028,18 +1028,36 @@ async function getResults(raceID, token) {
 
 	let response = await getCall(path);
 	
-	try {
-    	const notifyResponse = await fetch(`http://www.blingtracker.com/timings/v1/results/notified/${raceID}`);
-		const notifiedBibIDs = await notifyResponse.json();
+	// try {
 
-		console.log("Notified Bibs:", notifiedBibIDs);
-		
-		runnerGrid.gridData.forEach(runner => {
+    // 	const notifyResponse = await fetch(`/timings/v1/results/notified/${raceID}`);
+	// 	const notifiedBibIDs = await notifyResponse.json();
+
+	// 	console.log("Notified Bibs:", notifiedBibIDs);
+
+	// 	runnerGrid.gridData.forEach(runner => {
+	// 		runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
+	// 	});
+	// } catch (error) {
+	// 	console.error("Error fetching notified bibs:", error);
+	// }
+
+	path = `/timings/v1/results/notified/${raceID}`;
+	fetch(path)
+		.then(response => response.json())
+		.then(responseJson => {
+			notifiedBibIDs = responseJson;
+			console.log("Notified Bibs:", notifiedBibIDs);
+
+			runnerGrid.gridData.forEach(runner => {
 			runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
 		});
-	} catch (error) {
-		console.error("Error fetching notified bibs:", error);
-	}
+		})
+		.catch(err =>{
+			console.log("error in fetching notified bibids: "+err);
+			throw err;
+		})
+
 }
 
 async function getRaces(raceID) {

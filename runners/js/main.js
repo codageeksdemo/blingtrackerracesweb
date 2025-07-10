@@ -321,6 +321,9 @@ function convertCSVdatatoJSON(csvData)
 {
 	let JSONdata =[];
 	let keys = csvData[0];
+	let raceID = document.getElementById('raceID').value;
+
+	keys.push(raceID);
 
 	for(let a = 1; a < csvData.length; a++)
 	{
