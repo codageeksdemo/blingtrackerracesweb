@@ -1,4 +1,4 @@
-
+ var csvHeader='name,city,address,mobile1,mobile2,email,bibID,age,gender,raceCode,bMID';
  var gridObj=null;
  var jwt = ""; 
  function prepareVueGridData(jsonData)
@@ -278,11 +278,8 @@ function downloadCSV() {
 
     const columns = runnerGrid.gridColumns;
     const csvRows = [];
-
-	delete columns.id;
-
     // Add headers
-    csvRows.push(columns.join(','));
+    csvRows.push(csvHeader);
 
     // Add rows
     // data.forEach(row => {
@@ -306,9 +303,17 @@ function parseCSV(csvString) {
 	//if validation failed, show alert with index
 	// lines should not have inverted commas [single/double] in it
         const lines = csvString.split('\n');
-        const data = [];
+	  if(!lines[0].trim().includes(csvHeader.trim()))
+        {
+                alert("Headers are not matching, pls verify with the template");
+                return;
+        }
 
+        const data = [];
+	let i=0;
         lines.forEach(line => {
+		line = line.trim();
+
             const values = line.split(','); // Assuming comma as delimiter
 			//allowed values base on the columns
             data.push(values);
@@ -360,7 +365,6 @@ function onFileChange(e) {
 	}
 	else 
 	{
-		alert("File uploaded");
 		const reader = new FileReader();
 		reader.onload = function(e) {
 			const csvContent = e.target.result; // The CSV content as a string
