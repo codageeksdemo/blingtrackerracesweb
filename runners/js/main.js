@@ -323,7 +323,7 @@ function convertCSVdatatoJSON(csvData)
 	let keys = csvData[0];
 	let raceID = document.getElementById('raceID').value;
 
-	keys.push(raceID);
+	keys.push("raceID");
 
 	for(let a = 1; a < csvData.length; a++)
 	{
@@ -334,12 +334,20 @@ function convertCSVdatatoJSON(csvData)
 		{
 			data[keys[b]] =row[b];
 		}
+		data[keys[keys.length-1]] = raceID;
 		JSONdata.push(data);
 	}
 	prepareVueGridData(JSON.stringify(JSONdata));
 }
 
 function onFileChange(e) {
+	let raceID = document.getElementById("raceID").value;
+	let token = document.getElementById("token").value;
+	if(raceID === undefined || raceID === "" || token === undefined || token === "")
+	{
+		alert("Please enter raceID and Token to Upload CSV File");
+		return;
+	}
 	var files = e.target.files || e.dataTransfer.files;
 	if (!files.length)
 	{
