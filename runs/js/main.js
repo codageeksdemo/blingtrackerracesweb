@@ -59,7 +59,7 @@ function saveRunner()
 function deleteRunner(id)
  {
  	let idToDelete = this.runner.runner.id ;
- 	fetch("http://www.blingtracker.com/timings/v2/runners/"+idToDelete, {
+ 	fetch("/timings/v2/runners/"+idToDelete, {
 	    "method": "DELETE",
 	    headers: {
 			"Content-Type": "application/json",
@@ -102,7 +102,7 @@ function deleteRunner(id)
                 		return "success";
                 }
             };
-            state.open("GET", "http://www.blingtracker.com/timings/"+path,true);
+            state.open("GET", "/timings/"+path,true);
 			if(this.jwt!=null)
 			{
 				state.setRequestHeader("Authorization","Bearer "+this.jwt);	
@@ -154,7 +154,7 @@ function pushRunnerRecord(){
 		delete this.runner.runner["id"];
 	}
 	
-	fetch("http://www.blingtracker.com/timings/v2/runners/", {
+	fetch("/timings/v2/runners/", {
 	    "method": "POST",
 	    body: JSON.stringify(this.runner.runner),
 	    headers: {
@@ -230,7 +230,7 @@ function pushImage(){
 	formData.append("image", input.files[0]);
 	formData.append('bmid','1');
 	let result = false;
-	fetch("http://www.blingtracker.com/blingdemo/v1/image/annotate", {
+	fetch("/blingdemo/v1/image/annotate", {
 		"method": "POST",
 		body: formData,
 		headers: {

@@ -60,7 +60,7 @@ function saveRunner()
 function deleteRunner(id)
  {
  	let idToDelete = this.runner.runner.id ;
- 	fetch("http://www.blingtracker.com/timings/v2/runners/"+idToDelete, {
+ 	fetch("/timings/v2/runners/"+idToDelete, {
 	    "method": "DELETE",
 	    headers: {
 			"Content-Type": "application/json",
@@ -108,7 +108,7 @@ function deleteRunner(id)
 			state.open("GET", path,true);
 			}
 			else {
-            state.open("GET", "http://www.blingtracker.com/timings/"+path,true);
+            state.open("GET", "/timings/"+path,true);
 			}
 			if(this.jwt!=null)
 			{
@@ -165,7 +165,7 @@ function pushRunnerRecord(){
 		delete this.runner.runner["id"];
 	}
 	
-	fetch("http://www.blingtracker.com/timings/v2/runners/", {
+	fetch("/timings/v2/runners/", {
 	    "method": "POST",
 	    body: JSON.stringify(this.runner.runner),
 	    headers: {
@@ -241,7 +241,7 @@ function pushImage(){
 	formData.append("image", input.files[0]);
 	formData.append('bmid','1');
 	let result = false;
-	fetch("http://www.blingtracker.com/blingdemo/v1/image/annotate", {
+	fetch("/blingdemo/v1/image/annotate", {
 		"method": "POST",
 		body: formData,
 		headers: {
@@ -338,7 +338,8 @@ function convertCSVdatatoJSON(csvData)
 		data[keys[keys.length-1]] = raceID;
 		JSONdata.push(data);
 	}
-	prepareVueGridData(JSON.stringify(JSONdata));
+	// prepareVueGridData(JSON.stringify(JSONdata));
+	pushRunnerRecordAll(JSONdata);
 }
 
 function onFileChange(e) {
@@ -369,24 +370,28 @@ function onFileChange(e) {
 	}
 }
 
-{/* <script>
+function pushRunnerRecordAll(runnerRecord)
+{
+	let jwt = document.getElementById("token").value;
 
-	let keys = csvData[0]; // First row is headers
-
-    for (let a = 1; a < csvData.length; a++) {
-        let row = csvData[a];
-        // Skip empty lines
-        if (row.length === 1 && row[0].trim() === "") continue;
-
-        let obj = {};
-        for (let b = 0; b < keys.length; b++) {
-            obj[keys[b].trim()] = row[b] ? row[b].trim() : ""; // Safe trim
-        }
-        JSONdata.push(obj);
-    }
-
-    console.log("Converted JSON:", JSONdata);
-
-    // Now you can feed it to the grid directly
-    prepareVueGridData(JSON.stringify(JSONdata))
-</script> */}
+	fetch("/timings/v2/runners/all", {
+	    "method": "POST",
+	    body: JSON.stringify(runnerRecord),
+	    headers: {
+			"Content-Type": "application/json",
+	        "Authorization": "Bearer "+ jwt
+	    }
+	})
+	.then(response => { 
+	    if(response.ok){
+				alert("CSV Runner Data is saved to server succesfully");
+	    } else{
+	        alert("Server returned Error -" +response.statusText);
+	    }                
+	})
+	.catch(err => {
+	    console.log("Error: "+ err);
+	    alert("Error occured "+ err);
+	 	throw err;
+	});
+}

@@ -1119,7 +1119,7 @@ function pushImage() {
 	formData.append('bmid', '1');
 	let result = false;
 
-	fetch("http://www.blingtracker.com/blingdemo/v1/image/annotate", {
+	fetch("/blingdemo/v1/image/annotate", {
 		"method": "POST",
 		body: formData,
 		headers: {

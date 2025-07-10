@@ -50,7 +50,7 @@
                 		return "success";
                 }
             };
-            state.open("GET", "http://www.blingtracker.com/timings/"+path,true);
+            state.open("GET", "/timings/"+path,true);
 					  //state.setRequestHeader("Content-Type","text/plain");
 	   	    state.send();
  
@@ -113,7 +113,7 @@ function pushImage(){
 	formData.append("image", input.files[0]);
 	formData.append('bmid','1');
 	let result = false;
-	fetch("http://www.blingtracker.com/blingdemo/v1/image/annotate", {
+	fetch("/blingdemo/v1/image/annotate", {
 		"method": "POST",
 		body: formData,
 		headers: {
