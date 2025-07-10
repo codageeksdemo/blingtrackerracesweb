@@ -325,7 +325,6 @@ function convertCSVdatatoJSON(csvData)
 	let raceID = document.getElementById('raceID').value;
 
 	keys.push("raceID");
-	delete keys.id;
 
 	for(let a = 1; a < csvData.length; a++)
 	{
@@ -337,6 +336,7 @@ function convertCSVdatatoJSON(csvData)
 			data[keys[b]] =row[b];
 		}
 		data[keys[keys.length-1]] = raceID;
+		delete data.id;
 		JSONdata.push(data);
 	}
 	// prepareVueGridData(JSON.stringify(JSONdata));
