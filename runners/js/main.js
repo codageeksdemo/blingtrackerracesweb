@@ -279,6 +279,8 @@ function downloadCSV() {
     const columns = runnerGrid.gridColumns;
     const csvRows = [];
 
+	delete columns.id;
+
     // Add headers
     csvRows.push(columns.join(','));
 
@@ -321,10 +323,10 @@ function parseCSV(csvString) {
 function convertCSVdatatoJSON(csvData)
 {
 	let JSONdata =[];
-	let keys = csvData[0];
+	let keys = ["name","city","address","mobile1","mobile2","email","bibID","age","gender","raceCode","bMID","raceID"]
 	let raceID = document.getElementById('raceID').value;
 
-	keys.push("raceID");
+	// keys.push("raceID");
 
 	for(let a = 1; a < csvData.length; a++)
 	{
@@ -336,7 +338,6 @@ function convertCSVdatatoJSON(csvData)
 			data[keys[b]] =row[b];
 		}
 		data[keys[keys.length-1]] = raceID;
-		delete data.id;
 		JSONdata.push(data);
 	}
 	// prepareVueGridData(JSON.stringify(JSONdata));
