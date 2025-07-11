@@ -420,6 +420,14 @@ function getFormattedSplits(data) {
 			return a.time - b.time;
 		});
 
+		for(let a = 0; a < newSplits.length; a++)
+		{
+			if(newSplits[a].km == newSplits[a+1].km && newSplits[a].registeredTime == newSplits[a+1].registeredTime)
+			{
+				newSplits.splice(a+1,1);
+			}
+		}
+
 		return newSplits;
 	}
 }
