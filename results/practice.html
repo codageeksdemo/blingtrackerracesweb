@@ -170,7 +170,13 @@
 
               <div v-else-if="key=='splits'">
                    <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
-                        <div v-for="row in entry[key]">{{ row }}</div>
+			<div v-for="row in entry[key]">{{ row.km }}:{{ row.registeredTime }} <br/ ></div>
+                  </div>
+              </div>
+
+	      <div v-else-if="key=='selctedSplits'">
+                   <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
+                        <div v-for="row in entry[key]">{{ row.km }}:{{ row.registeredTime }} <br/ ></div>
                   </div>
               </div>
 
@@ -609,6 +615,7 @@
 						<td></td>
 						<td>Start Time</td>
 						<td>Min. Lap Time</td>
+						<td>Min. Finish Duration </td>
 						<td>Laps Count for Finish</td>
 					</tr>
 					<tr v-for="(obj, index) in formFilter">
@@ -618,6 +625,8 @@
 
 						<td class="text-center">{{ obj.minLapTime}}</td>
 
+						<td class="text-center">{{ obj.minFinishDuration}} </td>
+                                                 
 						<td class="text-center">{{ obj.finishLoopCounts}} </td>
 					</tr>
 					<tr><td colspan="3">

@@ -30,6 +30,7 @@ function prepareVueGridData(jsonData) {
 			continue;
 		
         received[index]["splits"] = getFormattedSplits(received[index]["splits"]);
+		
         delete received[index]["startTime"];
        // received[index]["readerStartTimeStamp"] = getEpochTime(received[index]["readerStartTime"]);
         received[index]["finishTime"] = "";
@@ -73,7 +74,7 @@ function prepareVueGridData(jsonData) {
 		first = false;
 	});*/
 
-	columns=["bibID","readerStartTime","finishTime","splits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
+	columns=["bibID","readerStartTime","finishTime","splits","selectedSplits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
 	this.runnerGrid.gridColumns = columns;
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
@@ -197,6 +198,10 @@ function downloadResult() {
                                 }
                             return 0;
                         });
+	for(let index = 0; index < collection.length; index++)
+		{
+			delete collection[index].splits;
+		}
 
 	let content = JSON.stringify(collection);
 
@@ -598,6 +603,7 @@ async function getResultRace(raceID) {
 					gunTime: meta[group].gunTime,
 
 					minLapTime:  resultsMeta.find(m=> m.km==meta[group].km).minlaptime,
+					minFinishDuration: resultsMeta.find(m=> m.km==meta[group].km).minimumfinishduration,
 					finishLoopCounts: resultsMeta.find(m=> m.km==meta[group].km).finishloopcounts
 				};
 
@@ -659,7 +665,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 		let toDelete = 0;
 		
 
-
+		let selectedSplits=[];
 		for(let b = 0; b < splits.length; b++) {
 			if(runners[a].bibID=="2182")
 			{
@@ -686,13 +692,14 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				let diff = gunTimeStamp - splits[b].time;
 				if(diff>999)
 					{
-					console.log("ignoring "+ splits[b].time + "as it is lesser than "+ gunTimeStamp );
+					console.log("ignoring "+ splits[b].time + "as it is earlier than "+ gunTimeStamp );
 					wasRunnerAheadOfStartTime = true;
 					continue;
 					}
 			}
 			else if(runners[a].readerStartTimeStamp==undefined && splits[b].time<gunTimeStamp +allowedstartdelay && splits[b].time>=gunTimeStamp) // upto 300 seconds after guntime
 			{
+				selectedSplits.push(splits[b]);
 				setStartTime(runners[a],splits[b]);
 				wasrunnerwithstarttime = true;
 				// runnerwithstarttime = runnerwithstarttime+1;
@@ -700,19 +707,15 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 			} 
 			 else if(runners[a].readerStartTimeStamp==undefined && splits[b].time>gunTimeStamp +allowedstartdelay) // above 600  seconds 
                         {
-                                // set guntime as start time
 
-                                // let spl ={};
-                                // spl["km"] = 0;
-                                // spl["registeredTime"] = gunTime;
-                                // spl["time"] =  gunTimeStamp;
-                                // setStartTime(runners[a],spl);
+    				 wasrunnerwithnostarttime = true;
+				 selectedSplits.push(splits[b]);
 
-								wasrunnerwithnostarttime = true;
-								// runnerwithnostarttime = runnerwithnostarttime+1;
-
-                                // continue;
                         }
+			else
+			{
+				selectedSplits.push(splits[b]);
+			}
 
 			if(runners[a].finishTimeStamp=="" && splits[b].time>gunTimeStamp +minimumfinishduration) // upto 30 min seconds finishtime
                         {
@@ -751,6 +754,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 		if (wasrunnerwithnostarttime) runnerwithnostarttime++;
 		if (wasrunnerwithstarttime) runnerwithstarttime++;
 		if (wasrunnerwithfinish) runnerwithfinish++;
+		runners[a].selectedSplits=selectedSplits;
 
 	}
 	runnerGrid.gridData=runners;
@@ -1217,8 +1221,8 @@ function downloadResultCSV() {
 	});
 
 	// let headers = Object.keys(collection[0] || {}).filter(key => key !== 'splits');
-	let headers = ["RaceName","Kms","BibId","Name","Age","Gender","StartTime","FinsihTime","Duration"];
-	let keyinrequiredsequence = ["raceID","raceCode","bibID","name","age","gender","readerStartTime","finishTime","duration"];
+	let headers = ["RaceName","Kms","BibId","Name","Age","Gender","StartTime","FinsihTime","Duration","Splits"];
+	let keyinrequiredsequence = ["raceID","raceCode","bibID","name","age","gender","readerStartTime","finishTime","duration","selectedSplits"];
 	
 	let csvContent = headers.join(",") + "\n";
 
