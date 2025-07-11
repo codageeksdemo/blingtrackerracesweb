@@ -265,7 +265,7 @@
 		<h4>Results</h4>
 		<label>KM:</label><input v-model="tempResult.km"> <br/>
 		<label>Allowed start delay</label><input v-model="tempResult.allowedstartdelay"> <br/>
-		<label>One Loop Duration</label><input v-model="tempResult.oneloopduration"> <br/>
+		<label>Finish Split Pattern</label><input v-model="tempResult.finishsplitpattern"> <br/>
 		<label>Minimum Finish Duration</label><input v-model="tempResult.minimumfinishduration"> <br/>
 		<label>Finish Loop Counts</label><input v-model="tempResult.finishloopcounts"> <br/>
 		<label>Minimum Lap Time</label><input v-model="tempResult.minlaptime"> <br/>
@@ -280,7 +280,7 @@
 		<div v-for="(res, ri) in metaResults" :key="ri">
 		<label>KM:</label><input v-model="res.km"> <br/>
 		<label>Allowed start delay</label><input v-model="res.allowedstartdelay"> <br/>
-		<label>One Loop Duration</label><input v-model="res.oneloopduration"> <br/>
+		<label>Finish Split Pattern</label><input v-model="res.finishsplitpattern"> <br/>
 		<label>Minimum Finish Duration</label><input v-model="res.minimumfinishduration"> <br/>
 		<label>Finish Loop Counts</label><input v-model="res.finishloopcounts"> <br/>
 		<label>Minimum Lap Time</label><input v-model="res.minlaptime"><br/>
@@ -309,7 +309,7 @@
 				metaResults: [],
 				tempGroup: { km: '', fees: '', gunTime: '', gunTimeStamp: '', stopTime: '', stopTimeStamp: '' },
 				tempReader: { readerID: '', location: '', lapseTime: ''},
-				tempResult: { km: '',allowedstartdelay: '',oneloopduration: '',minimumfinishduration: '',finishloopcounts: '',minlaptime: '', age: [{ min: '', max: '', gender: ''}]}
+				tempResult: { km: '',allowedstartdelay: '',finishsplitpattern: [],minimumfinishduration: '',finishloopcounts: '',minlaptime: '', age: [{ min: '', max: '', gender: ''}]}
 			}, methods: {
 				saveGroup() {
 					this.metaGroups.push(this.tempGroup);
@@ -321,7 +321,7 @@
 				},
 				saveResult() {
 					this.metaResults.push(this.tempResult);
-					this.tempResult = { km: '',allowedstartdelay:'',oneloopduration:'',minimumfinishduration:'',finishloopcounts:'',minlaptime:'', age: [{ min: '', max: '', gender: ''}]};
+					this.tempResult = { km: '',allowedstartdelay:'',finishsplitpattern:[],minimumfinishduration:'',finishloopcounts:'',minlaptime:'', age: [{ min: '', max: '', gender: ''}]};
 				},
 				deleteGroup(index) {
 					this.metaGroups.splice(index, 1);
