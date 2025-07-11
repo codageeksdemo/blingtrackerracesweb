@@ -607,13 +607,16 @@
 				<table style="float:right;width:auto;font-size:smaller">
 					<tr>
 						<td></td>
-						<td>Min. Lap Time</td>
-						<td>Laps</td>
+						<td>Start Time</td>
+						<td>Laps for FinishTime</td>
 					</tr>
 					<tr v-for="(obj, index) in formFilter">
 						<td class="text-right">{{ index + ' Km' }}</td>
+
+						<td class="text-center">{{ obj.gunTime }}</td>
+
 						<td class="text-center"><input type="number" v-model="obj.minLapTime" class="text-center" min="0" size="3" /> mins.</td>
-						<td class="text-center"><input type="number" v-model="obj.laps" class="text-center" min="1" size="3" /></td>
+				<td class="text-center"><input type="number" v-model="obj.laps" class="text-center" min="1" size="3" /></td>   
 					</tr>
 					<tr><td colspan="3">
 						<input type="button" onclick="processSplits()" value="Process Splits" :disabled="Object.keys(formFilter).length == 0" />

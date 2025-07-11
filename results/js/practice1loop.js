@@ -420,9 +420,9 @@ function getFormattedSplits(data) {
 			return a.time - b.time;
 		});
 
-		for(let a = 0; a < newSplits.length; a++)
+		for(let a = 0; a < newSplits.length-1; a++)
 		{
-			if(newSplits[a].km == newSplits[a+1].km && newSplits[a].registeredTime == newSplits[a+1].registeredTime)
+			if(newSplits[a].km!=undefined && newSplits[a].km == newSplits[a+1].km && newSplits[a].registeredTime == newSplits[a+1].registeredTime)
 			{
 				newSplits.splice(a+1,1);
 			}
@@ -589,9 +589,9 @@ async function getResultRace(raceID) {
 			stopTime = meta[0].stopTimeStamp;
 			for(group in meta) {
 				runnerGrid.formFilter[meta[group].km] = {
-					// gunTime: meta[group].gunTime,
-					// minLapTime: 1,
-					// laps: 1
+					gunTime: meta[group].gunTime,
+					//minLapTime: 1,
+					//laps: 1
 				};
 
 				runnerGrid.filterByKms[meta[group].km] = true;
