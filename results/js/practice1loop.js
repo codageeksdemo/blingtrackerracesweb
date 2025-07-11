@@ -619,6 +619,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	let oneloopduration = runresults[0].oneloopduration;
 	let minimumfinishduration = runresults[0].minimumfinishduration;
 	let finishloopcounts = runresults[0].finishloopcounts;
+	let currentFinishloopcounts=0;
 	let minlaptime = runresults[0].minlaptime;
 
 	let runnerwithstarttime = chartadata.runnerwithstarttime;
@@ -729,12 +730,20 @@ function processSplitsNew(runGroup, runresults, chartadata) {
                         {
 							//&& b== finishloopcounts
 								// set guntime as start time
+				if(currentFinishloopcounts<finishloopcounts)
+				{
+					currentFinishloopcounts++;
 
-								wasrunnerwithfinish = true;
-								// runnerwithfinish = runnerwithfinish + 1;
+				}
 
-								setFinishTime(runners[a],splits[b], false);
-                                break;
+				if(currentFinishloopcounts==finishloopcounts)
+				{
+					
+					wasrunnerwithfinish = true;
+                                        setFinishTime(runners[a],splits[b], false);
+                              	        break;
+
+				}
 								
                         }	
 		}
