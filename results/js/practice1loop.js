@@ -620,7 +620,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
     // Set below params
 
 	let allowedstartdelay = runresults[0].allowedstartdelay;
-	let oneloopduration = runresults[0].oneloopduration;
+	// let oneloopduration = runresults[0].oneloopduration;
 	let minimumfinishduration = runresults[0].minimumfinishduration;
 	let finishloopcounts = runresults[0].finishloopcounts;
 	let minlaptime = runresults[0].minlaptime;
