@@ -1230,8 +1230,15 @@ function downloadResultCSV() {
 
 	collection.forEach((item) => {
 		let row = keyinrequiredsequence.map(key => {
-			let value = item[key];
-
+			let value ={}
+			if(key!="selectedSplits")
+			{
+				value = item[key];
+			}
+			else if(key=="selectedSplits")
+			{
+				value = JSON.stringify(item[key]);	
+			}
 			return value; // Number, null, or others
 		});
 		csvContent += row.join(",") + "\n";
