@@ -391,14 +391,8 @@ function getEpochTime(dt) {
 	let hh = parseInt(dt.substring(11, 13));
 	let mm = parseInt(dt.substring(14, 16));
 	let ss = parseInt(dt.substring(17, 19));
-	let newDate = new Date();
-	newDate.setDate = day;
-	newDate.setMonth(month);
-	newDate.setFullYear(year);
-	newDate.setHours(hh);
-	newDate.setMinutes(mm);
-	newDate.setSeconds(ss);
-	  return newDate.getTime() + 19800000;
+	let newDate = new Date(year,month,day,hh,mm,ss,0 );
+	 return newDate.getTime();
 }
 
 function getFormattedSplits(data) {
@@ -421,19 +415,19 @@ function getFormattedSplits(data) {
 		});
 		
 		let lastKM=0;
-		let lastRegisteredTime="";
+		let lastTime="";
 		let filteredSplits=[];
-		for(let a = 0; a < newSplits.length-1; a++)
+		for(let a = 0; a < newSplits.length; a++)
 		{
 			let spl = newSplits[a];
 			if(spl.km==undefined)
 				continue;
 
-			if(spl.km!=lastKM && spl.registeredTime!=lastRegisteredTime)
+			if(spl.km!=lastKM && spl.time!=lastTime)
 			{
 				filteredSplits.push(spl);
-				lastKM=spl.km;
-				lastRegisteredTime=spl.registeredTime;
+				lastKm=spl.km;
+				lastTime=spl.time;
 			}
 		}
 
