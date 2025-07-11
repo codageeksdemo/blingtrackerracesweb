@@ -619,7 +619,6 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	let oneloopduration = runresults[0].oneloopduration;
 	let minimumfinishduration = runresults[0].minimumfinishduration;
 	let finishloopcounts = runresults[0].finishloopcounts;
-	let currentFinishloopcounts=0;
 	let minlaptime = runresults[0].minlaptime;
 
 	let runnerwithstarttime = chartadata.runnerwithstarttime;
@@ -636,6 +635,10 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	let wasrunnerwithstarttime = false;
 	let wasrunnerwithnostarttime = false;
 	let wasrunnerwithfinish = false;
+	let currentTime=0;
+  	let currentFinishloopcounts=0;
+
+	
 
 	if(runners[a].bibID == '' || runners[a].raceCode!=runGroup.km)
         {    
@@ -651,47 +654,28 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 		let deleteFrom = -1;
 		let toDelete = 0;
 		
-		// determine the splits which have lesser time gap between them than the minimum lap time
-		for(let b = 0; b < splits.length - 1; b++) {
-			deleteFrom = -1;
-			toDelete = 0;
 
-			//console.log('diff [' + b + '+1]-[' + b + '] ' + (splits[b + 1].time - splits[b].time) + ' minLapTime ' + processParams[runners[a].raceCode].minLapTimeMilliSeconds);
-
-			// for(c = b; c < splits.length - 1; c++) {
-			// 	if(splits[c + 1].time - splits[c].time < minlaptime) {
-
-			// 	if(deleteFrom == -1)
-			// 			deleteFrom = c;
-
-			// 		toDelete++;
-			// 	}
-			// 	else
-			// 		break;
-			// }
-
-			if(toDelete) {
-				splits.splice(deleteFrom, toDelete);
-				//b--;
-			}
-
-			console.log('deleteFrom ' + deleteFrom + ' , toDelete ' + toDelete + ' from splits.length ' + splits.length);
-		}
-
-		// determine splits which are before the gun time
-		splits.sort((a,b)=> {
-                            if(a.time>b.time)
-                                {
-                                        return 1;
-                                }
-                            return 0;
-                        });
 
 		for(let b = 0; b < splits.length; b++) {
 			if(runners[a].bibID=="2182")
 			{
 					// alert( "called");
 
+			}
+
+			if(currentTime==0)
+                        {
+                                currentTime = splits[b].time;
+
+                        }
+			else
+			{
+				let oldCurrentTime = currentTime;
+				currentTime = splits[b].time;
+				if (splits[b].time- oldCurrentTime <= minlaptime)
+				{
+					continue;	
+				}
 			}
 
 			 if(splits[b].time < gunTimeStamp) {
