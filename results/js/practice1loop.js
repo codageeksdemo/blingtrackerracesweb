@@ -414,7 +414,7 @@ function getFormattedSplits(data) {
 			return a.time - b.time;
 		});
 		
-		let lastKM=0;
+		let lastKM=-1;
 		let lastTime="";
 		let filteredSplits=[];
 		for(let a = 0; a < newSplits.length; a++)
@@ -571,6 +571,8 @@ async function getRunners(raceID) {
 		})
 }
 
+
+
 async function getResultRace(raceID) {
 	let path = "/timings/v1/runs/" + raceID;
 
@@ -585,6 +587,7 @@ async function getResultRace(raceID) {
 		.then(responseJson => {
 			race = responseJson;
 			raceMeta = JSON.parse(race.meta).meta.groups;
+			let resultsMeta = JSON.parse(race.meta).meta.result;
 			meta = raceMeta;
 			displayGunTime = meta[0].gunTime;
 			gunTime = meta[0].gunTimeStamp;
@@ -593,8 +596,9 @@ async function getResultRace(raceID) {
 			for(group in meta) {
 				runnerGrid.formFilter[meta[group].km] = {
 					gunTime: meta[group].gunTime,
-					//minLapTime: 1,
-					//laps: 1
+
+					minLapTime:  resultsMeta.find(m=> m.km==meta[group].km).minlaptime,
+					finishLoopCounts: resultsMeta.find(m=> m.km==meta[group].km).finishloopcounts
 				};
 
 				runnerGrid.filterByKms[meta[group].km] = true;
