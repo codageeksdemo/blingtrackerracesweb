@@ -198,12 +198,14 @@ function downloadResult() {
                                 }
                             return 0;
                         });
-	for(let index = 0; index < collection.length; index++)
+		
+		let clonedcollection = structuredClone(collection);
+	for(let index = 0; index < clonedcollection.length; index++)
 		{
-			delete collection[index].splits;
+			delete clonedcollection[index].splits;
 		}
 
-	let content = JSON.stringify(collection);
+	let content = JSON.stringify(clonedcollection);
 
 
 	element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(content));
