@@ -85,6 +85,7 @@ async function getResultRace(raceID,token) {
     	alert("Race ID and Token are required.");
     	return;
 	}
+	alert("Get Results Called");
 	let path = "/timings/v1/runs/" + raceID;
 
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
