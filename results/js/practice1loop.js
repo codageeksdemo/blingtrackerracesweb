@@ -103,7 +103,7 @@ function prepareVueGridData(jsonData) {
 	
     populateFilters();
 	loadCustomChartData(x);
-	processSplits1(this.runresults);
+//	processSplits1(this.runresults);
 }
 
 // function processSplits1() {
@@ -632,17 +632,17 @@ function processSplitsNew(runGroup, runresults, chartadata) {
     // Set below params
 
 	let allowedstartdelay = runresults[0].allowedstartdelay;
-	// let oneloopduration = runresults[0].oneloopduration;
-	let minimumfinishduration = runresults[0].minimumfinishduration;
-	let finishloopcounts = runresults[0].finishloopcounts;
-	let minlaptime = runresults[0].minlaptime;
+	let minimumfinishduration = parseInt(runresults[0].minimumfinishduration);
+	let finishloopcounts = parseInt(runresults[0].finishloopcounts);
+	let minlaptime = parseInt(runresults[0].minlaptime);
 
 	let runnerwithstarttime = chartadata.runnerwithstarttime;
 	let runnerwithnostarttime = chartadata.runnerwithnostarttime;
 	let runnerwithfinish = chartadata.runnerwithfinish;
 	let counterwasRunnerAheadOfStartTime = chartadata.counterwasRunnerAheadOfStartTime;
 	
-	let gunTime = runGroup.gunTime;
+	let gunTime = parseInt(runGroup.gunTime);
+	let oneloopduration = runresults[0].oneloopduration;
 	let gunTimeStamp = getEpochTime(runGroup.gunTime);
 
 	for(let a = 0; a < runners.length; a++) {
@@ -686,12 +686,11 @@ function processSplitsNew(runGroup, runresults, chartadata) {
                         }
 			else
 			{
-				let oldCurrentTime = currentTime;
-				currentTime = splits[b].time;
+			   	let oldCurrentTime = currentTime;
 				if (splits[b].time- oldCurrentTime <= minlaptime)
 				{
 					continue;	
-				}
+				} 
 			}
 
 			 if(splits[b].time < gunTimeStamp) {
@@ -705,6 +704,8 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 			}
 			else if(runners[a].readerStartTimeStamp==undefined && splits[b].time<gunTimeStamp +allowedstartdelay && splits[b].time>=gunTimeStamp) // upto 300 seconds after guntime
 			{
+				 currentTime = splits[b].time;
+
 				selectedSplits.push(splits[b]);
 				setStartTime(runners[a],splits[b]);
 				wasrunnerwithstarttime = true;
@@ -715,24 +716,30 @@ function processSplitsNew(runGroup, runresults, chartadata) {
                         {
 
     				 wasrunnerwithnostarttime = true;
+				 currentTime = splits[b].time;
+
 				 selectedSplits.push(splits[b]);
 
                         }
 			else
 			{
+				 currentTime = splits[b].time;
+
 				selectedSplits.push(splits[b]);
 			}
 
-			if(runners[a].finishTimeStamp=="" && splits[b].time>gunTimeStamp +minimumfinishduration) // upto 30 min seconds finishtime
+			if(runners[a].finishTimeStamp=="" ) // upto 30 min seconds finishtime
                         {
-							//&& b== finishloopcounts
-								// set guntime as start time
 				if(currentFinishloopcounts<finishloopcounts)
 				{
 					currentFinishloopcounts++;
 
 				}
 
+				if( splits[b].timer<gunTimeStamp +minimumfinishduration )
+				{
+					continue;
+				}
 				if(currentFinishloopcounts==finishloopcounts)
 				{
 					
