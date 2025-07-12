@@ -103,7 +103,7 @@ function prepareVueGridData(jsonData) {
 	
     populateFilters();
 	loadCustomChartData(x);
-	// processSplits1();
+	processSplits1(this.runresults);
 }
 
 // function processSplits1() {
@@ -115,15 +115,12 @@ function prepareVueGridData(jsonData) {
 // 	}
 // }
 
-function processSplits1() {
+function processSplits1(resultsdata) {
 	for(let a = 0; a < runnerGrid.gridData.length; a++)
-	{
-		if(runnerGrid.gridData[a].bibID==2356)
-			{		
-				let totalKms = calculateKms_old(runnerGrid.gridData[a].splits, runnerGrid.gridData[a], a);
-				alert(runnerGrid.gridData[a].bibID+" total km = "+totalKms)
-				alert(missingsplits(runnerGrid.gridData[a].splits, runnerGrid.gridData[a]))
-			}
+	{	
+		let totalKms = calculateKms_old(runnerGrid.gridData[a].splits, runnerGrid.gridData[a], a);
+		// alert(runnerGrid.gridData[a].bibID+" total km = "+totalKms)
+		console.log(missingsplits(runnerGrid.gridData[a].splits, runnerGrid.gridData[a], resultsdata))
 	}
 }
 
@@ -368,9 +365,16 @@ function calculateKms_old(data, record, a)
 	}
 }
 
-function missingsplits(data, record)
+function missingsplits(data, record, resultsdata)
 {
-	let idealsplitpattern = [0,1,5,0];
+	let idealsplitpattern = [];
+	for(let a=0; a<resultsdata.length;a++)
+	{
+		if(resultsdata[a].km == record.raceCode)
+		{
+		idealsplitpattern = resultsdata.finishsplitpattern;
+		}
+	}
 	
 	for(let index = 0; index<data.length; index++)
 	{
