@@ -265,10 +265,10 @@
 		<h4>Results</h4>
 		<label>KM:</label><input v-model="tempResult.km"> <br/>
 		<label>Allowed start delay</label><input v-model="tempResult.allowedstartdelay"> <br/>
-		<label>Finish Split Pattern</label><input v-model="tempResult.finishsplitpattern"> <br/>
-		<label>Minimum Finish Duration</label><input v-model="tempResult.minimumfinishduration"> <br/>
-		<label>Finish Loop Counts</label><input v-model="tempResult.finishloopcounts"> <br/>
 		<label>Minimum Lap Time</label><input v-model="tempResult.minlaptime"> <br/>
+		<label>Finish Loop Counts</label><input v-model="tempResult.finishloopcounts"> <br/>
+		<label>Minimum Finish Duration</label><input v-model="tempResult.minimumfinishduration"> <br/>
+		<label>Finish Split Pattern</label><input v-model="tempResult.finishsplitpattern"> <br/>
 			<div v-for="(age, index) in tempResult.age">
 				<label><h5>Age:</h5></label>
 				<label>Min:</label><input v-model="age.min" type="number">
@@ -280,10 +280,10 @@
 		<div v-for="(res, ri) in metaResults" :key="ri">
 		<label>KM:</label><input v-model="res.km"> <br/>
 		<label>Allowed start delay</label><input v-model="res.allowedstartdelay"> <br/>
-		<label>Finish Split Pattern</label><input v-model="res.finishsplitpattern"> <br/>
-		<label>Minimum Finish Duration</label><input v-model="res.minimumfinishduration"> <br/>
-		<label>Finish Loop Counts</label><input v-model="res.finishloopcounts"> <br/>
 		<label>Minimum Lap Time</label><input v-model="res.minlaptime"><br/>
+		<label>Finish Loop Counts</label><input v-model="res.finishloopcounts"> <br/>
+		<label>Minimum Finish Duration</label><input v-model="res.minimumfinishduration" @change="metaResultsdefaultminfinishduration(ri)"> <br/>
+		<label>Finish Split Pattern</label><input v-model="res.finishsplitpattern"> <br/>
 		<div v-for="(age, ai) in res.age" :key="ai">
 			<label><h5>Age:</h5></label>
 			<label>Min:</label><input v-model="age.min">
@@ -309,7 +309,7 @@
 				metaResults: [],
 				tempGroup: { km: '', fees: '', gunTime: '', gunTimeStamp: '', stopTime: '', stopTimeStamp: '' },
 				tempReader: { readerID: '', location: '', lapseTime: ''},
-				tempResult: { km: '',allowedstartdelay: '',finishsplitpattern: [],minimumfinishduration: '',finishloopcounts: '',minlaptime: '', age: [{ min: '', max: '', gender: ''}]}
+				tempResult: { km: '',allowedstartdelay: '',finishsplitpattern: [],minimumfinishduration: '',finishloopcounts: '',minlaptime: '', age: [{ min: '', max: '', gender: ''}]},
 			}, methods: {
 				saveGroup() {
 					this.metaGroups.push(this.tempGroup);
@@ -320,6 +320,12 @@
 					this.tempReader = { readerID: '', location: '', lapseTime: ''};
 				},
 				saveResult() {
+					if(this.tempResult.minimumfinishduration < this.defaultminfinishduration)
+					{
+						alert("Minimum Finish duration { "+this.tempResult.minimumfinishduration+" } is less than (minlaptime x finishloopcounts) [ "+this.defaultminfinishduration+" ] , for reference required minimum value will be displayed in input box");
+						this.tempResult.minimumfinishduration = this.defaultminfinishduration ;
+						return ;
+					}
 					this.metaResults.push(this.tempResult);
 					this.tempResult = { km: '',allowedstartdelay:'',finishsplitpattern:[],minimumfinishduration:'',finishloopcounts:'',minlaptime:'', age: [{ min: '', max: '', gender: ''}]};
 				},
@@ -331,6 +337,22 @@
 				},
 				deleteResult(index) {
 					this.metaResults.splice(index, 1);
+				},
+				metaResultsdefaultminfinishduration(index)
+				{
+					let x = this.metaResults[index].minlaptime*this.metaResults[index].finishloopcounts;
+					if(this.metaResults[index].minimumfinishduration < x)
+					{
+						alert("Changed Minimum Finish duration { "+this.metaResults[index].minimumfinishduration+" } is less than (minlaptime x finishloopcounts) [ "+x+" ] , for reference required minimum value will be displayed in input box");
+						this.metaResults[index].minimumfinishduration = x;
+					}
+				}
+			},
+			computed: {
+				defaultminfinishduration()
+				{ 
+					let x = this.tempResult.minlaptime*this.tempResult.finishloopcounts;
+					return x;
 				}
 			}
 			});
