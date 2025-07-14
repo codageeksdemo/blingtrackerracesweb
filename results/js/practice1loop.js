@@ -103,7 +103,7 @@ function prepareVueGridData(jsonData) {
 	
     populateFilters();
 	loadCustomChartData(x);
-//	processSplits1(this.runresults);
+	//processSplits1(this.runresults);
 }
 
 // function processSplits1() {
@@ -641,7 +641,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	let runnerwithfinish = chartadata.runnerwithfinish;
 	let counterwasRunnerAheadOfStartTime = chartadata.counterwasRunnerAheadOfStartTime;
 	
-	let gunTime = parseInt(runGroup.gunTime);
+	let gunTime = runGroup.gunTime;
 	let oneloopduration = runresults[0].oneloopduration;
 	let gunTimeStamp = getEpochTime(runGroup.gunTime);
 
@@ -673,22 +673,25 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 		let selectedSplits=[];
 		for(let b = 0; b < splits.length; b++) {
-			if(runners[a].bibID=="2182")
+			if(runners[a].bibID=="2005")
 			{
-					// alert( "called");
-
+				//	 alert( "called");
+				
 			}
 
-			if(currentTime==0)
+		/*	if(currentTime==0)
                         {
                                 currentTime = splits[b].time;
-
+				
                         }
-			else
+			else*/
+			if(currentTime>0)
 			{
 			   	let oldCurrentTime = currentTime;
 				if (splits[b].time- oldCurrentTime <= minlaptime)
 				{
+					 splits[b]["inference"]="filtered for less than minlaptime";
+
 					continue;	
 				} 
 			}
@@ -698,6 +701,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				if(diff>999)
 					{
 					console.log("ignoring "+ splits[b].time + "as it is earlier than "+ gunTimeStamp );
+					splits[b]["inference"]="Ahead of StartTime";	
 					wasRunnerAheadOfStartTime = true;
 					continue;
 					}
@@ -707,6 +711,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				 currentTime = splits[b].time;
 
 				selectedSplits.push(splits[b]);
+				 splits[b]["inference"]="StartTime";
 				setStartTime(runners[a],splits[b]);
 				wasrunnerwithstarttime = true;
 				// runnerwithstarttime = runnerwithstarttime+1;
@@ -717,7 +722,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
     				 wasrunnerwithnostarttime = true;
 				 currentTime = splits[b].time;
-
+				  splits[b]["inference"]="No  StartTime Assigned";    
 				 selectedSplits.push(splits[b]);
 
                         }
@@ -726,6 +731,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				 currentTime = splits[b].time;
 
 				selectedSplits.push(splits[b]);
+				 splits[b]["inference"]="Selected due to intermediate ";
 			}
 
 			if(runners[a].finishTimeStamp=="" ) // upto 30 min seconds finishtime
@@ -736,8 +742,9 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 				}
 
-				if( splits[b].timer<gunTimeStamp +minimumfinishduration )
+				if( splits[b].time<gunTimeStamp +minimumfinishduration )
 				{
+					 splits[b]["inference"]="less than minimum duration";
 					continue;
 				}
 				if(currentFinishloopcounts==finishloopcounts)
@@ -745,6 +752,7 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 					
 					wasrunnerwithfinish = true;
                                         setFinishTime(runners[a],splits[b], false);
+					 splits[b]["inference"]="FinishTime";    
                               	        break;
 
 				}
