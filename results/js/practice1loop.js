@@ -645,16 +645,21 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	let oneloopduration = runresults[0].oneloopduration;
 	let gunTimeStamp = getEpochTime(runGroup.gunTime);
 
+	let inputBibID = document.getElementById("inputBibID").value;
+
 	for(let a = 0; a < runners.length; a++) {
+
+	if(runners[a].bibID == inputBibID)
+		{
+			alert( "called");	
+		}
 
 	let wasRunnerAheadOfStartTime = false;
 	let wasrunnerwithstarttime = false;
 	let wasrunnerwithnostarttime = false;
 	let wasrunnerwithfinish = false;
 	let currentTime=0;
-  	let currentFinishloopcounts=0;
-
-	
+  	let currentFinishloopcounts=0;	
 
 	if(runners[a].bibID == '' || runners[a].raceCode!=runGroup.km)
         {    
@@ -673,11 +678,6 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 		let selectedSplits=[];
 		for(let b = 0; b < splits.length; b++) {
-			if(runners[a].bibID=="2005")
-			{
-				//	 alert( "called");
-				
-			}
 
 		/*	if(currentTime==0)
                         {
