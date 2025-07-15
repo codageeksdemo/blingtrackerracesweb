@@ -678,6 +678,14 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 		let selectedSplits=[];
 		for(let b = 0; b < splits.length; b++) {
+<<<<<<< Updated upstream
+=======
+			if(runners[a].bibID=="2018")
+			{
+			//		 alert( "called");
+				
+			}
+>>>>>>> Stashed changes
 
 		/*	if(currentTime==0)
                         {
@@ -756,11 +764,16 @@ function processSplitsNew(runGroup, runresults, chartadata) {
                               	        break;
 
 				}
+				else
+				{
+					 splits[b]["inference"]= "Status:"+ currentFinishloopcounts +" of "+ finishloopcounts +" loops finished";
+
+				}
 								
                         }	
 		}
 
-				// if(wasRunnerAheadOfStartTime==true)
+			// if(wasRunnerAheadOfStartTime==true)
 				// {
 				// 				let spl ={};
                 //                 spl["km"] = 0;
