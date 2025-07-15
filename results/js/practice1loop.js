@@ -678,14 +678,6 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 		let selectedSplits=[];
 		for(let b = 0; b < splits.length; b++) {
-<<<<<<< Updated upstream
-=======
-			if(runners[a].bibID=="2018")
-			{
-			//		 alert( "called");
-				
-			}
->>>>>>> Stashed changes
 
 		/*	if(currentTime==0)
                         {
