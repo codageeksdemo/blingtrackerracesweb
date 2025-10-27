@@ -1,0 +1,12 @@
+{
+    "address": "St.Joseph's Indian Composite PU College",
+    "city": "Bengaluru",
+    "meta": "{\"meta\": {\"groups\":[{\"km\":10,\"fees\":0,\"gunTime\":\"15/06/2025 06:10:50\", \"gunTimeStamp\":\"1749948055000\", \"stopTime\":\"16/06/2025 11:01:06\",\"stopTimeStamp\":\"1750051861000\" },{\"km\":5,\"fees\":0,\"gunTime\":\"14/06/2025 06:26:15\", \"gunTimeStamp\":\"1749948980000\", \"stopTime\":\"16/06/2025 11:01:06\",\"stopTimeStamp\":\"1750051861000\" }],\"readers\":[{\"readerID\":\"1\",\"location\":1,\"lapseTime\":60000},{\"readerID\":\"2\",\"location\":2,\"lapseTime\":60000},{\"readerID\":\"3\",\"location\":3,\"lapseTime\":60000},{\"readerID\":\"4\",\"location\":4,\"lapseTime\":60000},{\"readerID\":\"5\",\"location\":5,\"lapseTime\":60000}], \"result\":[{\"km\":10, \"allowedstartdelay\":600000, \"oneloopduration\":1200000, \"minimumfinishduration\":1800000, \"finishloopcounts\":1, \"minlaptime\":1200000, \"age\":[{\"min\":5,\"max\":17,\"gender\":\"M\"},{\"min\":18,\"max\":29,\"gender\":\"M\"},{\"min\":30,\"max\":44,\"gender\":\"M\"},{\"min\":45,\"max\":59,\"gender\":\"M\"},{\"min\":60,\"max\":75,\"gender\":\"M\"},{\"min\":76,\"max\":110,\"gender\":\"M\"},{\"min\":5,\"max\":17,\"gender\":\"F\"},{\"min\":18,\"max\":29,\"gender\":\"F\"},{\"min\":30,\"max\":44,\"gender\":\"F\"},{\"min\":45,\"max\":59,\"gender\":\"F\"},{\"min\":60,\"max\":75,\"gender\":\"F\"},{\"min\":76,\"max\":110,\"gender\":\"F\"}]},{\"km\":5, \"allowedstartdelay\":600000, \"oneloopduration\":600000, \"minimumfinishduration\":900000, \"finishloopcounts\":1, \"minlaptime\":600000, \"age\":[{\"min\":5,\"max\":17,\"gender\":\"M\"},{\"min\":18,\"max\":29,\"gender\":\"M\"},{\"min\":30,\"max\":44,\"gender\":\"M\"},{\"min\":45,\"max\":59,\"gender\":\"M\"},{\"min\":60,\"max\":75,\"gender\":\"M\"},{\"min\":76,\"max\":110,\"gender\":\"M\"},{\"min\":5,\"max\":17,\"gender\":\"F\"},{\"min\":18,\"max\":29,\"gender\":\"F\"},{\"min\":30,\"max\":44,\"gender\":\"F\"},{\"min\":45,\"max\":59,\"gender\":\"F\"},{\"min\":60,\"max\":75,\"gender\":\"F\"},{\"min\":76,\"max\":110,\"gender\":\"F\"}]}]}}",
+    "mobile2": "",
+    "name": "FinRun",
+    "mobile1": "9898251010",
+    "photo": "/races/assets/registration/images/finrun.png",
+    "id": "35",
+    "email": "maulik@blingtracker.com",
+    "eventDate": "15/06/2025"
+}

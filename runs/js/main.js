@@ -1,4 +1,4 @@
- var csvHeader='name,city,address,mobile1,mobile2,email,bibID,age,gender,raceCode,bMID';
+
  var gridObj=null;
  var jwt = ""; 
  function prepareVueGridData(jsonData)
@@ -45,7 +45,6 @@
 
 function newRunner()
 {
-	// alert("New Runner Called")
 	this.runner.display=true;
 	this.runner.loadID=-2;
 }
@@ -103,13 +102,7 @@ function deleteRunner(id)
                 		return "success";
                 }
             };
-			if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-			{
-			state.open("GET", path,true);
-			}
-			else {
             state.open("GET", "/timings/"+path,true);
-			}
 			if(this.jwt!=null)
 			{
 				state.setRequestHeader("Authorization","Bearer "+this.jwt);	
@@ -122,22 +115,18 @@ function deleteRunner(id)
  async function getRunners(raceID)
  {
     jwt=document.getElementById('token').value;
-    if(raceID==null || raceID == "" || jwt == null || jwt == "")
+    if(raceID==null)
     {
-		alert("Enter raceID and Token");
     	return;
     }
 	 	this.runner.runner.raceID=document.getElementById('raceID').value;
 	 	   this.runner.showAdd=true;
 
-        if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-			{ let response = await getCall('temp/runners.json'); }
-		else {
+        	
   		let response = await getCall("v2/runners/"+raceID);
-		}
   		if(response == undefined)
   		{
-  			alert("Unable to retrieve data for the raceID "+ raceID);
+  		//	alert("Unable to retrieve data for the raceID "+ raceID);
   			return;
   		}
  }
@@ -267,137 +256,8 @@ function returnFileSize(number) {
   } else if (number >= 1048576) {
     return `${(number / 1048576).toFixed(1)} MB`;
   }
+  
+  
 }
 
-function downloadCSV() {
-    // const data = runnerGrid.gridData;
-    // if (!data || data.length === 0) {
-    //     alert("No data available to download.");
-    //     return;
-    // }
 
-    const columns = runnerGrid.gridColumns;
-    const csvRows = [];
-    // Add headers
-    csvRows.push(csvHeader);
-
-    // Add rows
-    // data.forEach(row => {
-    //     const values = columns.map(col => `"${(row[col])}"`);
-    //     csvRows.push(values.join(','));
-    // });
-
-    // const csvContent = csvRows.join('\n');
-    const blob = new Blob([csvRows], { type: 'text/csv;charset=utf-8;' });
-
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = 'runners.csv';
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-}
-
-function parseCSV(csvString) {
-	//if validation failed, show alert with index
-	// lines should not have inverted commas [single/double] in it
-        const lines = csvString.split('\n');
-	  if(!lines[0].trim().includes(csvHeader.trim()))
-        {
-                alert("Headers are not matching, pls verify with the template");
-                return;
-        }
-
-        const data = [];
-	let i=0;
-        lines.forEach(line => {
-		line = line.trim();
-
-            const values = line.split(','); // Assuming comma as delimiter
-			//allowed values base on the columns
-            data.push(values);
-        });
-
-        console.log("Parsed CSV Data:", data);
-        // You can now work with the 'data' array
-
-		convertCSVdatatoJSON(data);
-}
-
-function convertCSVdatatoJSON(csvData)
-{
-	let JSONdata =[];
-	let keys = ["name","city","address","mobile1","mobile2","email","bibID","age","gender","raceCode","bMID","raceID"]
-	let raceID = document.getElementById('raceID').value;
-
-	// keys.push("raceID");
-
-	for(let a = 1; a < csvData.length; a++)
-	{
-		let row = csvData[a];
-		let data ={};
-
-		for(b = 0; b < keys.length; b++)
-		{
-			data[keys[b]] =row[b];
-		}
-		data[keys[keys.length-1]] = raceID;
-		JSONdata.push(data);
-	}
-	// prepareVueGridData(JSON.stringify(JSONdata));
-	pushRunnerRecordAll(JSONdata);
-}
-
-function onFileChange(e) {
-	let raceID = document.getElementById("raceID").value;
-	let token = document.getElementById("token").value;
-	if(raceID === undefined || raceID === "" || token === undefined || token === "")
-	{
-		alert("Please enter raceID and Token to Upload CSV File");
-		return;
-	}
-	var files = e.target.files || e.dataTransfer.files;
-	if (!files.length)
-	{
-	alert("Please upload File");
-	return;
-	}
-	else 
-	{
-		const reader = new FileReader();
-		reader.onload = function(e) {
-			const csvContent = e.target.result; // The CSV content as a string
-			// Now you can process the csvContent string
-			console.log(csvContent); 
-			parseCSV(csvContent); // Call a function to parse the CSV data
-		};
-		reader.readAsText(files[0]); // Read the file as plain text
-	}
-}
-
-function pushRunnerRecordAll(runnerRecord)
-{
-	let jwt = document.getElementById("token").value;
-
-	fetch("/timings/v2/runners/all", {
-	    "method": "POST",
-	    body: JSON.stringify(runnerRecord),
-	    headers: {
-			"Content-Type": "application/json",
-	        "Authorization": "Bearer "+ jwt
-	    }
-	})
-	.then(response => { 
-	    if(response.ok){
-				alert("CSV Runner Data is saved to server succesfully");
-	    } else{
-	        alert("Server returned Error -" +response.statusText);
-	    }                
-	})
-	.catch(err => {
-	    console.log("Error: "+ err);
-	    alert("Error occured "+ err);
-	 	throw err;
-	});
-}

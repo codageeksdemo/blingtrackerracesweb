@@ -21,7 +21,7 @@
 			},
 		   methods:{
 			   getImg:	function(img) {
-				return "http://www.blingtracker.com/pics/images/"+img;
+				return "/pics/images/"+img;
 				},
 			   onFileChange(e) {
 		      	var files = e.target.files || e.dataTransfer.files;
