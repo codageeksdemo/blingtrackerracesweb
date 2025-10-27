@@ -10,12 +10,13 @@ var stopTime="";
 var displayStopTime="";
 var exportRaceID="27";
 var raceMeta=[];
-
+var inProcess=false;
 // var runnerwithstarttime=0; //runners with starttime
 // var runnerwithnostarttime=0; //runnners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
 // var runnerwithfinish=0;
 
 function prepareVueGridData(jsonData) {
+	inProcess=false;
 	let received = JSON.parse(jsonData);
 	//let received = [{"raceID":"2","bibID":"1","startTime":"","finishTime":"1715199155000","splits":"[\"{\\\"km\\\":5,\\\"time\\\":\\\"1715199155000\\\"}\",\"{\\\"km\\\":2.5,\\\"time\\\":\\\"1715199155000\\\"}\"]","groupR":""}];
 	let selected =[];
@@ -47,6 +48,7 @@ function prepareVueGridData(jsonData) {
 				received[index]["age"] = parseInt(runners[i]["age"]);
 				received[index]["gender"] = runners[i]["gender"];
 				received[index]["raceCode"] = parseInt(runners[i]["raceCode"]);
+				received[index]["bMID"] = runners[i]["bMID"];
 
 				break;
 			}
@@ -74,7 +76,7 @@ function prepareVueGridData(jsonData) {
 		first = false;
 	});*/
 
-	columns=["bibID","readerStartTime","finishTime","splits","selectedSplits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
+	columns=["bibID","bMID","readerStartTime","finishTime","splits","selectedSplits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
 	this.runnerGrid.gridColumns = columns;
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
@@ -1049,6 +1051,12 @@ async function getCall(path) {
 }
 
 async function getResults(raceID, token) {
+	if(inProcess)
+	{
+		alert("Your request is in process, kindly wait for the response");
+		return;
+	}
+	inProcess=true;
 	if (raceID == null) {
 		return;
 	}
@@ -1056,7 +1064,6 @@ async function getResults(raceID, token) {
 	this.token = token;
 	await getRunners(raceID);
 	await getResultRace(raceID);
-
 	let path = "/timings/v1/results/" + raceID;
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
 		{ 
@@ -1065,7 +1072,7 @@ async function getResults(raceID, token) {
 		} 
 
 	let response = await getCall(path);
-	
+	inProcess=false;	
 	// try {
 
     // 	const notifyResponse = await fetch(`/timings/v1/results/notified/${raceID}`);
@@ -1089,6 +1096,7 @@ async function getResults(raceID, token) {
 
 			runnerGrid.gridData.forEach(runner => {
 			runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
+			inProcess=false;	
 		});
 		})
 		.catch(err =>{
