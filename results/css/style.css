@@ -949,6 +949,47 @@ a[data-type='lightbox']:hover img {
 	color: gray;
 }
 
+/* Global table responsive styles */
+.container table,
+#runnerGrid table,
+#reports table {
+    width: auto;
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+.container table td,
+.container table th,
+#runnerGrid table td,
+#runnerGrid table th,
+#reports table td,
+#reports table th {
+    min-width: 100px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 8px;
+}
+
+/* Make table containers scrollable */
+.container div:has(table),
+#runnerGrid,
+#reports .container {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+/* Special handling for nested scrollable areas */
+#reports .container div[style*="overflow: auto"],
+#runnerGrid div[style*="overflow: auto"] {
+    max-height: 80px;
+    border: 1px solid #ddd;
+    margin: 4px 0;
+    padding: 4px;
+}
+
 .ul-check {
   margin-bottom: 50px;
   padding-left: 0;
@@ -984,6 +1025,28 @@ a[data-type='lightbox']:hover img {
     height: 75px;
     margin: 15px;     
     }
+
+/* Table responsive styles */
+#runnerGrid {
+    overflow-x: auto;
+    max-width: 100%;
+    -webkit-overflow-scrolling: touch;
+}
+
+#runnerGrid table {
+    width: auto;
+    min-width: 100%;
+    white-space: nowrap;
+}
+
+#runnerGrid th,
+#runnerGrid td {
+    min-width: 100px;
+    max-width: 300px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 8px;
+}
     
 .highlight{
 
