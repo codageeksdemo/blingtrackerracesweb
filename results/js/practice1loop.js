@@ -374,7 +374,7 @@ function saveRunner() {
 function sendLapsUpdate() {
 	this.token = document.getElementById('token').value;
 
-	fetch("http://www.blingtracker.com/timings/v2/results/lapsupdate", {
+	fetch("https://www.blingtracker.com/timings/v2/results/lapsupdate", {
 		"method": "POST",
 		body: JSON.stringify(prepareLapsUpdateBody()),
 		headers: {
@@ -489,7 +489,7 @@ function addSplit(splits) {
 
 async function getRunners(raceID) {
 	//raceID="12";
-	let path = "http://www.blingtracker.com/timings/v2/runners/" + raceID;
+	let path = "https://www.blingtracker.com/timings/v2/runners/" + raceID;
 
 	// if(location.host == 'localhost')
 	// 	path = '../../temp/runners.json';
@@ -517,7 +517,7 @@ async function getRunners(raceID) {
 
 
 async function getResultRace(raceID) {
-	let path = "http://www.blingtracker.com/timings/v1/runs/" + raceID;
+	let path = "https://www.blingtracker.com/timings/v1/runs/" + raceID;
 	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { path = './temp/runs.json'; }
 
 	return fetch(path)
@@ -943,16 +943,16 @@ async function getResults(raceID, token) {
 	this.token = token;
 	await getRunners(raceID);
 	await getResultRace(raceID);
-	let path = "http://www.blingtracker.com/timings/v1/results/" + raceID;
+	let path = "https://www.blingtracker.com/timings/v1/results/" + raceID;
 	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
-		// path = 'http://www.blingtracker.com/timings/v1/results/35'
+		// path = 'https://www.blingtracker.com/timings/v1/results/35'
 		path = './temp/results.json';
 	}
 
 	let response = await getCall(path);
 	inProcess = false;
 
-	path = `http://www.blingtracker.com/timings/v1/results/notified/${raceID}`;
+	path = `https://www.blingtracker.com/timings/v1/results/notified/${raceID}`;
 	fetch(path)
 		.then(response => response.json())
 		.then(responseJson => {
@@ -974,7 +974,7 @@ async function getResults(raceID, token) {
 async function getRaces(raceID) {
 	//if(raceID==null)
 
-	let response = await getCall("http://www.blingtracker.com/timings/v1/timing/" + raceID);
+	let response = await getCall("https://www.blingtracker.com/timings/v1/timing/" + raceID);
 
 	if (response == undefined) {
 		//	alert("Unable to retrieve data for the raceID "+ raceID);
