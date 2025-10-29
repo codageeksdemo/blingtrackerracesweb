@@ -170,7 +170,7 @@
                </div>
 
         <div v-else-if="key=='selectedSplits'">
-                    <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
+                    <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto; cursor: pointer;" @click="openSelectedSplits(entry)">
                          <div v-for="row in entry[key]">{{ row.km }}:{{ row.registeredTime }} </div>
                    </div>
                </div>
@@ -728,6 +728,14 @@
             // Populate and open modal with full splits detail
             splitsModal.data = Array.isArray(entry.splits) ? entry.splits : [];
             splitsModal.title = `Bib ${entry.bibID} - Splits`;
+            splitsModal.isSelected = false;
+            splitsModal.open = true;
+          },
+          openSelectedSplits: function (entry) {
+            // Populate and open modal with selected splits detail
+            splitsModal.data = Array.isArray(entry.selectedSplits) ? entry.selectedSplits : [];
+            splitsModal.title = `Bib ${entry.bibID} - Selected Splits`;
+            splitsModal.isSelected = true;
             splitsModal.open = true;
           },
         },
@@ -893,22 +901,39 @@
         <div style="padding: 10px 16px">
           <table style="width: 100%; border-collapse: collapse">
             <thead>
-              <tr>
+              <tr v-if="!isSelected">
                 <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Km</th>
                 <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Registered Time</th>
                 <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Inference</th>
                 <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Action</th>
               </tr>
+              <tr v-else>
+                <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Km</th>
+                <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Date</th>
+                <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Time</th>
+                <th style="text-align: left; border-bottom: 1px solid #ddd; padding: 6px">Action</th>
+              </tr>
             </thead>
             <tbody>
               <tr v-for="(s,idx) in data" :key="idx">
-                <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.km }}</td>
-                <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.registeredTime }}</td>
-                <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.inference }}</td>
-                <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">
-                  <button @click="editSplit(idx)" style="border: none; background: #f0ad4e; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 6px">Edit</button>
-                  <button @click="deleteSplit(idx)" style="border: none; background: #d9534f; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer">Delete</button>
-                </td>
+                <template v-if="!isSelected">
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.km }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.registeredTime }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.inference }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">
+                    <button @click="editSplit(idx)" style="border: none; background: #f0ad4e; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 6px">Edit</button>
+                    <button @click="deleteSplit(idx)" style="border: none; background: #d9534f; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer">Delete</button>
+                  </td>
+                </template>
+                <template v-else>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ s.km }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ (s.registeredTime || '').split(' ')[0] }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">{{ (s.registeredTime || '').split(' ')[1] }}</td>
+                  <td style="padding: 6px; border-bottom: 1px solid #f2f2f2">
+                    <button @click="editSplit(idx)" style="border: none; background: #f0ad4e; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer; margin-right: 6px">Edit</button>
+                    <button @click="deleteSplit(idx)" style="border: none; background: #d9534f; color: white; padding: 4px 8px; border-radius: 4px; cursor: pointer">Delete</button>
+                  </td>
+                </template>
               </tr>
             </tbody>
           </table>
@@ -920,7 +945,7 @@
       // Simple Vue instance for the splits modal
       var splitsModal = new Vue({
         el: "#splitsModal",
-        data: { open: false, title: "Splits", data: [], bibID: "" },
+        data: { open: false, title: "Splits", data: [], bibID: "", isSelected: false },
         methods: {
           editSplit: function (index) {
             // Open the existing edit panel pre-populated
