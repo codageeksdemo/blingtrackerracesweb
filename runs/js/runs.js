@@ -6,10 +6,10 @@ var filteredRecords = [];
 var runningGroups = [];
 var gunTime = "";
 var displayGunTime = "";
-var stopTime="";
-var displayStopTime="";
-var exportRaceID="25";
-var raceMeta=[];
+var stopTime = "";
+var displayStopTime = "";
+var exportRaceID = "25";
+var raceMeta = [];
 
 
 // async function getRunners(raceID) {
@@ -57,11 +57,11 @@ var raceMeta=[];
 // }
 
 // async function getResults(raceID, token) {
-   //if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
-	// 	{
-	//     	alert("Race ID and Token are required.");
-	//     	return;
-	// 	}
+//if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
+// 	{
+//     	alert("Race ID and Token are required.");
+//     	return;
+// 	}
 // 	this.token = token;
 // 	await getRunners(raceID);
 // 	await getResultRace(raceID);
@@ -79,18 +79,17 @@ var raceMeta=[];
 // 	}
 // }
 
-async function getResultRace(raceID,token) {
-	if (!raceID || !token || raceID.trim() === "" || token.trim() === "")
-	{
-    	alert("Race ID and Token are required.");
-    	return;
+async function getResultRace(raceID, token) {
+	if (!raceID || !token || raceID.trim() === "" || token.trim() === "") {
+		alert("Race ID and Token are required.");
+		return;
 	}
 	alert("Get Results Called");
 	let path = "/timings/v1/runs/" + raceID;
+	// let path = "https://www.blingtracker.com/timings/v1/runs/" + raceID; //while test  in local use this 
 
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/runs.json'; }
-	
+	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { path = './temp/runs.json'; }
+
 	return fetch(path)
 		.then(response => response.json())
 		.then(responseJson => {
@@ -98,25 +97,25 @@ async function getResultRace(raceID,token) {
 
 			document.getElementById("raceEditor").style.display = "block";
 
-document.getElementById("edit_name").value = race.name;
-document.getElementById("edit_eventDate").value = race.eventDate;
-document.getElementById("edit_address").value = race.address;
-document.getElementById("edit_city").value = race.city;
-document.getElementById("edit_photo").value = race.photo;
-// document.getElementById("edit_id").value = race.id;
-document.getElementById("edit_id").value = race.id;
-document.getElementById("edit_email").value = race.email;
-document.getElementById("edit_mobile1").value = race.mobile1;
-document.getElementById("edit_mobile2").value = race.mobile2;
-// document.getElementById("edit_meta").value = JSON.stringify(JSON.parse(race.meta));
-var meta = JSON.parse(race.meta).meta;
+			document.getElementById("edit_name").value = race.name;
+			document.getElementById("edit_eventDate").value = race.eventDate;
+			document.getElementById("edit_address").value = race.address;
+			document.getElementById("edit_city").value = race.city;
+			document.getElementById("edit_photo").value = race.photo;
+			// document.getElementById("edit_id").value = race.id;
+			document.getElementById("edit_id").value = race.id;
+			document.getElementById("edit_email").value = race.email;
+			document.getElementById("edit_mobile1").value = race.mobile1;
+			document.getElementById("edit_mobile2").value = race.mobile2;
+			// document.getElementById("edit_meta").value = JSON.stringify(JSON.parse(race.meta));
+			var meta = JSON.parse(race.meta).meta;
 
-	reports.metaGroups = meta.groups || [];
-	reports.metaReaders = meta.readers || [];
-	reports.metaResults = meta.result || [];
-			
-		return responseJson;
-	});
+			reports.metaGroups = meta.groups || [];
+			reports.metaReaders = meta.readers || [];
+			reports.metaResults = meta.result || [];
+
+			return responseJson;
+		});
 }
 
 
@@ -146,6 +145,7 @@ function submitUpdatedRace() {
 	const token = document.getElementById("token").value
 
 	fetch("/timings/v2/runs/", {
+		// fetch("https://www.blingtracker.com/timings/v2/runs/", { //while test  in local use this 
 		"method": "POST",
 		body: JSON.stringify(race),
 		headers: {
@@ -153,20 +153,19 @@ function submitUpdatedRace() {
 			"Authorization": "Bearer " + token
 		}
 	})
-	.then(response => {
-		if(response.ok)
-		{
-			console.log("server response: "+ response);
-			alert("race updated and saved successfully");
-		}
-		else{
-			alert("server returned error: "+ response);
-		}
-	})
-	.catch(err => {
-		console.log("Error "+ err);
-		throw err;
-	})
+		.then(response => {
+			if (response.ok) {
+				console.log("server response: " + response);
+				alert("race updated and saved successfully");
+			}
+			else {
+				alert("server returned error: " + response);
+			}
+		})
+		.catch(err => {
+			console.log("Error " + err);
+			throw err;
+		})
 
 	// console.log(JSON.parse(race.meta).meta.result);
 }

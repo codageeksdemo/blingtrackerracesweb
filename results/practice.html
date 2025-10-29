@@ -525,6 +525,7 @@
             <tr>
               <td></td>
               <td>Start Time</td>
+              <td>Allowed Start Delay</td>
               <td>Min. Lap Time</td>
               <td>Min. Finish Duration</td>
               <td>Laps Count for Finish</td>
@@ -533,15 +534,13 @@
               <td class="text-right">{{ index + ' Km' }}</td>
 
               <td class="text-center">{{ obj.gunTime }}</td>
-
+              <td class="text-center">{{ obj.allowedStartDelay }}</td>
               <td class="text-center">{{ obj.minLapTime}}</td>
-
               <td class="text-center">{{ obj.minFinishDuration}}</td>
-
               <td class="text-center">{{ obj.finishLoopCounts}}</td>
             </tr>
             <tr>
-              <td colspan="3">
+              <td colspan="4">
                 <input type="button" onclick="processSplits()" value="Process Splits" :disabled="Object.keys(formFilter).length == 0" />
               </td>
             </tr>
