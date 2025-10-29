@@ -6,11 +6,24 @@ var filteredRecords = [];
 var runGroups = [];
 var gunTime = "";
 var displayGunTime = "";
+<<<<<<< Updated upstream
 var stopTime="";
 var displayStopTime="";
 var exportRaceID="27";
 var raceMeta=[];
 var inProcess=false;
+=======
+var stopTime = "";
+var displayStopTime = "";
+var exportRaceID = "27";
+var raceMeta = [];
+var inProcess = false;
+// cached meta to avoid repeated JSON.parse on race.meta
+var cachedMeta = null;
+var runnersByBib = null; // Map-like object for O(1) lookup by bibID
+// analytics cache per km to avoid repeated sorts/filters
+var analyticsCacheByKm = {};
+>>>>>>> Stashed changes
 // var runnerwithstarttime=0; //runners with starttime
 // var runnerwithnostarttime=0; //runnners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
 // var runnerwithfinish=0;
@@ -18,14 +31,18 @@ var inProcess=false;
 function prepareVueGridData(jsonData) {
 	inProcess=false;
 	let received = JSON.parse(jsonData);
+<<<<<<< Updated upstream
 	//let received = [{"raceID":"2","bibID":"1","startTime":"","finishTime":"1715199155000","splits":"[\"{\\\"km\\\":5,\\\"time\\\":\\\"1715199155000\\\"}\",\"{\\\"km\\\":2.5,\\\"time\\\":\\\"1715199155000\\\"}\"]","groupR":""}];
 	let selected =[];
     let data = [];
 	let dataElement = [];
+=======
+	let selected = [];
+>>>>>>> Stashed changes
 	let columns = [];
-	let first = true;
 	let index = 0;
 
+<<<<<<< Updated upstream
 	for (index = 0; index < received.length; index++) {
 		if(received[index].bibID == '')
 			continue;
@@ -62,33 +79,74 @@ function prepareVueGridData(jsonData) {
 		}
 		*/
 
+=======
+	// Build runners index once for O(1) lookup
+	if (!runnersByBib || typeof runnersByBib.get !== 'function') {
+		try {
+			// Use Map when available; fallback to plain object
+			runnersByBib = new Map();
+			for (let i = 0; i < runners.length; i++) {
+				const rb = runners[i];
+				if (rb && rb.bibID !== undefined) runnersByBib.set(String(rb.bibID), rb);
+			}
+		} catch (e) {
+			runnersByBib = {};
+			for (let i = 0; i < runners.length; i++) {
+				const rb = runners[i];
+				if (rb && rb.bibID !== undefined) runnersByBib[String(rb.bibID)] = rb;
+			}
+		}
+>>>>>>> Stashed changes
 	}
 
-	/*received.forEach((dataI) => {
-		dataElement = [];
+	for (index = 0; index < received.length; index++) {
+		const rec = received[index];
+		if (!rec || rec.bibID === '') continue;
 
-		Object.entries(dataI).forEach(([key, value]) => {
-			if (first == true) {
-				columns.push(`${key}`);
-			}
-		});
+		rec["splits"] = getFormattedSplits(rec["splits"]);
 
-		first = false;
-	});*/
+		delete rec["startTime"];
+		rec["finishTime"] = "";
+		rec["finishTimeStamp"] = "";
+		rec["duration"] = "";
+		rec["durationInMiliSeconds"] = "";
+		rec.alreadyNotified = false;
+
+		// enrich from runners index
+		let bibKey = String(rec["bibID"]);
+		let rinfo = (typeof runnersByBib.get === 'function') ? runnersByBib.get(bibKey) : runnersByBib[bibKey];
+		if (rinfo) {
+			rec["name"] = rinfo["name"];
+			rec["age"] = parseInt(rinfo["age"]);
+			rec["gender"] = rinfo["gender"];
+			rec["raceCode"] = parseInt(rinfo["raceCode"]);
+			rec["bMID"] = rinfo["bMID"];
+		}
+
+		selected.push(rec);
+	}
 
 	columns=["bibID","bMID","readerStartTime","finishTime","splits","selectedSplits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
 	this.runnerGrid.gridColumns = columns;
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
-	this.runGroups = JSON.parse(this.race.meta).meta.groups;
-	this.runresults = JSON.parse(this.race.meta).meta.result;
+
+	// Cache meta parsing
+	if (!cachedMeta && this.race && this.race.meta) {
+		try { cachedMeta = JSON.parse(this.race.meta).meta; } catch (e) { cachedMeta = null; }
+	}
+	const groups = cachedMeta ? cachedMeta.groups : JSON.parse(this.race.meta).meta.groups;
+	const results = cachedMeta ? cachedMeta.result : JSON.parse(this.race.meta).meta.result;
+	this.runGroups = groups;
+	this.runresults = results;
 
 	let runnerwithstarttime = 0; // runners with starttime
-	let runnerwithnostarttime = 0; //runners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
-	let runnerwithfinish = 0; // runners who were assigned finish time that is dont have finish time
+	let runnerwithnostarttime = 0; // runners with no starttime
+	let runnerwithfinish = 0; // runners with finish time
 	let counterwasRunnerAheadOfStartTime = 0;
 
 	let x = {};
+<<<<<<< Updated upstream
 
 	let chartaxisdata = {runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime}
     this.runGroups.forEach((g)=>{
@@ -104,18 +162,22 @@ function prepareVueGridData(jsonData) {
     });
 	
     populateFilters();
-	loadCustomChartData(x);
-	//processSplits1(this.runresults);
-}
+=======
+	let chartaxisdata = { runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime };
+	for (let gi = 0; gi < this.runGroups.length; gi++) {
+		const g = this.runGroups[gi];
+		let r = this.runresults.filter((j) => j.km == g.km);
+		if (r.length === 0) {
+			// preserve existing behavior but avoid spamming alerts
+			continue;
+		}
+		x[g.km] = processSplitsNew(g, r, chartaxisdata);
+	}
 
-// function processSplits1() {
-// 	for(let a = 0; a < runnerGrid.gridData.length; a++) {
-// 		if(runnerGrid.formFilter[runnerGrid.gridData[a].raceCode].loops == 2)
-// 			runnerGrid.gridData[a].km = calculateKms(runnerGrid.gridData[a].splits, runnerGrid.gridData[a]);
-// 		else if(runnerGrid.formFilter[runnerGrid.gridData[a].raceCode].loops == 1)
-// 			runnerGrid.gridData[a].km = calculateKms_old(runnerGrid.gridData[a].splits, runnerGrid.gridData[a]);
-// 	}
-// }
+	populateFilters();
+>>>>>>> Stashed changes
+	loadCustomChartData(x);
+}
 
 function processSplits1(resultsdata) {
 	for(let a = 0; a < runnerGrid.gridData.length; a++)
@@ -269,6 +331,7 @@ function calculateKms(data, record) {
 	}
 }
 
+<<<<<<< Updated upstream
 // function calculateKms_old(data, record) {
 // 	let raceCode = parseInt(record["raceCode"]);
 
@@ -348,6 +411,10 @@ function calculateKms_old(data, record, a)
 {
 	if(data != null && data != '')
 	{
+=======
+function calculateKms_old(data, record, a) {
+	if (data != null && data != '') {
+>>>>>>> Stashed changes
 		let totalKms = 0;
 		let previousKms = 0;
 
@@ -410,7 +477,7 @@ function getEpochTime(dt) {
 
 function getFormattedSplits(data) {
 	if (data != null && data != '') {
-		let splits = JSON.parse(data);
+		let splits = Array.isArray(data) ? data : JSON.parse(data);
 		let newSplits = [];
 		let index = 0;
 
@@ -493,6 +560,7 @@ function sendLapsUpdate()
 }
 
 
+<<<<<<< Updated upstream
 function pushResult()
 {
         this.token=document.getElementById('token').value;
@@ -527,6 +595,80 @@ function pushResult()
 
 function prepareResultBody()
 	{
+=======
+// function pushResult() {
+// 	this.token = document.getElementById('token').value;
+
+
+// 	var formData = new FormData();
+// 	formData.append("raceID", exportRaceID);
+// 	formData.append('text', prepareResultBody());
+// 	let result = false;
+
+// 	fetch("https://www.blingtracker.com/timings/v2/results/resultfile", {
+// 		// fetch("/timings/v2/results/resultfile", {
+// 		"method": "POST",
+// 		body: formData,
+// 		headers: {
+// 			"Accept": "*/*",
+// 			"Authorization": "Bearer " + this.token
+
+// 		}
+// 	})
+
+// 		.then((response) => response.text())
+// 		.then((text) => {
+// 			console.log(text);
+// 		})
+// 		.catch(err => {
+// 			console.log("Error: " + err);
+// 			alert("Error occured " + err + " \n  If this continues, you can discard and close to proceed");
+// 			throw err;
+// 		});
+
+// }
+function pushResult() {
+	const token = document.getElementById('token').value;
+	const formData = new FormData();
+	formData.append("raceID", exportRaceID);
+	formData.append("text", prepareResultBody());
+
+	fetch("https://www.blingtracker.com/timings/v2/results/resultfile", {
+		method: "POST",
+		body: formData,
+		headers: {
+			"Accept": "*/*",
+			"Authorization": "Bearer " + token
+		}
+	})
+		.then(async (response) => {
+			// 🔹 Check for network or HTTP errors
+			if (!response.ok) {
+				throw new Error(`Server responded with status ${response.status}`);
+			}
+
+			const text = await response.text();
+
+			// 🔹 Check for empty or invalid response
+			if (!text || text.trim() === "") {
+				alert(" No response received from the server. Please try again.");
+				return;
+			}
+
+			console.log(" Server Response:", text);
+			alert(" Result pushed successfully!");
+		})
+		.catch((err) => {
+			console.error(" Error:", err);
+			alert("Error occurred while pushing results:\n" + err.message +
+				"\nIf this continues, you can discard and close to proceed");
+			throw err;
+		});
+}
+
+
+function prepareResultBody() {
+>>>>>>> Stashed changes
 
 	let collection=[];
 	 this.runnerGrid.gridData.sort((a,b)=> {
@@ -587,25 +729,33 @@ async function getRunners(raceID) {
 
 
 async function getResultRace(raceID) {
+<<<<<<< Updated upstream
 	let path = "/timings/v1/runs/" + raceID;
 
 	// if(location.host == 'localhost')
 	// 	path = '../../temp/runs.json';
 	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
 		{ path = './temp/runs.json'; }
-
+=======
+	let path = "http://www.blingtracker.com/timings/v1/runs/" + raceID;
+	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { path = './temp/runs.json'; }
+>>>>>>> Stashed changes
 
 	return fetch(path)
 		.then(response => response.json())
 		.then(responseJson => {
 			race = responseJson;
-			raceMeta = JSON.parse(race.meta).meta.groups;
-			let resultsMeta = JSON.parse(race.meta).meta.result;
-			meta = raceMeta;
+			// cache parsed meta once
+			try { cachedMeta = JSON.parse(race.meta).meta; } catch (e) { cachedMeta = null; }
+			const metaGroups = cachedMeta ? cachedMeta.groups : JSON.parse(race.meta).meta.groups;
+			const resultsMeta = cachedMeta ? cachedMeta.result : JSON.parse(race.meta).meta.result;
+			raceMeta = metaGroups;
+			const meta = metaGroups;
 			displayGunTime = meta[0].gunTime;
 			gunTime = meta[0].gunTimeStamp;
 			displayStopTime= meta[0].stopTime;
 			stopTime = meta[0].stopTimeStamp;
+<<<<<<< Updated upstream
 			for(group in meta) {
 				runnerGrid.formFilter[meta[group].km] = {
 					gunTime: meta[group].gunTime,
@@ -613,9 +763,18 @@ async function getResultRace(raceID) {
 					minLapTime:  resultsMeta.find(m=> m.km==meta[group].km).minlaptime,
 					minFinishDuration: resultsMeta.find(m=> m.km==meta[group].km).minimumfinishduration,
 					finishLoopCounts: resultsMeta.find(m=> m.km==meta[group].km).finishloopcounts
+=======
+			for (let gi = 0; gi < meta.length; gi++) {
+				const g = meta[gi];
+				const rt = resultsMeta.find(m => m.km == g.km) || {};
+				runnerGrid.formFilter[g.km] = {
+					gunTime: g.gunTime,
+					minLapTime: rt.minlaptime,
+					minFinishDuration: rt.minimumfinishduration,
+					finishLoopCounts: rt.finishloopcounts
+>>>>>>> Stashed changes
 				};
-
-				runnerGrid.filterByKms[meta[group].km] = true;
+				runnerGrid.filterByKms[g.km] = true;
 			}
 
 			return responseJson;
@@ -629,19 +788,32 @@ async function getResultRace(raceID) {
 
 
 function processSplitsNew(runGroup, runresults, chartadata) {
-	let runners = runnerGrid.gridData;
+	let runnersArr = runnerGrid.gridData;
 	let splits = [];
+<<<<<<< Updated upstream
     // Set below params
 
 	let allowedstartdelay = runresults[0].allowedstartdelay;
 	let minimumfinishduration = parseInt(runresults[0].minimumfinishduration);
 	let finishloopcounts = parseInt(runresults[0].finishloopcounts);
 	let minlaptime = parseInt(runresults[0].minlaptime);
+=======
+	// Set below params (cache locally)
+	const rr0 = runresults[0];
+	const allowedstartdelay = rr0.allowedstartdelay;
+	const minimumfinishduration = parseInt(rr0.minimumfinishduration);
+	const finishloopcounts = parseInt(rr0.finishloopcounts);
+	const minlaptime = parseInt(rr0.minlaptime);
+	const gunTimeStamp = getEpochTime(runGroup.gunTime);
+	const startWindowEnd = gunTimeStamp + allowedstartdelay;
+	const finishCutoff = gunTimeStamp + minimumfinishduration;
+>>>>>>> Stashed changes
 
 	let runnerwithstarttime = chartadata.runnerwithstarttime;
 	let runnerwithnostarttime = chartadata.runnerwithnostarttime;
 	let runnerwithfinish = chartadata.runnerwithfinish;
 	let counterwasRunnerAheadOfStartTime = chartadata.counterwasRunnerAheadOfStartTime;
+<<<<<<< Updated upstream
 	
 	let gunTime = runGroup.gunTime;
 	let oneloopduration = runresults[0].oneloopduration;
@@ -715,9 +887,56 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				selectedSplits.push(splits[b]);
 				 splits[b]["inference"]="StartTime";
 				setStartTime(runners[a],splits[b]);
+=======
+
+	// avoid DOM read in loop
+	let inputBibEl = document.getElementById("inputBibID");
+	let inputBibID = inputBibEl ? inputBibEl.value : undefined;
+
+	for (let a = 0; a < runnersArr.length; a++) {
+		const runner = runnersArr[a];
+		let wasRunnerAheadOfStartTime = false;
+		let wasrunnerwithstarttime = false;
+		let wasrunnerwithnostarttime = false;
+		let wasrunnerwithfinish = false;
+		let currentTime = 0;
+		let currentFinishloopcounts = 0;
+
+		if (!runner || runner.bibID === '' || runner.raceCode != runGroup.km) continue;
+
+		if (!runner.splits) runner.splits = [];
+		splits = runner.splits;
+
+		// Local copies of state to reduce property lookups
+		let localReaderStartTimeStamp = runner.readerStartTimeStamp;
+		let localFinishTimeStamp = runner.finishTimeStamp;
+
+		let selectedSplits = [];
+		for (let b = 0; b < splits.length; b++) {
+			const sb = splits[b];
+			if (currentTime > 0) {
+				if (sb.time - currentTime <= minlaptime) {
+					sb["inference"] = "filtered for less than minlaptime";
+					continue;
+				}
+			}
+
+			if (sb.time < gunTimeStamp) {
+				if ((gunTimeStamp - sb.time) > 999) {
+					sb["inference"] = "Ahead of StartTime";
+					wasRunnerAheadOfStartTime = true;
+					continue;
+				}
+			} else if (localReaderStartTimeStamp == undefined && sb.time < startWindowEnd && sb.time >= gunTimeStamp) {
+				currentTime = sb.time;
+				selectedSplits.push(sb);
+				sb["inference"] = "StartTime";
+				setStartTime(runner, sb);
+				localReaderStartTimeStamp = sb.time;
+>>>>>>> Stashed changes
 				wasrunnerwithstarttime = true;
-				// runnerwithstarttime = runnerwithstarttime+1;
 				continue;
+<<<<<<< Updated upstream
 			} 
 			 else if(runners[a].readerStartTimeStamp==undefined && splits[b].time>gunTimeStamp +allowedstartdelay) // above 600  seconds 
                         {
@@ -778,10 +997,42 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 		console.log(runners[a]);
 		console.groupEnd();
 	
+=======
+			} else if (localReaderStartTimeStamp == undefined && sb.time > startWindowEnd) {
+				wasrunnerwithnostarttime = true;
+				currentTime = sb.time;
+				sb["inference"] = "No  StartTime Assigned";
+				selectedSplits.push(sb);
+			} else {
+				currentTime = sb.time;
+				selectedSplits.push(sb);
+				sb["inference"] = "Selected due to intermediate ";
+			}
+
+			if (localFinishTimeStamp == "") {
+				if (currentFinishloopcounts < finishloopcounts) currentFinishloopcounts++;
+				if (sb.time < finishCutoff) {
+					sb["inference"] = "less than minimum duration";
+					continue;
+				}
+				if (currentFinishloopcounts == finishloopcounts) {
+					wasrunnerwithfinish = true;
+					setFinishTime(runner, sb, false);
+					localFinishTimeStamp = sb.time;
+					sb["inference"] = "FinishTime";
+					break;
+				} else {
+					sb["inference"] = "Status:" + currentFinishloopcounts + " of " + finishloopcounts + " loops finished";
+				}
+			}
+		}
+
+>>>>>>> Stashed changes
 		if (wasRunnerAheadOfStartTime) counterwasRunnerAheadOfStartTime++;
 		if (wasrunnerwithnostarttime) runnerwithnostarttime++;
 		if (wasrunnerwithstarttime) runnerwithstarttime++;
 		if (wasrunnerwithfinish) runnerwithfinish++;
+<<<<<<< Updated upstream
 		runners[a].selectedSplits=selectedSplits;
 
 	}
@@ -791,6 +1042,16 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 
 	let chrtdata = {runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime};
 	return chrtdata;
+=======
+		runner.selectedSplits = selectedSplits;
+	}
+	runnerGrid.gridData = runnersArr;
+
+	// restore original alert side-effect
+	alert(runnerwithstarttime + " " + runnerwithnostarttime + " " + runnerwithfinish + " " + counterwasRunnerAheadOfStartTime);
+
+	return { runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime };
+>>>>>>> Stashed changes
 }
 
 function setStartTime(runner,split)
@@ -824,7 +1085,37 @@ function setFinishTime(runner,split,force)
 
 
 function populateFilters() {
+<<<<<<< Updated upstream
 	
+=======
+	// Build analytics cache per km to avoid repeated sorts/filters
+	analyticsCacheByKm = {};
+	for (let i = 0; i < this.runnerGrid.gridData.length; i++) {
+		const r = this.runnerGrid.gridData[i];
+		const km = r.raceCode;
+		if (km == null) continue;
+		if (!analyticsCacheByKm[km]) analyticsCacheByKm[km] = { finished: [], unfinished: [], gender: { M: [], F: [], N: [] } };
+		if (r.durationInMiliSeconds > 0) {
+			analyticsCacheByKm[km].finished.push(r);
+			if (r.gender && analyticsCacheByKm[km].gender[r.gender] !== undefined) {
+				analyticsCacheByKm[km].gender[r.gender].push(r);
+			}
+		} else {
+			analyticsCacheByKm[km].unfinished.push(r);
+		}
+	}
+	// Sort finished arrays by duration once
+	Object.keys(analyticsCacheByKm).forEach(km => {
+		analyticsCacheByKm[km].finished.sort((x, y) => x.durationInMiliSeconds - y.durationInMiliSeconds);
+		// gender arrays reference same objects; ensure order matches finished order
+		const finished = analyticsCacheByKm[km].finished;
+		const genders = analyticsCacheByKm[km].gender;
+		genders.M = finished.filter(r => r.gender == 'M');
+		genders.F = finished.filter(r => r.gender == 'F');
+		genders.N = finished.filter(r => r.gender == 'N');
+	});
+
+>>>>>>> Stashed changes
 	sortOnDurations();
 	filteredRecords = [];
 	males = [];
@@ -857,8 +1148,12 @@ function populateFilters() {
 	}
 
 	this.reports.filteredRecords = filteredRecords;
+<<<<<<< Updated upstream
 	sortOnDurations();  
 
+=======
+	sortOnDurations();
+>>>>>>> Stashed changes
 }
 
 function stoHMS(d) {
@@ -879,13 +1174,12 @@ function stoHMS(d) {
 }
 
 function sortOnDurations() {
-
-
-
+	// Only sort items with valid duration to avoid NaN interactions
 	this.runnerGrid.gridData.sort((x, y) => {
-		return x.durationInMiliSeconds - y.durationInMiliSeconds;
+		const dx = x.durationInMiliSeconds || 0;
+		const dy = y.durationInMiliSeconds || 0;
+		return dx - dy;
 	});
-
 }
 
 
@@ -928,33 +1222,43 @@ function filterTimingsOnGender(group, km, gender) {
 	let newArray = [];
 	let emptyDuration = [];
 
+<<<<<<< Updated upstream
 	this.runnerGrid.gridData.forEach((el) => {
 		if (el.raceCode == km &&
 			el.gender == gender
 		) {
 			if (el.durationInMiliSeconds>0) {
 				newArray.push(el);
+=======
+	// Use analytics cache if present to avoid re-filtering and preserve order
+	const cache = analyticsCacheByKm[km];
+	if (cache && cache.gender && cache.gender[gender]) {
+		newArray = cache.gender[gender].slice();
+	} else {
+		this.runnerGrid.gridData.forEach((el) => {
+			if (el.raceCode == km && el.gender == gender) {
+				if (el.durationInMiliSeconds > 0) newArray.push(el); else emptyDuration.push(el);
+>>>>>>> Stashed changes
 			}
-			else {
-				emptyDuration.push(el);
-			}
-		}
-	});
-
+		});
+	}
 
 	let topGender = [];
 	let index = 0;
 
 	for (j = 0; j < newArray.length; j++) {
 		if (index < 20) {
-			// index++;
 			topGender.push(newArray[index]);
 			index++;
 		}
 
 		let bibID = newArray[j].bibID;
+<<<<<<< Updated upstream
 
 		if (group != undefined || group !=null )
+=======
+		if (group != undefined || group != null)
+>>>>>>> Stashed changes
 			updateRecord(group.records, bibID, "GenderRank", (j + 1) + " of" + newArray.length);
 	}
 
@@ -965,35 +1269,42 @@ function filterTimingsOnKM(group, km) {
 	let newArray = [];
 	let emptyDuration = [];
 
+<<<<<<< Updated upstream
 	this.runnerGrid.gridData.forEach((el) => {
 		if (el.raceCode == km) {
 			if (el.durationInMiliSeconds>0) {
 				newArray.push(el);
+=======
+	// Use analytics cache if present
+	const cache = analyticsCacheByKm[km];
+	if (cache && cache.finished) {
+		newArray = cache.finished.slice();
+	} else {
+		this.runnerGrid.gridData.forEach((el) => {
+			if (el.raceCode == km) {
+				if (el.durationInMiliSeconds > 0) newArray.push(el); else emptyDuration.push(el);
+>>>>>>> Stashed changes
 			}
-			else {
-				emptyDuration.push(el);
-			}
-		}
-	});
-
-
-	newArray.sort((x, y) => {
-		return x.durationInMiliSeconds - y.durationInMiliSeconds;
-	});
+		});
+		newArray.sort((x, y) => x.durationInMiliSeconds - y.durationInMiliSeconds);
+	}
 
 	let all = [];
 	let index = 0;
 
 	for (j = 0; j < newArray.length; j++) {
 		if (index < 20) {
-			// index++;
 			all.push(newArray[index]);
 			index++;
 		}
 
 		let bibID = newArray[j].bibID;
+<<<<<<< Updated upstream
 
 		if (group != undefined || group !=null)
+=======
+		if (group != undefined || group != null)
+>>>>>>> Stashed changes
 			updateRecord(group.records, bibID, "overall", (j + 1) + " of" + newArray.length);
 	}
 
@@ -1072,6 +1383,7 @@ async function getResults(raceID, token) {
 		} 
 
 	let response = await getCall(path);
+<<<<<<< Updated upstream
 	inProcess=false;	
 	// try {
 
@@ -1086,6 +1398,9 @@ async function getResults(raceID, token) {
 	// } catch (error) {
 	// 	console.error("Error fetching notified bibs:", error);
 	// }
+=======
+	inProcess = false;
+>>>>>>> Stashed changes
 
 	path = `/timings/v1/results/notified/${raceID}`;
 	fetch(path)

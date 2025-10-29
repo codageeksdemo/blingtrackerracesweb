@@ -168,11 +168,19 @@
                   <a :id="entry[key]" onclick="loadRunner(this);">{{ entry[key] }}</a>
               </div>
 
+<<<<<<< Updated upstream
               <div v-else-if="key=='splits'">
                    <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;" >
 			<div v-for="row in entry[key]">{{ row.km }}:{{ row.registeredTime }}:{{ row.inference }} </div>
                   </div>
               </div>
+=======
+                 <div v-else-if="key=='splits'">
+                      <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto; cursor: pointer;" @click="openSplits(entry)">
+                        <div v-for="row in entry[key]">{{ row.km }}:{{ row.registeredTime }}:{{ row.inference }} </div>
+                      </div>
+                 </div>
+>>>>>>> Stashed changes
 
 	      <div v-else-if="key=='selectedSplits'">
                    <div style="height: 80px; border: 1px solid blue; scroll-behavior: auto;overflow: auto;">
@@ -739,7 +747,42 @@
 									return false;
 								}
 
+<<<<<<< Updated upstream
 								var vl = Number(row[key]);
+=======
+            let runnerResultinarray = selectedRunners;
+            runnerResultinarray.push(runnerResult);
+            fetch("/timings/v2/results/publishprovisionalresult", {
+              method: "POST",
+              body: JSON.stringify(runnerResultinarray),
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + token,
+              },
+            })
+              .then((response) => {
+                if (response.ok) {
+                  alert("Result sent successfully");
+                } else {
+                  alert("Result not sent ");
+                }
+                response.text();
+              })
+              .catch((err) => {
+                console.log("Error: " + err);
+                alert("Error occured ");
+                throw err;
+              });
+          },
+          openSplits: function (entry) {
+            // Populate and open modal with full splits detail
+            splitsModal.data = Array.isArray(entry.splits) ? entry.splits : [];
+            splitsModal.title = `Bib ${entry.bibID} - Splits`;
+            splitsModal.open = true;
+          },
+        },
+      });
+>>>>>>> Stashed changes
 
 								if (vl >= searchMinValue && vl <= searchMaxValue) {
 									return true;
@@ -954,6 +997,7 @@
 				newSplits.push(newElement);
 			});
 
+<<<<<<< Updated upstream
 			fetch("/timings/v2/results/splits/" + raceID + "/" + bibID, {
 				"method": "POST",
 				body: JSON.stringify(newSplits),
@@ -976,4 +1020,94 @@
 		}
 	</script>
 </body>
+=======
+        fetch("/timings/v2/results/splits/" + raceID + "/" + bibID, {
+          method: "POST",
+          body: JSON.stringify(newSplits),
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: "Bearer " + token,
+          },
+        })
+          .then((response) => response.text())
+          .then((text) => {
+            document.getElementById("editsplit").style.display = "none";
+            getResults(document.getElementById("raceID").value, document.getElementById("token").value);
+            alert(text);
+          })
+          .catch((err) => {
+            console.log("Error: " + err);
+            alert("Error occured " + err + " \n  If this continues, you can discard and close to proceed");
+            throw err;
+          });
+      }
+    </script>
+  <!-- Splits Modal -->
+    <div id="splitsModal" v-cloak v-show="open" style="position: fixed; inset: 0; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 9999;">
+      <div style="background: white; width: 800px; max-width: 98%; max-height: 85vh; overflow: auto; border-radius: 8px; box-shadow: 0 10px 25px rgba(0,0,0,0.3);">
+        <div style="display:flex; align-items:center; justify-content: space-between; padding: 12px 16px; border-bottom: 1px solid #eee;">
+          <h3 style="margin:0; font-size: 18px;">{{ title }}</h3>
+          <div>
+            <button @click="addNewSplit" style="border:none; background:#1b6cc0; color:white; padding:6px 10px; border-radius:4px; cursor:pointer; margin-right:8px;">Add New Split</button>
+            <button @click="open=false" style="border:none; background:#e33; color:white; padding:6px 10px; border-radius:4px; cursor:pointer;">Close</button>
+          </div>
+        </div>
+        <div style="padding: 10px 16px;">
+          <table style="width: 100%; border-collapse: collapse;">
+            <thead>
+              <tr>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">Km</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">Registered Time</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">Inference</th>
+                <th style="text-align:left; border-bottom:1px solid #ddd; padding:6px;">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(s,idx) in data" :key="idx">
+                <td style="padding:6px; border-bottom:1px solid #f2f2f2;">{{ s.km }}</td>
+                <td style="padding:6px; border-bottom:1px solid #f2f2f2;">{{ s.registeredTime }}</td>
+                <td style="padding:6px; border-bottom:1px solid #f2f2f2;">{{ s.inference }}</td>
+                <td style="padding:6px; border-bottom:1px solid #f2f2f2;">
+                  <button @click="editSplit(idx)" style="border:none; background:#f0ad4e; color:white; padding:4px 8px; border-radius:4px; cursor:pointer; margin-right:6px;">Edit</button>
+                  <button @click="deleteSplit(idx)" style="border:none; background:#d9534f; color:white; padding:4px 8px; border-radius:4px; cursor:pointer;">Delete</button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Simple Vue instance for the splits modal
+      var splitsModal = new Vue({
+        el: '#splitsModal',
+        data: { open: false, title: 'Splits', data: [], bibID: '' },
+        methods: {
+          editSplit: function(index) {
+            // Open the existing edit panel pre-populated
+            var bib = this.title.replace('Bib ','').split(' - ')[0];
+            document.getElementById("SbibID").value = bib;
+            document.getElementById("splitBibForDisplay").innerHTML = bib;
+            // show editor and load splits
+            getSplit(document.getElementById("raceID").value, document.getElementById("token").value);
+            document.getElementById("editsplit").style.display = "block";
+          },
+          deleteSplit: function(index) {
+            // Remove split locally in modal view
+            this.data.splice(index, 1);
+          },
+          addNewSplit: function() {
+            // Open the existing edit panel to add a split
+            var bib = this.title.replace('Bib ','').split(' - ')[0];
+            document.getElementById("SbibID").value = bib;
+            document.getElementById("splitBibForDisplay").innerHTML = bib;
+            getSplit(document.getElementById("raceID").value, document.getElementById("token").value);
+            document.getElementById("editsplit").style.display = "block";
+          }
+        }
+      });
+    </script>
+  </body>
+>>>>>>> Stashed changes
 </html>
