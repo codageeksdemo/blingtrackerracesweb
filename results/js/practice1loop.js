@@ -6,13 +6,6 @@ var filteredRecords = [];
 var runGroups = [];
 var gunTime = "";
 var displayGunTime = "";
-<<<<<<< Updated upstream
-var stopTime="";
-var displayStopTime="";
-var exportRaceID="27";
-var raceMeta=[];
-var inProcess=false;
-=======
 var stopTime = "";
 var displayStopTime = "";
 var exportRaceID = "27";
@@ -23,63 +16,17 @@ var cachedMeta = null;
 var runnersByBib = null; // Map-like object for O(1) lookup by bibID
 // analytics cache per km to avoid repeated sorts/filters
 var analyticsCacheByKm = {};
->>>>>>> Stashed changes
 // var runnerwithstarttime=0; //runners with starttime
 // var runnerwithnostarttime=0; //runnners with no starttime or started 5 mins late than guntime, assigned guntime as starttime
 // var runnerwithfinish=0;
 
 function prepareVueGridData(jsonData) {
-	inProcess=false;
+	inProcess = false;
 	let received = JSON.parse(jsonData);
-<<<<<<< Updated upstream
-	//let received = [{"raceID":"2","bibID":"1","startTime":"","finishTime":"1715199155000","splits":"[\"{\\\"km\\\":5,\\\"time\\\":\\\"1715199155000\\\"}\",\"{\\\"km\\\":2.5,\\\"time\\\":\\\"1715199155000\\\"}\"]","groupR":""}];
-	let selected =[];
-    let data = [];
-	let dataElement = [];
-=======
 	let selected = [];
->>>>>>> Stashed changes
 	let columns = [];
 	let index = 0;
 
-<<<<<<< Updated upstream
-	for (index = 0; index < received.length; index++) {
-		if(received[index].bibID == '')
-			continue;
-		
-        received[index]["splits"] = getFormattedSplits(received[index]["splits"]);
-		
-        delete received[index]["startTime"];
-       // received[index]["readerStartTimeStamp"] = getEpochTime(received[index]["readerStartTime"]);
-        received[index]["finishTime"] = "";
-        received[index]["finishTimeStamp"] = "";
-        received[index]["duration"] = "";
-        received[index]["durationInMiliSeconds"] = "";
-
-        
-		received[index].alreadyNotified = false;
-        selected.push(received[index]);
-	for (var i = 0; i < runners.length; i++) {
-			if (runners[i]["bibID"] === received[index]["bibID"]) {
-				received[index]["name"] = runners[i]["name"];
-				received[index]["age"] = parseInt(runners[i]["age"]);
-				received[index]["gender"] = runners[i]["gender"];
-				received[index]["raceCode"] = parseInt(runners[i]["raceCode"]);
-				received[index]["bMID"] = runners[i]["bMID"];
-
-				break;
-			}
-		}
-
-		
-		/*
-		let splits = received[index]["splits"];
-       if (splits) {
-			received[index]["km"] = calculateKms(received[index]["splits"], received[index]);
-		}
-		*/
-
-=======
 	// Build runners index once for O(1) lookup
 	if (!runnersByBib || typeof runnersByBib.get !== 'function') {
 		try {
@@ -96,7 +43,6 @@ function prepareVueGridData(jsonData) {
 				if (rb && rb.bibID !== undefined) runnersByBib[String(rb.bibID)] = rb;
 			}
 		}
->>>>>>> Stashed changes
 	}
 
 	for (index = 0; index < received.length; index++) {
@@ -126,7 +72,7 @@ function prepareVueGridData(jsonData) {
 		selected.push(rec);
 	}
 
-	columns=["bibID","bMID","readerStartTime","finishTime","splits","selectedSplits","name","age","gender","raceCode","laps","duration","time","categoryRank","GenderRank","overall","Publish"];
+	columns = ["bibID", "bMID", "readerStartTime", "finishTime", "splits", "selectedSplits", "name", "age", "gender", "raceCode", "laps", "duration", "time", "categoryRank", "GenderRank", "overall", "Publish"];
 	this.runnerGrid.gridColumns = columns;
 	this.runnerGrid.gridData = selected;
 	this.reports.columns = this.runnerGrid.gridColumns;
@@ -146,23 +92,6 @@ function prepareVueGridData(jsonData) {
 	let counterwasRunnerAheadOfStartTime = 0;
 
 	let x = {};
-<<<<<<< Updated upstream
-
-	let chartaxisdata = {runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime}
-    this.runGroups.forEach((g)=>{
-	let r =	this.runresults.filter((j)=>{
-			return j.km==g.km
-		})
-		if(r.length === 0)
-		{
-			alert("r length is 0");
-			return
-		}
-         x[g.km] = processSplitsNew(g,r, chartaxisdata);
-    });
-	
-    populateFilters();
-=======
 	let chartaxisdata = { runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime };
 	for (let gi = 0; gi < this.runGroups.length; gi++) {
 		const g = this.runGroups[gi];
@@ -175,13 +104,11 @@ function prepareVueGridData(jsonData) {
 	}
 
 	populateFilters();
->>>>>>> Stashed changes
 	loadCustomChartData(x);
 }
 
 function processSplits1(resultsdata) {
-	for(let a = 0; a < runnerGrid.gridData.length; a++)
-	{	
+	for (let a = 0; a < runnerGrid.gridData.length; a++) {
 		let totalKms = calculateKms_old(runnerGrid.gridData[a].splits, runnerGrid.gridData[a], a);
 		// alert(runnerGrid.gridData[a].bibID+" total km = "+totalKms)
 		console.log(missingsplits(runnerGrid.gridData[a].splits, runnerGrid.gridData[a], resultsdata))
@@ -191,9 +118,9 @@ function processSplits1(resultsdata) {
 
 
 function dateToTimeStamp(dt) {
-	let [ dmy, hms ] = dt.split(' ');
-	let [ day, month, year ] = dmy.split('/');
-	let [ hour, minute, second ] = hms.split(':');
+	let [dmy, hms] = dt.split(' ');
+	let [day, month, year] = dmy.split('/');
+	let [hour, minute, second] = hms.split(':');
 	let a = new Date;
 	a.setDate(day);
 	a.setMonth(month - 1);
@@ -209,10 +136,10 @@ function timeStampToDate(ts) {
 	let minutes = d.getMinutes();
 	let seconds = d.getSeconds();
 
-	if(minutes < 10)
+	if (minutes < 10)
 		minutes = '0' + minutes;
 
-	if(seconds < 10)
+	if (seconds < 10)
 		seconds = '0' + seconds;
 
 	return d.getDate() + "/" + (d.getMonth() + 1) + "/" + d.getFullYear() + " " +
@@ -220,23 +147,22 @@ function timeStampToDate(ts) {
 }
 
 function calculateDuration(runner) {
-	let startTime =runner.readerStartTimeStamp; 
-	let finishTime =runner.finishTimeStamp;
-	if(startTime == "" || startTime == undefined || finishTime == "" || finishTime == undefined)
-		{
-			runner["durationInMiliSeconds"] = "";
-			runner["duration"] = "";
-		}
-	else{ 	
-			let durationMiliSeconds = finishTime - startTime;
-			let durationSeconds = Math.floor(durationMiliSeconds / 1000);
-			let durationMinutes = Math.floor(durationSeconds / 60);
-			durationSeconds = durationSeconds % 60;
-			let durationHours = Math.floor(durationMinutes / 60);
-			durationMinutes = durationMinutes % 60;
-			runner["durationInMiliSeconds"] = durationMiliSeconds;
-			runner["duration"] = durationHours + ":" + (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + (durationSeconds < 10 ? '0' : '') + durationSeconds;
-		}
+	let startTime = runner.readerStartTimeStamp;
+	let finishTime = runner.finishTimeStamp;
+	if (startTime == "" || startTime == undefined || finishTime == "" || finishTime == undefined) {
+		runner["durationInMiliSeconds"] = "";
+		runner["duration"] = "";
+	}
+	else {
+		let durationMiliSeconds = finishTime - startTime;
+		let durationSeconds = Math.floor(durationMiliSeconds / 1000);
+		let durationMinutes = Math.floor(durationSeconds / 60);
+		durationSeconds = durationSeconds % 60;
+		let durationHours = Math.floor(durationMinutes / 60);
+		durationMinutes = durationMinutes % 60;
+		runner["durationInMiliSeconds"] = durationMiliSeconds;
+		runner["duration"] = durationHours + ":" + (durationMinutes < 10 ? '0' : '') + durationMinutes + ':' + (durationSeconds < 10 ? '0' : '') + durationSeconds;
+	}
 }
 
 function downloadResult() {
@@ -245,26 +171,23 @@ function downloadResult() {
 	var element = document.createElement('a');
 	let collection = [];
 
-	this.runnerGrid.gridData.sort((a,b)=> {
-                            if(a.splits.length<b.splits.length)
-                                {
-                                        return 1;
-                                }
-                            return 0;
-                        });
-	 this.runnerGrid.gridData.forEach((a)=> {
-                            if(a.bibID!="")
-                                {
-                                       collection.push(a);
-                                }
-                            return 0;
-                        });
-		
-		let clonedcollection = structuredClone(collection);
-	for(let index = 0; index < clonedcollection.length; index++)
-		{
-			delete clonedcollection[index].splits;
+	this.runnerGrid.gridData.sort((a, b) => {
+		if (a.splits.length < b.splits.length) {
+			return 1;
 		}
+		return 0;
+	});
+	this.runnerGrid.gridData.forEach((a) => {
+		if (a.bibID != "") {
+			collection.push(a);
+		}
+		return 0;
+	});
+
+	let clonedcollection = structuredClone(collection);
+	for (let index = 0; index < clonedcollection.length; index++) {
+		delete clonedcollection[index].splits;
+	}
 
 	let content = JSON.stringify(clonedcollection);
 
@@ -277,23 +200,21 @@ function downloadResult() {
 	document.body.removeChild(element);
 }
 
-function prepareLapsUpdateBody()
-{
-	 let collection = [];
+function prepareLapsUpdateBody() {
+	let collection = [];
 
-   this.runnerGrid.gridData.forEach((a)=> {
-                            if(a.laps>0)
-                                {
-				       let update={};
-					update["raceID"] = a.raceID;
-					update["bibID"]=a.bibID;
-					update["count"]=a.laps;
-					update["name"]=a.name;
-                                       collection.push(update);
-                                }
-                            return 0;
-                        });
- return collection;
+	this.runnerGrid.gridData.forEach((a) => {
+		if (a.laps > 0) {
+			let update = {};
+			update["raceID"] = a.raceID;
+			update["bibID"] = a.bibID;
+			update["count"] = a.laps;
+			update["name"] = a.name;
+			collection.push(update);
+		}
+		return 0;
+	});
+	return collection;
 }
 
 
@@ -331,129 +252,39 @@ function calculateKms(data, record) {
 	}
 }
 
-<<<<<<< Updated upstream
-// function calculateKms_old(data, record) {
-// 	let raceCode = parseInt(record["raceCode"]);
-
-// 	if (data != null && data != '') {
-// 		let totalKms = 0;
-// 		let previousKms = 0;
-// 		let previousTime = 0;
-// 		let found = false;
-// 		let setAsFinishTime = false;
-// 		let setAsStartTime = false;
-// 		record["readerStartTime"] = "";
-
-// 		// for start time
-// 		for (index = 0; index < data.length; index++) {
-// 			data[index]["time"] = getEpochTime(data[index]["registeredTime"]);
-// 		}
-
-// 		data = data.sort(function (a, b) {
-// 			return a["time"] - b["time"];
-// 		});
-
-// 		for (index = 0; index < data.length; index++) {
-// 			let km = data[index]["km"];
-// 			let diff = Math.abs(km - previousKms);
-// 			data[index]["time"] = getEpochTime(data[index]["registeredTime"]);
-// 			let diffTime = data[index]["time"] - previousTime;
-
-// 			if (!setAsStartTime && runnerGrid.formFilter[record.raceCode].gunTimeStamp <= data[index]["time"] && (runnerGrid.formFilter[record.raceCode].gunTimeStamp + (1000 * 60 * runnerGrid.formFilter[record.raceCode].startTimeDelay)) >= data[index]["time"]) {
-// 				record["readerStartTime"] = data[index]["registeredTime"];
-// 				record["startTime"] = data[index]["time"];
-// 				setAsStartTime = true;
-// 			}
-
-// 			if (!setAsFinishTime && previousTime != 0 && diffTime > (1000 * 60 * runnerGrid.formFilter[record.raceCode].finishTimeDelay)) {
-// 				setAsFinishTime = true;
-// 			}
-
-// 			// totalKms = totalKms+diff;
-// 			//if((totalKms==raceCode || setAsFinishTime )&& !found)
-// 			if ((setAsFinishTime) && !found) {
-// 				record["finishTime"] = data[index]["registeredTime"];
-// 				record["finishStamp"] = data[index]["time"];
-// 				found = true;
-// 			}
-
-// 			previousKms = km;
-// 			previousTime = data[index]["time"];
-// 		}
-
-// 		if (record["readerStartTime"] == "") {
-// 			record["readerStartTime"] = displayGunTime;
-// 			record["time"] = runnerGrid.formFilter[record.raceCode].gunTimeStamp;
-// 		}
-
-// 		let minimumDuration = runnerGrid.formFilter[record.raceCode].gunTimeStamp + (1000 * 60 * runnerGrid.formFilter[record.raceCode].finishTimeDelay);
-
-// 		for (index = 0; index < data.length; index++) {
-// 			if (data[index]["time"] >= minimumDuration) {
-// 				record["finishTime"] = data[index]["registeredTime"];
-// 				record["finishStamp"] = data[index]["time"];
-// 				found = true;
-// 				break;
-// 			}
-// 		}
-
-// 		if (record["finishTime"] == "") {
-// 			console.log("No Finish Time ");
-// 			// alert("No finish time");
-// 		}
-
-// 		return totalKms;
-// 	}
-// 	return "";
-// }
-
-function calculateKms_old(data, record, a)
-{
-	if(data != null && data != '')
-	{
-=======
 function calculateKms_old(data, record, a) {
 	if (data != null && data != '') {
->>>>>>> Stashed changes
 		let totalKms = 0;
 		let previousKms = 0;
 
-		for(let index =0; index<data.length; index++)
-		{
+		for (let index = 0; index < data.length; index++) {
 			let km = data[index]["km"];
 			let diff = Math.abs(km - previousKms);
-			totalKms = totalKms+diff;
+			totalKms = totalKms + diff;
 			previousKms = km;
 		}
-		if(totalKms >= record.raceCode)
-		{
-			alert("true "+totalKms+" >= "+record.raceCode+" a= "+a)
-			setFinishTime(runnerGrid.gridData[a], data[data.length-1], true)
+		if (totalKms >= record.raceCode) {
+			alert("true " + totalKms + " >= " + record.raceCode + " a= " + a)
+			setFinishTime(runnerGrid.gridData[a], data[data.length - 1], true)
 		}
 		return totalKms;
 	}
 }
 
-function missingsplits(data, record, resultsdata)
-{
+function missingsplits(data, record, resultsdata) {
 	let idealsplitpattern = [];
-	for(let a=0; a<resultsdata.length;a++)
-	{
-		if(resultsdata[a].km == record.raceCode)
-		{
-		idealsplitpattern = resultsdata.finishsplitpattern;
+	for (let a = 0; a < resultsdata.length; a++) {
+		if (resultsdata[a].km == record.raceCode) {
+			idealsplitpattern = resultsdata.finishsplitpattern;
 		}
 	}
-	
-	for(let index = 0; index<data.length; index++)
-	{
-		if(data[index]["km"] != idealsplitpattern[index])
-		{
-			return(" runner "+record.bibID+" dont have ideal split");
+
+	for (let index = 0; index < data.length; index++) {
+		if (data[index]["km"] != idealsplitpattern[index]) {
+			return (" runner " + record.bibID + " dont have ideal split");
 		}
-		else
-		{
-			return(" runner "+record.bibID+" have ideal split");
+		else {
+			return (" runner " + record.bibID + " have ideal split");
 		}
 	}
 }
@@ -471,8 +302,8 @@ function getEpochTime(dt) {
 	let hh = parseInt(dt.substring(11, 13));
 	let mm = parseInt(dt.substring(14, 16));
 	let ss = parseInt(dt.substring(17, 19));
-	let newDate = new Date(year,month,day,hh,mm,ss,0 );
-	 return newDate.getTime();
+	let newDate = new Date(year, month, day, hh, mm, ss, 0);
+	return newDate.getTime();
 }
 
 function getFormattedSplits(data) {
@@ -493,21 +324,19 @@ function getFormattedSplits(data) {
 		newSplits = newSplits.sort(function (a, b) {
 			return a.time - b.time;
 		});
-		
-		let lastKM=-1;
-		let lastTime="";
-		let filteredSplits=[];
-		for(let a = 0; a < newSplits.length; a++)
-		{
+
+		let lastKM = -1;
+		let lastTime = "";
+		let filteredSplits = [];
+		for (let a = 0; a < newSplits.length; a++) {
 			let spl = newSplits[a];
-			if(spl.km==undefined)
+			if (spl.km == undefined)
 				continue;
 
-			if(spl.km!=lastKM && spl.time!=lastTime)
-			{
+			if (spl.km != lastKM && spl.time != lastTime) {
 				filteredSplits.push(spl);
-				lastKm=spl.km;
-				lastTime=spl.time;
+				lastKm = spl.km;
+				lastTime = spl.time;
 			}
 		}
 
@@ -542,60 +371,23 @@ function saveRunner() {
 }
 
 
-function sendLapsUpdate()
-{
-	this.token=document.getElementById('token').value;
+function sendLapsUpdate() {
+	this.token = document.getElementById('token').value;
 
-        fetch("/timings/v2/results/lapsupdate", {
-    "method": "POST",
-    body: JSON.stringify(prepareLapsUpdateBody()),
-    headers: {
-                "Content-Type": "application/json",
-        "Accept":"*/*",
-	     "Authorization": "Bearer " + this.token
+	fetch("http://www.blingtracker.com/timings/v2/results/lapsupdate", {
+		"method": "POST",
+		body: JSON.stringify(prepareLapsUpdateBody()),
+		headers: {
+			"Content-Type": "application/json",
+			"Accept": "*/*",
+			"Authorization": "Bearer " + this.token
 
-    }
-  })
-
-}
-
-
-<<<<<<< Updated upstream
-function pushResult()
-{
-        this.token=document.getElementById('token').value;
-
-
-		var formData = new FormData();
-        formData.append("raceID", exportRaceID);
-        formData.append('text', prepareResultBody());
-        let result = false;
-
-		fetch("https://www.blingtracker.com/timings/v2/results/resultfile", {
-        // fetch("/timings/v2/results/resultfile", {
-                "method": "POST",
-                body: formData,
-                headers: {
-                "Accept":"*/*",
-             "Authorization": "Bearer " + this.token
-
-                         }})
-
-                .then((response) => response.text())
-                .then((text) => {
-                	console.log(text);
-                })
-                .catch(err => {
-                        console.log("Error: " + err);
-                        alert("Error occured " + err + " \n  If this continues, you can discard and close to proceed");
-                        throw err;
-                });
+		}
+	})
 
 }
 
-function prepareResultBody()
-	{
-=======
+
 // function pushResult() {
 // 	this.token = document.getElementById('token').value;
 
@@ -668,46 +460,42 @@ function pushResult() {
 
 
 function prepareResultBody() {
->>>>>>> Stashed changes
 
-	let collection=[];
-	 this.runnerGrid.gridData.sort((a,b)=> {
-                            if(a.splits.length<b.splits.length)
-                                {
-                                        return 1;
-                                }
-                            return 0;
-                        });
-         this.runnerGrid.gridData.forEach((a)=> {
-		 	    a.raceID= exportRaceID;	
-                            if(a.bibID!="")
-                                {
-                                       collection.push(a);
-                                }
-                            return 0;
-                        });
+	let collection = [];
+	this.runnerGrid.gridData.sort((a, b) => {
+		if (a.splits.length < b.splits.length) {
+			return 1;
+		}
+		return 0;
+	});
+	this.runnerGrid.gridData.forEach((a) => {
+		a.raceID = exportRaceID;
+		if (a.bibID != "") {
+			collection.push(a);
+		}
+		return 0;
+	});
 
-        let content = JSON.stringify(collection);
-        return content;
-	}
+	let content = JSON.stringify(collection);
+	return content;
+}
 
 
-  function addSplit(splits){
-                        let ele = {"km":0,"registeredTime":"08/05/2025 06:04:02","time":1746664442000} 
-                        splits.push(ele);
-                }
+function addSplit(splits) {
+	let ele = { "km": 0, "registeredTime": "08/05/2025 06:04:02", "time": 1746664442000 }
+	splits.push(ele);
+}
 
 
 async function getRunners(raceID) {
 	//raceID="12";
-	let path = "/timings/v2/runners/" + raceID;
+	let path = "http://www.blingtracker.com/timings/v2/runners/" + raceID;
 
 	// if(location.host == 'localhost')
 	// 	path = '../../temp/runners.json';
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/runners.json'; }
+	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { path = './temp/runners.json'; }
 
-	
+
 
 	return fetch(path, {
 		headers: {
@@ -719,9 +507,9 @@ async function getRunners(raceID) {
 			runners = responseJson;
 			return responseJson
 		})
-		.catch(err =>{
-			console.log("Error "+err);
-			alert("getRunners call failed"+err);
+		.catch(err => {
+			console.log("Error " + err);
+			alert("getRunners call failed" + err);
 			throw err;
 		})
 }
@@ -729,17 +517,8 @@ async function getRunners(raceID) {
 
 
 async function getResultRace(raceID) {
-<<<<<<< Updated upstream
-	let path = "/timings/v1/runs/" + raceID;
-
-	// if(location.host == 'localhost')
-	// 	path = '../../temp/runs.json';
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ path = './temp/runs.json'; }
-=======
 	let path = "http://www.blingtracker.com/timings/v1/runs/" + raceID;
 	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') { path = './temp/runs.json'; }
->>>>>>> Stashed changes
 
 	return fetch(path)
 		.then(response => response.json())
@@ -753,17 +532,8 @@ async function getResultRace(raceID) {
 			const meta = metaGroups;
 			displayGunTime = meta[0].gunTime;
 			gunTime = meta[0].gunTimeStamp;
-			displayStopTime= meta[0].stopTime;
+			displayStopTime = meta[0].stopTime;
 			stopTime = meta[0].stopTimeStamp;
-<<<<<<< Updated upstream
-			for(group in meta) {
-				runnerGrid.formFilter[meta[group].km] = {
-					gunTime: meta[group].gunTime,
-
-					minLapTime:  resultsMeta.find(m=> m.km==meta[group].km).minlaptime,
-					minFinishDuration: resultsMeta.find(m=> m.km==meta[group].km).minimumfinishduration,
-					finishLoopCounts: resultsMeta.find(m=> m.km==meta[group].km).finishloopcounts
-=======
 			for (let gi = 0; gi < meta.length; gi++) {
 				const g = meta[gi];
 				const rt = resultsMeta.find(m => m.km == g.km) || {};
@@ -772,16 +542,15 @@ async function getResultRace(raceID) {
 					minLapTime: rt.minlaptime,
 					minFinishDuration: rt.minimumfinishduration,
 					finishLoopCounts: rt.finishloopcounts
->>>>>>> Stashed changes
 				};
 				runnerGrid.filterByKms[g.km] = true;
 			}
 
 			return responseJson;
 		})
-		.catch(err =>{
-			console.log("Error "+err);
-			alert("getResultRace call failed "+err);
+		.catch(err => {
+			console.log("Error " + err);
+			alert("getResultRace call failed " + err);
 			throw err;
 		})
 }
@@ -790,14 +559,6 @@ async function getResultRace(raceID) {
 function processSplitsNew(runGroup, runresults, chartadata) {
 	let runnersArr = runnerGrid.gridData;
 	let splits = [];
-<<<<<<< Updated upstream
-    // Set below params
-
-	let allowedstartdelay = runresults[0].allowedstartdelay;
-	let minimumfinishduration = parseInt(runresults[0].minimumfinishduration);
-	let finishloopcounts = parseInt(runresults[0].finishloopcounts);
-	let minlaptime = parseInt(runresults[0].minlaptime);
-=======
 	// Set below params (cache locally)
 	const rr0 = runresults[0];
 	const allowedstartdelay = rr0.allowedstartdelay;
@@ -807,87 +568,11 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	const gunTimeStamp = getEpochTime(runGroup.gunTime);
 	const startWindowEnd = gunTimeStamp + allowedstartdelay;
 	const finishCutoff = gunTimeStamp + minimumfinishduration;
->>>>>>> Stashed changes
 
 	let runnerwithstarttime = chartadata.runnerwithstarttime;
 	let runnerwithnostarttime = chartadata.runnerwithnostarttime;
 	let runnerwithfinish = chartadata.runnerwithfinish;
 	let counterwasRunnerAheadOfStartTime = chartadata.counterwasRunnerAheadOfStartTime;
-<<<<<<< Updated upstream
-	
-	let gunTime = runGroup.gunTime;
-	let oneloopduration = runresults[0].oneloopduration;
-	let gunTimeStamp = getEpochTime(runGroup.gunTime);
-
-	let inputBibID = document.getElementById("inputBibID").value;
-
-	for(let a = 0; a < runners.length; a++) {
-
-	if(runners[a].bibID == inputBibID)
-		{
-			alert( "called");	
-		}
-
-	let wasRunnerAheadOfStartTime = false;
-	let wasrunnerwithstarttime = false;
-	let wasrunnerwithnostarttime = false;
-	let wasrunnerwithfinish = false;
-	let currentTime=0;
-  	let currentFinishloopcounts=0;	
-
-	if(runners[a].bibID == '' || runners[a].raceCode!=runGroup.km)
-        {    
-			continue;
-        }
-		console.group('a: ' + runners[a].bibID);
-		
-        if(runners[a].splits==undefined)
-        {
-            runners[a].splits=[];
-        }
-		splits = runners[a].splits;
-		let deleteFrom = -1;
-		let toDelete = 0;
-		
-
-		let selectedSplits=[];
-		for(let b = 0; b < splits.length; b++) {
-
-		/*	if(currentTime==0)
-                        {
-                                currentTime = splits[b].time;
-				
-                        }
-			else*/
-			if(currentTime>0)
-			{
-			   	let oldCurrentTime = currentTime;
-				if (splits[b].time- oldCurrentTime <= minlaptime)
-				{
-					 splits[b]["inference"]="filtered for less than minlaptime";
-
-					continue;	
-				} 
-			}
-
-			 if(splits[b].time < gunTimeStamp) {
-				let diff = gunTimeStamp - splits[b].time;
-				if(diff>999)
-					{
-					console.log("ignoring "+ splits[b].time + "as it is earlier than "+ gunTimeStamp );
-					splits[b]["inference"]="Ahead of StartTime";	
-					wasRunnerAheadOfStartTime = true;
-					continue;
-					}
-			}
-			else if(runners[a].readerStartTimeStamp==undefined && splits[b].time<gunTimeStamp +allowedstartdelay && splits[b].time>=gunTimeStamp) // upto 300 seconds after guntime
-			{
-				 currentTime = splits[b].time;
-
-				selectedSplits.push(splits[b]);
-				 splits[b]["inference"]="StartTime";
-				setStartTime(runners[a],splits[b]);
-=======
 
 	// avoid DOM read in loop
 	let inputBibEl = document.getElementById("inputBibID");
@@ -933,71 +618,8 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 				sb["inference"] = "StartTime";
 				setStartTime(runner, sb);
 				localReaderStartTimeStamp = sb.time;
->>>>>>> Stashed changes
 				wasrunnerwithstarttime = true;
 				continue;
-<<<<<<< Updated upstream
-			} 
-			 else if(runners[a].readerStartTimeStamp==undefined && splits[b].time>gunTimeStamp +allowedstartdelay) // above 600  seconds 
-                        {
-
-    				 wasrunnerwithnostarttime = true;
-				 currentTime = splits[b].time;
-				  splits[b]["inference"]="No  StartTime Assigned";    
-				 selectedSplits.push(splits[b]);
-
-                        }
-			else
-			{
-				 currentTime = splits[b].time;
-
-				selectedSplits.push(splits[b]);
-				 splits[b]["inference"]="Selected due to intermediate ";
-			}
-
-			if(runners[a].finishTimeStamp=="" ) // upto 30 min seconds finishtime
-                        {
-				if(currentFinishloopcounts<finishloopcounts)
-				{
-					currentFinishloopcounts++;
-
-				}
-
-				if( splits[b].time<gunTimeStamp +minimumfinishduration )
-				{
-					 splits[b]["inference"]="less than minimum duration";
-					continue;
-				}
-				if(currentFinishloopcounts==finishloopcounts)
-				{
-					
-					wasrunnerwithfinish = true;
-                                        setFinishTime(runners[a],splits[b], false);
-					 splits[b]["inference"]="FinishTime";    
-                              	        break;
-
-				}
-				else
-				{
-					 splits[b]["inference"]= "Status:"+ currentFinishloopcounts +" of "+ finishloopcounts +" loops finished";
-
-				}
-								
-                        }	
-		}
-
-			// if(wasRunnerAheadOfStartTime==true)
-				// {
-				// 				let spl ={};
-                //                 spl["km"] = 0;
-                //                 spl["registeredTime"] = gunTime;
-                //                 spl["time"] =  gunTimeStamp;
-                //                 setStartTime(runners[a],spl);
-				// }
-		console.log(runners[a]);
-		console.groupEnd();
-	
-=======
 			} else if (localReaderStartTimeStamp == undefined && sb.time > startWindowEnd) {
 				wasrunnerwithnostarttime = true;
 				currentTime = sb.time;
@@ -1027,22 +649,10 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 			}
 		}
 
->>>>>>> Stashed changes
 		if (wasRunnerAheadOfStartTime) counterwasRunnerAheadOfStartTime++;
 		if (wasrunnerwithnostarttime) runnerwithnostarttime++;
 		if (wasrunnerwithstarttime) runnerwithstarttime++;
 		if (wasrunnerwithfinish) runnerwithfinish++;
-<<<<<<< Updated upstream
-		runners[a].selectedSplits=selectedSplits;
-
-	}
-	runnerGrid.gridData=runners;
-
-	alert(runnerwithstarttime+" "+runnerwithnostarttime+" "+runnerwithfinish+" "+counterwasRunnerAheadOfStartTime);
-
-	let chrtdata = {runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime};
-	return chrtdata;
-=======
 		runner.selectedSplits = selectedSplits;
 	}
 	runnerGrid.gridData = runnersArr;
@@ -1051,43 +661,35 @@ function processSplitsNew(runGroup, runresults, chartadata) {
 	alert(runnerwithstarttime + " " + runnerwithnostarttime + " " + runnerwithfinish + " " + counterwasRunnerAheadOfStartTime);
 
 	return { runnerwithstarttime, runnerwithnostarttime, runnerwithfinish, counterwasRunnerAheadOfStartTime };
->>>>>>> Stashed changes
 }
 
-function setStartTime(runner,split)
-{
-		if(runner.readerStartTimeStamp!=undefined)
-		{
-			console.log("ignoring the new start time due to the older one for "+ runner.bibID);
-			return;
-		} 
+function setStartTime(runner, split) {
+	if (runner.readerStartTimeStamp != undefined) {
+		console.log("ignoring the new start time due to the older one for " + runner.bibID);
+		return;
+	}
 
 
-		//runner.laps=splits.length-1;
-		runner.readerStartTime=split.registeredTime;
-		runner.readerStartTimeStamp = split.time;
-		console.log("Setting start Time "+ runner.readerStartTime );
+	//runner.laps=splits.length-1;
+	runner.readerStartTime = split.registeredTime;
+	runner.readerStartTimeStamp = split.time;
+	console.log("Setting start Time " + runner.readerStartTime);
 }
 
 
-function setFinishTime(runner,split,force)
-{
-		if(runner.finishTimeStamp!="" && force == false )
-		{
-			console.log("ignoring the new finish time due to the older one for "+ runner.bibID);
-			return;
-		}
+function setFinishTime(runner, split, force) {
+	if (runner.finishTimeStamp != "" && force == false) {
+		console.log("ignoring the new finish time due to the older one for " + runner.bibID);
+		return;
+	}
 
-		runner.finishTimeStamp = split.time;
-		runner.finishTime = split.registeredTime;
-        calculateDuration(runner);
+	runner.finishTimeStamp = split.time;
+	runner.finishTime = split.registeredTime;
+	calculateDuration(runner);
 }
 
 
 function populateFilters() {
-<<<<<<< Updated upstream
-	
-=======
 	// Build analytics cache per km to avoid repeated sorts/filters
 	analyticsCacheByKm = {};
 	for (let i = 0; i < this.runnerGrid.gridData.length; i++) {
@@ -1115,7 +717,6 @@ function populateFilters() {
 		genders.N = finished.filter(r => r.gender == 'N');
 	});
 
->>>>>>> Stashed changes
 	sortOnDurations();
 	filteredRecords = [];
 	males = [];
@@ -1129,10 +730,10 @@ function populateFilters() {
 		let ages = result.age;
 		let rec = {};
 		rec.km = km;
-		rec.topMale = filterTimingsOnGender(null,rec.km, "M");
-		rec.topFemale = filterTimingsOnGender(null,rec.km, "F");
-		rec.topNeuter = filterTimingsOnGender(null,rec.km, "N");
-		rec.topAll = filterTimingsOnKM(null,rec.km);
+		rec.topMale = filterTimingsOnGender(null, rec.km, "M");
+		rec.topFemale = filterTimingsOnGender(null, rec.km, "F");
+		rec.topNeuter = filterTimingsOnGender(null, rec.km, "N");
+		rec.topAll = filterTimingsOnKM(null, rec.km);
 
 		for (var a = 0; a < ages.length; a++) {
 			let min = ages[a].min;
@@ -1148,12 +749,7 @@ function populateFilters() {
 	}
 
 	this.reports.filteredRecords = filteredRecords;
-<<<<<<< Updated upstream
-	sortOnDurations();  
-
-=======
 	sortOnDurations();
->>>>>>> Stashed changes
 }
 
 function stoHMS(d) {
@@ -1222,14 +818,6 @@ function filterTimingsOnGender(group, km, gender) {
 	let newArray = [];
 	let emptyDuration = [];
 
-<<<<<<< Updated upstream
-	this.runnerGrid.gridData.forEach((el) => {
-		if (el.raceCode == km &&
-			el.gender == gender
-		) {
-			if (el.durationInMiliSeconds>0) {
-				newArray.push(el);
-=======
 	// Use analytics cache if present to avoid re-filtering and preserve order
 	const cache = analyticsCacheByKm[km];
 	if (cache && cache.gender && cache.gender[gender]) {
@@ -1238,7 +826,6 @@ function filterTimingsOnGender(group, km, gender) {
 		this.runnerGrid.gridData.forEach((el) => {
 			if (el.raceCode == km && el.gender == gender) {
 				if (el.durationInMiliSeconds > 0) newArray.push(el); else emptyDuration.push(el);
->>>>>>> Stashed changes
 			}
 		});
 	}
@@ -1253,12 +840,7 @@ function filterTimingsOnGender(group, km, gender) {
 		}
 
 		let bibID = newArray[j].bibID;
-<<<<<<< Updated upstream
-
-		if (group != undefined || group !=null )
-=======
 		if (group != undefined || group != null)
->>>>>>> Stashed changes
 			updateRecord(group.records, bibID, "GenderRank", (j + 1) + " of" + newArray.length);
 	}
 
@@ -1269,12 +851,6 @@ function filterTimingsOnKM(group, km) {
 	let newArray = [];
 	let emptyDuration = [];
 
-<<<<<<< Updated upstream
-	this.runnerGrid.gridData.forEach((el) => {
-		if (el.raceCode == km) {
-			if (el.durationInMiliSeconds>0) {
-				newArray.push(el);
-=======
 	// Use analytics cache if present
 	const cache = analyticsCacheByKm[km];
 	if (cache && cache.finished) {
@@ -1283,7 +859,6 @@ function filterTimingsOnKM(group, km) {
 		this.runnerGrid.gridData.forEach((el) => {
 			if (el.raceCode == km) {
 				if (el.durationInMiliSeconds > 0) newArray.push(el); else emptyDuration.push(el);
->>>>>>> Stashed changes
 			}
 		});
 		newArray.sort((x, y) => x.durationInMiliSeconds - y.durationInMiliSeconds);
@@ -1299,12 +874,7 @@ function filterTimingsOnKM(group, km) {
 		}
 
 		let bibID = newArray[j].bibID;
-<<<<<<< Updated upstream
-
-		if (group != undefined || group !=null)
-=======
 		if (group != undefined || group != null)
->>>>>>> Stashed changes
 			updateRecord(group.records, bibID, "overall", (j + 1) + " of" + newArray.length);
 	}
 
@@ -1338,19 +908,18 @@ async function getCall(path) {
 	state.onload = function () {
 		if (this.readyState == 4) {
 			if (state.status != 200) {
-				alert("getCall request error "+state.response);
+				alert("getCall request error " + state.response);
 				return;
 			}
-			if(state.status == 200)
-			{
+			if (state.status == 200) {
 				alert("getCall request success");
 			}
-			
+
 			if (this.response === '[]') {
 				//document.getElementById("wrapper").innerHTML = "";
 				return;
 			}
-			
+
 			//console.log(this.response)
 			prepareVueGridData(this.response);
 			return "success";
@@ -1362,12 +931,11 @@ async function getCall(path) {
 }
 
 async function getResults(raceID, token) {
-	if(inProcess)
-	{
+	if (inProcess) {
 		alert("Your request is in process, kindly wait for the response");
 		return;
 	}
-	inProcess=true;
+	inProcess = true;
 	if (raceID == null) {
 		return;
 	}
@@ -1375,34 +943,16 @@ async function getResults(raceID, token) {
 	this.token = token;
 	await getRunners(raceID);
 	await getResultRace(raceID);
-	let path = "/timings/v1/results/" + raceID;
-	if(location.hostname === 'localhost' || location.hostname === '127.0.0.1')
-		{ 
-			// path = 'http://www.blingtracker.com/timings/v1/results/35'
-			path = './temp/results.json';
-		} 
+	let path = "http://www.blingtracker.com/timings/v1/results/" + raceID;
+	if (location.hostname === 'localhost' || location.hostname === '127.0.0.1') {
+		// path = 'http://www.blingtracker.com/timings/v1/results/35'
+		path = './temp/results.json';
+	}
 
 	let response = await getCall(path);
-<<<<<<< Updated upstream
-	inProcess=false;	
-	// try {
-
-    // 	const notifyResponse = await fetch(`/timings/v1/results/notified/${raceID}`);
-	// 	const notifiedBibIDs = await notifyResponse.json();
-
-	// 	console.log("Notified Bibs:", notifiedBibIDs);
-
-	// 	runnerGrid.gridData.forEach(runner => {
-	// 		runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
-	// 	});
-	// } catch (error) {
-	// 	console.error("Error fetching notified bibs:", error);
-	// }
-=======
 	inProcess = false;
->>>>>>> Stashed changes
 
-	path = `/timings/v1/results/notified/${raceID}`;
+	path = `http://www.blingtracker.com/timings/v1/results/notified/${raceID}`;
 	fetch(path)
 		.then(response => response.json())
 		.then(responseJson => {
@@ -1410,12 +960,12 @@ async function getResults(raceID, token) {
 			console.log("Notified Bibs:", notifiedBibIDs);
 
 			runnerGrid.gridData.forEach(runner => {
-			runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
-			inProcess=false;	
-		});
+				runner.alreadyNotified = notifiedBibIDs.includes(String(runner.bibID));
+				inProcess = false;
+			});
 		})
-		.catch(err =>{
-			console.log("error in fetching notified bibids: "+err);
+		.catch(err => {
+			console.log("error in fetching notified bibids: " + err);
 			throw err;
 		})
 
@@ -1424,7 +974,7 @@ async function getResults(raceID, token) {
 async function getRaces(raceID) {
 	//if(raceID==null)
 
-	let response = await getCall("/timings/v1/timing/" + raceID);
+	let response = await getCall("http://www.blingtracker.com/timings/v1/timing/" + raceID);
 
 	if (response == undefined) {
 		//	alert("Unable to retrieve data for the raceID "+ raceID);
@@ -1465,8 +1015,6 @@ function updateImageDisplay() {
 				listItem.appendChild(para);
 			}
 			else {
-				para.textContent = `File name ${file.name}: Not a valid file type. Update your selection.`;
-				listItem.appendChild(para);
 			}
 
 			list.appendChild(listItem);
@@ -1531,25 +1079,25 @@ function editSplits() {
 
 function loadCustomChartData(chartdata) {
 	resetChart();
-    setLabels(["runners ahead of start time", "runners with no starttime", "runners with allowed starttime after guntime", "runners with no finish time", "runners with finish time"]);
-    setTitleText("Runner Analysis");
+	setLabels(["runners ahead of start time", "runners with no starttime", "runners with allowed starttime after guntime", "runners with no finish time", "runners with finish time"]);
+	setTitleText("Runner Analysis");
 	setSize("400px", "800px");
 	loadBarChart();
 
 	for (let num in chartdata) {
-        const item = chartdata[num];
+		const item = chartdata[num];
 
-        const runnerwithnostarttime = item.runnerwithnostarttime || 0;
-        const runnerwithstarttime = item.runnerwithstarttime || 0;
+		const runnerwithnostarttime = item.runnerwithnostarttime || 0;
+		const runnerwithstarttime = item.runnerwithstarttime || 0;
 
 		let total = runnerwithnostarttime + runnerwithstarttime;
-        const runnerwithnofinish = (total - item.runnerwithfinish || 0);
+		const runnerwithnofinish = (total - item.runnerwithfinish || 0);
 
 		const counterwasRunnerAheadOfStartTime = item.counterwasRunnerAheadOfStartTime || 0;
 		const runnerwithfinish = item.runnerwithfinish || 0;
 
-        addToDataSet(`${num}K runners`, [counterwasRunnerAheadOfStartTime, runnerwithnostarttime, runnerwithstarttime, runnerwithnofinish, runnerwithfinish]);
-    }
+		addToDataSet(`${num}K runners`, [counterwasRunnerAheadOfStartTime, runnerwithnostarttime, runnerwithstarttime, runnerwithnofinish, runnerwithfinish]);
+	}
 }
 
 function downloadResultCSV() {
@@ -1570,21 +1118,19 @@ function downloadResultCSV() {
 	});
 
 	// let headers = Object.keys(collection[0] || {}).filter(key => key !== 'splits');
-	let headers = ["RaceName","Kms","BibId","Name","Age","Gender","StartTime","FinsihTime","Duration","Splits"];
-	let keyinrequiredsequence = ["raceID","raceCode","bibID","name","age","gender","readerStartTime","finishTime","duration","selectedSplits"];
-	
+	let headers = ["RaceName", "Kms", "BibId", "Name", "Age", "Gender", "StartTime", "FinsihTime", "Duration", "Splits"];
+	let keyinrequiredsequence = ["raceID", "raceCode", "bibID", "name", "age", "gender", "readerStartTime", "finishTime", "duration", "selectedSplits"];
+
 	let csvContent = headers.join(",") + "\n";
 
 	collection.forEach((item) => {
 		let row = keyinrequiredsequence.map(key => {
-			let value ={}
-			if(key!="selectedSplits")
-			{
+			let value = {}
+			if (key != "selectedSplits") {
 				value = item[key];
 			}
-			else if(key=="selectedSplits")
-			{
-				value = JSON.stringify(item[key]);	
+			else if (key == "selectedSplits") {
+				value = JSON.stringify(item[key]);
 			}
 			return value; // Number, null, or others
 		});
